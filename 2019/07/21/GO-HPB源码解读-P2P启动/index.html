@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HPB,区块链,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#GO-HPB源码解读–P2P启动P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#12">
+<meta name="keywords" content="HPB,区块链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO-HPB源码解读--P2P启动">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-P2P启动/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="#GO-HPB源码解读–P2P启动P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#12">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-21T05:50:20.221Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO-HPB源码解读--P2P启动">
+<meta name="twitter:description" content="#GO-HPB源码解读–P2P启动P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#12">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-P2P启动/">
+
+
+
+
+
+  <title>GO-HPB源码解读--P2P启动 | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-P2P启动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--P2P启动</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:41:19+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="GO-HPB源码解读–P2P启动"><a href="#GO-HPB源码解读–P2P启动" class="headerlink" title="#GO-HPB源码解读–P2P启动"></a>#GO-HPB源码解读–P2P启动</h2><p>P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase)</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hpbnode *Node)</span> <span class="title">Start</span><span class="params">(conf *config.HpbConfig)</span> <span class="title">error</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> config.GetHpbConfigInstance().Node.TestCodeParam == <span class="number">1</span> &#123;</span><br><span class="line">		consensus.SetTestParam()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	hpbnode.startBloomHandlers()</span><br><span class="line"></span><br><span class="line">	err := hpbnode.WorkerInit(conf)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Worker init failed"</span>, <span class="string">":"</span>, err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> hpbnode.Hpbsyncctr == <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"syncctrl is nil"</span>)</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">"synctrl is nil"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	hpbnode.Hpbsyncctr.Start()</span><br><span class="line">	retval := hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase)</span><br><span class="line">	<span class="keyword">if</span> retval != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Start hpbpeermanager error"</span>)</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">`start peermanager error ".ipc"`</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	hpbnode.SetNodeAPI()</span><br><span class="line">	hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)</span><br><span class="line">	hpbnode.Hpbtxpool.Start()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>在Start方法中</p>
+<ol>
+<li>配置网络启动参数信息</li>
+<li>注册NodeMsg消息处理函数</li>
+<li>设置本地节点的类型分别是候选节点、引导节点、同步节点</li>
+<li>启动服务(prm.server.Start())</li>
+<li>检查本地节点是不是在BootstrapNodes列表中，也就是程序首次安装的时候连接的节点。</li>
+<li>启动iperf带宽测试服务，该端口是peer的端口加100。iperf的启动是通过调用shell命令来启来的，iperf应用包就在ghpb-bin安装目录下。命令是：bin/bash iperf3 -s -p port</li>
+<li>如果是挖矿节点的话，异步启动iperf带宽测试客户端</li>
+<li>如果boot节点的话，需要解析一下binding.json文件，这个用来指定启动时可以连接的peer地址<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(prm *PeerManager)</span> <span class="title">Start</span><span class="params">(coinbase common.Address)</span> <span class="title">error</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	config := config.GetHpbConfigInstance()</span><br><span class="line"></span><br><span class="line">	prm.server.Config = Config&#123;</span><br><span class="line">		NAT:        config.Network.NAT,</span><br><span class="line">		Name:       config.Network.Name,</span><br><span class="line">		TestMode:   config.Node.TestMode == <span class="number">1</span>,</span><br><span class="line">		PrivateKey: config.Node.PrivateKey,</span><br><span class="line">		NetworkId:  config.Node.NetworkId,</span><br><span class="line">		ListenAddr: config.Network.ListenAddr,</span><br><span class="line"></span><br><span class="line">		NetRestrict:     config.Network.NetRestrict,</span><br><span class="line">		NodeDatabase:    config.Network.NodeDatabase,</span><br><span class="line">		BootstrapNodes:  config.Network.BootstrapNodes,</span><br><span class="line">		EnableMsgEvents: config.Network.EnableMsgEvents,</span><br><span class="line"></span><br><span class="line">		Protocols: prm.hpbpro.Protocols(),</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	prm.server.Config.CoinBase = coinbase</span><br><span class="line">	log.Info(<span class="string">"Set coinbase address by start"</span>, <span class="string">"address"</span>, coinbase.String())</span><br><span class="line">	<span class="keyword">if</span> coinbase.String() == <span class="string">"0x0000000000000000000000000000000000000000"</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(<span class="string">"coinbase address is nil."</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	prm.hpbpro.networkId = prm.server.NetworkId</span><br><span class="line">	prm.hpbpro.regMsgProcess(ReqNodesMsg, HandleReqNodesMsg)</span><br><span class="line">	prm.hpbpro.regMsgProcess(ResNodesMsg, HandleResNodesMsg)</span><br><span class="line"></span><br><span class="line">	prm.hpbpro.regMsgProcess(ReqBWTestMsg, prm.HandleReqBWTestMsg)</span><br><span class="line">	prm.hpbpro.regMsgProcess(ResBWTestMsg, prm.HandleResBWTestMsg)</span><br><span class="line"></span><br><span class="line">	<span class="built_in">copy</span>(prm.server.Protocols, prm.hpbpro.Protocols())</span><br><span class="line"></span><br><span class="line">	localType := discover.PreNode</span><br><span class="line">	<span class="keyword">if</span> config.Network.RoleType == <span class="string">"bootnode"</span> &#123;</span><br><span class="line">		localType = discover.BootNode</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> config.Network.RoleType == <span class="string">"synnode"</span> &#123;</span><br><span class="line">		localType = discover.SynNode</span><br><span class="line">	&#125;</span><br><span class="line">	prm.SetLocalType(localType)</span><br><span class="line">	log.Info(<span class="string">"Set Init Local Type by p2p"</span>, <span class="string">"type"</span>, localType.ToString())</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := prm.server.Start(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Hpb protocol"</span>, <span class="string">"error"</span>, err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">////////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="comment">//for bootnode check</span></span><br><span class="line">	self := prm.server.Self()</span><br><span class="line">	<span class="keyword">for</span> _, n := <span class="keyword">range</span> config.Network.BootstrapNodes &#123;</span><br><span class="line">		<span class="keyword">if</span> self.ID == n.ID &amp;&amp; prm.server.localType != discover.BootNode &#123;</span><br><span class="line">			<span class="built_in">panic</span>(<span class="string">"Need BOOTNODE flag."</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/////////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	add, _ := net.ResolveUDPAddr(<span class="string">"udp"</span>, prm.server.ListenAddr)</span><br><span class="line">	prm.iport = add.Port + <span class="number">100</span></span><br><span class="line">	log.Debug(<span class="string">"Iperf server start"</span>, <span class="string">"port"</span>, prm.iport)</span><br><span class="line">	prm.startServerBW(strconv.Itoa(prm.iport))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> prm.server.localType != discover.BootNode &amp;&amp; prm.server.localType != discover.SynNode &#123;</span><br><span class="line">		<span class="keyword">go</span> prm.startClientBW()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/////////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="comment">//for bing info</span></span><br><span class="line">	<span class="keyword">if</span> prm.server.localType == discover.BootNode &#123;</span><br><span class="line">		filename := filepath.Join(config.Node.DataDir, bindInfoFileName)</span><br><span class="line">		log.Debug(<span class="string">"bootnode load bindings"</span>, <span class="string">"filename"</span>, filename)</span><br><span class="line">		prm.parseBindInfo(filename)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>prm.server.Start()方法是用来启动P2P服务的。</p>
+<ol>
+<li>判断服务是否启动</li>
+<li>创建RLPX，实现网络数据传输加密，这里有个<a href="https://www.jianshu.com/p/e62092a9d9d2" target="_blank" rel="noopener">翻译文档</a>可以详细了解下</li>
+<li>初始化一些Server的属性</li>
+<li>启动UDP服务，主要是用来发现节点的</li>
+<li>设置boot节点地址，添加到table中</li>
+<li>指定自己的握手协议</li>
+<li>srv.startListening()启动TCP服务</li>
+<li>创建newDialState对象，并异步运行<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Start starts running the server.</span></span><br><span class="line"><span class="comment">// Servers can not be re-used after stopping.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">Start</span><span class="params">()</span> <span class="params">(err error)</span></span> &#123;</span><br><span class="line">	srv.lock.Lock()</span><br><span class="line">	<span class="keyword">defer</span> srv.lock.Unlock()</span><br><span class="line">	<span class="keyword">if</span> srv.running &#123;</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">"server already running"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	srv.running = <span class="literal">true</span></span><br><span class="line">	log.Info(<span class="string">"Starting P2P networking"</span>)</span><br><span class="line">	rand.Seed(time.Now().Unix())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// static fields</span></span><br><span class="line">	<span class="keyword">if</span> srv.PrivateKey == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> fmt.Errorf(<span class="string">"Server.PrivateKey must be set to a non-nil key"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> srv.newTransport == <span class="literal">nil</span> &#123;</span><br><span class="line">		srv.newTransport = newRLPX</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	srv.quit = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	srv.addpeer = <span class="built_in">make</span>(<span class="keyword">chan</span> *conn)</span><br><span class="line">	srv.delpeer = <span class="built_in">make</span>(<span class="keyword">chan</span> peerDrop)</span><br><span class="line">	srv.posthandshake = <span class="built_in">make</span>(<span class="keyword">chan</span> *conn)</span><br><span class="line">	srv.addstatic = <span class="built_in">make</span>(<span class="keyword">chan</span> *discover.Node)</span><br><span class="line">	srv.removestatic = <span class="built_in">make</span>(<span class="keyword">chan</span> *discover.Node)</span><br><span class="line">	srv.peerOp = <span class="built_in">make</span>(<span class="keyword">chan</span> peerOpFunc)</span><br><span class="line">	srv.peerOpDone = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">	srv.peerEvent = event.NewEvent()</span><br><span class="line">	srv.delHist = <span class="built_in">new</span>(dialHistory)</span><br><span class="line"></span><br><span class="line">	srv.dialer = TCPDialer&#123;&amp;net.Dialer&#123;Timeout: defaultDialTimeout&#125;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// node table</span></span><br><span class="line">	ntab, ourend, err := discover.ListenUDP(srv.PrivateKey, srv.localType, srv.ListenAddr, srv.NAT, srv.NodeDatabase, srv.NetRestrict)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := ntab.SetFallbackNodes(srv.BootstrapNodes); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	srv.ntab = ntab</span><br><span class="line"></span><br><span class="line">	<span class="comment">// handshake</span></span><br><span class="line">	srv.ourHandshake = &amp;protoHandshake&#123;Version: MsgVersion, Name: srv.Name, ID: discover.PubkeyID(&amp;srv.PrivateKey.PublicKey), End:ourend&#125;</span><br><span class="line">	<span class="keyword">for</span> _, p := <span class="keyword">range</span> srv.Protocols &#123;</span><br><span class="line">		srv.ourHandshake.Caps = <span class="built_in">append</span>(srv.ourHandshake.Caps, p.<span class="built_in">cap</span>())</span><br><span class="line">	&#125;</span><br><span class="line">	srv.ourHandshake.CoinBase = srv.CoinBase</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> srv.ListenAddr == <span class="string">""</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"P2P server start, listen address is nil"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := srv.startListening(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//////////////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="keyword">if</span> srv.TestMode &#123;</span><br><span class="line">		srv.parseSynnode()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//////////////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">	log.Info(<span class="string">"Server start with type."</span>,<span class="string">"NodeType"</span>,srv.localType.ToString())</span><br><span class="line"></span><br><span class="line">	dialer := newDialState(srv.StaticNodes, srv.BootstrapNodes, srv.ntab, srv.NetRestrict)</span><br><span class="line">	srv.loopWG.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> srv.run(dialer)</span><br><span class="line">	srv.running = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>在startListening方法中，首先开始监听端口，然后进行接收连接处理，主要看下srv.listenLoop()方法，另外还进行了NAT转换。</p>
+<ol>
+<li>maxAcceptConns=100参数表示的是最大可握手连接数，并不是实际连接数，比如节点可以同时和200个peer建立连接，但在同一时间点，只能和100peer进行握手。所以看到代码创建了100个slot“信号”，接着for不断的取slot“信号”，相当于消耗了一个，但是在创建完连接之的又创建了一个slot“信号”</li>
+<li>for循环中主要是获取了连接，然后判断一下是不是受限地址（黑名单），如果不是就异步进行SetupConn<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">startListening</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="comment">// Launch the TCP listener.</span></span><br><span class="line">	listener, err := net.Listen(<span class="string">"tcp"</span>, srv.ListenAddr)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	laddr := listener.Addr().(*net.TCPAddr)</span><br><span class="line">	srv.ListenAddr = laddr.String()</span><br><span class="line">	srv.listener = listener</span><br><span class="line">	srv.loopWG.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> srv.listenLoop()</span><br><span class="line">	<span class="comment">// Map the TCP listening port if NAT is configured.</span></span><br><span class="line">	<span class="keyword">if</span> !laddr.IP.IsLoopback() &amp;&amp; srv.NAT != <span class="literal">nil</span> &#123;</span><br><span class="line">		srv.loopWG.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			nat.Map(srv.NAT, srv.quit, <span class="string">"tcp"</span>, laddr.Port, laddr.Port, <span class="string">"hpb p2p"</span>)</span><br><span class="line">			srv.loopWG.Done()</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// listenLoop runs in its own goroutine and accepts</span></span><br><span class="line"><span class="comment">// inbound connections.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">listenLoop</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> srv.loopWG.Done()</span><br><span class="line">	<span class="comment">//log.Info("RLPx listener up", "self", srv.makeSelf(srv.listener))</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// This channel acts as a semaphore limiting</span></span><br><span class="line">	<span class="comment">// active inbound connections that are lingering pre-handshake.</span></span><br><span class="line">	<span class="comment">// If all slots are taken, no further connections are accepted.</span></span><br><span class="line">	tokens := maxAcceptConns</span><br><span class="line"></span><br><span class="line">	slots := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, tokens)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; tokens; i++ &#123;</span><br><span class="line">		slots &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// Wait for a handshake slot before accepting.</span></span><br><span class="line">		&lt;-slots</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> (</span><br><span class="line">			fd  net.Conn</span><br><span class="line">			err error</span><br><span class="line">		)</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			fd, err = srv.listener.Accept()</span><br><span class="line">			<span class="keyword">if</span> tempErr, ok := err.(tempError); ok &amp;&amp; tempErr.Temporary() &#123;</span><br><span class="line">				log.Debug(<span class="string">"Temporary read error"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				log.Debug(<span class="string">"Read error"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Reject connections that do not match NetRestrict.</span></span><br><span class="line">		<span class="keyword">if</span> srv.NetRestrict != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> tcp, ok := fd.RemoteAddr().(*net.TCPAddr); ok &amp;&amp; !srv.NetRestrict.Contains(tcp.IP) &#123;</span><br><span class="line">				log.Debug(<span class="string">"Rejected conn (not whitelisted in NetRestrict)"</span>, <span class="string">"addr"</span>, fd.RemoteAddr())</span><br><span class="line">				fd.Close()</span><br><span class="line">				slots &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		fd = newMeteredConn(fd, <span class="literal">true</span>)</span><br><span class="line">		log.Info(<span class="string">"Accepted connection"</span>, <span class="string">"addr"</span>, fd.RemoteAddr())</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Spawn the handler. It will give the slot back when the connection</span></span><br><span class="line">		<span class="comment">// has been established.</span></span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			srv.SetupConn(fd, inboundConn, <span class="literal">nil</span>)</span><br><span class="line">			slots &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>在SetupConn中</p>
+<ol>
+<li>判断服务是不是启动</li>
+<li>这行代码中<code>c := &amp;conn{fd: fd, transport: srv.newTransport(fd), flags: flags, cont: make(chan error)}</code>可以看到srv.newTransport这个参数的传入，其实就是上边的RLPX。</li>
+<li>c.doEncHandshake进行ENC握手，具体实现都是RLPX做的</li>
+<li>c.doProtoHandshake进行协议握手，具体实现都是RLPX做的</li>
+<li>之的的有关BOE的逻辑没太看明白</li>
+<li>最后srv.checkpoint是将连接对象conn发送给通道stage<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SetupConn runs the handshakes and attempts to add the connection</span></span><br><span class="line"><span class="comment">// as a peer. It returns when the connection has been added as a peer</span></span><br><span class="line"><span class="comment">// or the handshakes have failed.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">SetupConn</span><span class="params">(fd net.Conn, flags connFlag, dialDest *discover.Node)</span></span> &#123;</span><br><span class="line">	<span class="comment">// Prevent leftover pending conns from entering the handshake.</span></span><br><span class="line">	srv.lock.Lock()</span><br><span class="line">	running := srv.running</span><br><span class="line">	srv.lock.Unlock()</span><br><span class="line">	c := &amp;conn&#123;fd: fd, transport: srv.newTransport(fd), flags: flags, cont: <span class="built_in">make</span>(<span class="keyword">chan</span> error)&#125;</span><br><span class="line">	<span class="keyword">if</span> !running &#123;</span><br><span class="line">		c.<span class="built_in">close</span>(errServerStopped)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	srv.setupLock.Lock()</span><br><span class="line">	<span class="keyword">defer</span>  srv.setupLock.Unlock()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Run the encryption handshake.</span></span><br><span class="line">	<span class="keyword">var</span> err error</span><br><span class="line">	<span class="keyword">var</span> ourRand, theirRand []<span class="keyword">byte</span></span><br><span class="line">	<span class="keyword">if</span> c.id, ourRand, theirRand, err = c.doEncHandshake(srv.PrivateKey, dialDest); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Debug(<span class="string">"Failed RLPx handshake"</span>, <span class="string">"addr"</span>, c.fd.RemoteAddr(), <span class="string">"conn"</span>, c.flags, <span class="string">"reason"</span>, err)</span><br><span class="line">		c.<span class="built_in">close</span>(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	clog := log.New(<span class="string">"id"</span>, c.id, <span class="string">"addr"</span>, c.fd.RemoteAddr(), <span class="string">"conn"</span>, c.flags)</span><br><span class="line">	<span class="comment">// For dialed connections, check that the remote public key matches.</span></span><br><span class="line">	<span class="keyword">if</span> dialDest != <span class="literal">nil</span> &amp;&amp; c.id != dialDest.ID &#123;</span><br><span class="line">		c.<span class="built_in">close</span>(DiscUnexpectedIdentity)</span><br><span class="line">		clog.Error(<span class="string">"Dialed identity mismatch"</span>, <span class="string">"want"</span>, c, dialDest.ID)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := srv.checkpoint(c, srv.posthandshake); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		clog.Trace(<span class="string">"Rejected peer before protocol handshake"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		c.<span class="built_in">close</span>(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	log.Debug(<span class="string">"Do enc handshake OK."</span>,<span class="string">"id"</span>,c.id)</span><br><span class="line"></span><br><span class="line">	<span class="comment">/////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="comment">// Run the protocol handshake</span></span><br><span class="line">	c.our = *srv.ourHandshake</span><br><span class="line">	c.our.RandNonce = ourRand</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> c.our.Sign, err = boe.BoeGetInstance().HW_Auth_Sign(theirRand); err!=<span class="literal">nil</span>&#123;</span><br><span class="line">		clog.Debug(<span class="string">"Do hardware sign  error."</span>,<span class="string">"err"</span>,err)</span><br><span class="line">		<span class="comment">//todo close and return</span></span><br><span class="line">	&#125;</span><br><span class="line">	clog.Debug(<span class="string">"Hardware has signed remote rand."</span>,<span class="string">"rand"</span>,theirRand,<span class="string">"sign"</span>,c.our.Sign)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	their, err := c.doProtoHandshake(&amp;c.our)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		clog.Debug(<span class="string">"Failed proto handshake"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		c.<span class="built_in">close</span>(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> their.ID != c.id &#123;</span><br><span class="line">		clog.Error(<span class="string">"Wrong devp2p handshake identity"</span>, <span class="string">"err"</span>, their.ID)</span><br><span class="line">		c.<span class="built_in">close</span>(DiscUnexpectedIdentity)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	c.their = *their</span><br><span class="line">	clog.Debug(<span class="string">"Do protocol handshake OK."</span>,<span class="string">"id"</span>,c.id)</span><br><span class="line">	clog.Trace(<span class="string">"Do protocol handshake."</span>,<span class="string">"our"</span>,c.our,<span class="string">"their"</span>,c.their)</span><br><span class="line"></span><br><span class="line">	<span class="comment">/////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	isRemoteBoot := <span class="literal">false</span></span><br><span class="line">	hdtab := srv.getHdtab()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, n := <span class="keyword">range</span> srv.BootstrapNodes &#123;</span><br><span class="line">		<span class="keyword">if</span> c.id == n.ID &#123;</span><br><span class="line">			clog.Info(<span class="string">"Remote node is boot."</span>,<span class="string">"id"</span>,c.id)</span><br><span class="line">			c.isboe = <span class="literal">true</span></span><br><span class="line">			isRemoteBoot = <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> !c.isboe &#123;</span><br><span class="line">		remoteCoinbase := strings.ToLower(c.their.CoinBase.String())</span><br><span class="line">		clog.Trace(<span class="string">"Remote coinbase"</span>,<span class="string">"address"</span>,remoteCoinbase)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(hdtab) == <span class="number">0</span> &#123;</span><br><span class="line">			clog.Debug(<span class="string">"Do not ready for connected."</span>,<span class="string">"id"</span>,c.id.TerminalString())</span><br><span class="line">			c.<span class="built_in">close</span>(DiscHwSignError)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> _,hw := <span class="keyword">range</span> hdtab &#123;</span><br><span class="line">			<span class="keyword">if</span> hw.Adr == remoteCoinbase &#123;</span><br><span class="line">				clog.Debug(<span class="string">"Input to boe paras"</span>,<span class="string">"rand"</span>,c.our.RandNonce,<span class="string">"hid"</span>,hw.Hid,<span class="string">"cid"</span>,hw.Cid,<span class="string">"sign"</span>,c.their.Sign)</span><br><span class="line">				c.isboe = boe.BoeGetInstance().HW_Auth_Verify(c.our.RandNonce,hw.Hid,hw.Cid,c.their.Sign)</span><br><span class="line">				clog.Info(<span class="string">"Boe verify the remote."</span>,<span class="string">"id"</span>,c.id.TerminalString(),<span class="string">"result"</span>,c.isboe)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	clog.Info(<span class="string">"Verify the remote hardware."</span>,<span class="string">"id"</span>,c.id.TerminalString(),<span class="string">"result"</span>,c.isboe)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> !srv.TestMode &amp;&amp; srv.localType == discover.SynNode  &amp;&amp; c.isboe == <span class="literal">false</span> &#123;</span><br><span class="line">		clog.Debug(<span class="string">"SynNode peer SynNode, dorp peer."</span>)</span><br><span class="line">		c.<span class="built_in">close</span>(DiscHwSignError)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> isRemoteBoot || srv.localType == discover.BootNode &#123;</span><br><span class="line"></span><br><span class="line">		ourHdtable := &amp;hardwareTable&#123;Version:<span class="number">0x00</span>,Hdtab:hdtab&#125;</span><br><span class="line">		theirHdtable, err := c.doHardwareTable(ourHdtable)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			clog.Debug(<span class="string">"Failed hardware table handshake"</span>, <span class="string">"reason"</span>, err)</span><br><span class="line">			c.<span class="built_in">close</span>(err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		clog.Trace(<span class="string">"Exchange hardware table."</span>,<span class="string">"our"</span>,ourHdtable, <span class="string">"their"</span>,theirHdtable)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> isRemoteBoot&#123;</span><br><span class="line">			srv.updateHdtab(theirHdtable.Hdtab,<span class="literal">true</span>)</span><br><span class="line">			clog.Trace(<span class="string">"Update hardware table from boot."</span>,<span class="string">"srv hdtab"</span>, srv.getHdtab() )</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">	<span class="keyword">if</span> err := srv.checkpoint(c, srv.addpeer); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		clog.Warn(<span class="string">"Rejected peer"</span>, <span class="string">"err"</span>, err, <span class="string">"dialDest"</span>,dialDest)</span><br><span class="line">		c.<span class="built_in">close</span>(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>当接收到的连接发送到stage通道后，那么通道的处理是在srv.run进行处理的，也就是prm.server.Start()最后一步代码srv.run。其中分支case c := &lt;-srv.addpeer:中的go srv.runPeer(p)方法开启了对连接的心跳检测，同时进行了节点广播。<br>上边分析的都是本节点作为服务监听者被动接收建立的连接，而节点主动连接其他节点的动作是在也是在srv.run(dialer)中进行的，其参数dialer包含有对方节点连接信息，包括boot节点地址。</p>
+<ol>
+<li>首先创建了三个任务方法delTask、startTasks和scheduleTasks，同时创建了两个数组，一个是保存正在运行的task，一个缓存将被运行的task。删除的时候只能从正在运行的数组中删除，运行的时候最大运行个数不能超过maxActiveDialTasks=16个，其中scheduleTasks用来创建待运行的task，主动连接的节点分boot节点、静态节点和动态节点，其中静态节点就是手动配置的，动态节点是程序KAD算法计算得到的。</li>
+<li>在startTasks方法中通过t.Do(srv)进行节点的连接操作，最终还是会执行srv.SetupConn方法，也就是上边分析的建立连接的过程。</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">run</span><span class="params">(dialstate dialer)</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> srv.loopWG.Done()</span><br><span class="line">	<span class="keyword">var</span> (</span><br><span class="line">		peers        = <span class="built_in">make</span>(<span class="keyword">map</span>[discover.NodeID]*PeerBase)</span><br><span class="line">		taskdone     = <span class="built_in">make</span>(<span class="keyword">chan</span> task, maxActiveDialTasks)</span><br><span class="line">		runningTasks []task</span><br><span class="line">		queuedTasks  []task <span class="comment">// tasks that can't run yet</span></span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// removes t from runningTasks</span></span><br><span class="line">	delTask := <span class="function"><span class="keyword">func</span><span class="params">(t task)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="keyword">range</span> runningTasks &#123;</span><br><span class="line">			<span class="keyword">if</span> runningTasks[i] == t &#123;</span><br><span class="line">				runningTasks = <span class="built_in">append</span>(runningTasks[:i], runningTasks[i+<span class="number">1</span>:]...)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// starts until max number of active tasks is satisfied</span></span><br><span class="line">	startTasks := <span class="function"><span class="keyword">func</span><span class="params">(ts []task)</span> <span class="params">(rest []task)</span></span> &#123;</span><br><span class="line">		i := <span class="number">0</span></span><br><span class="line">		<span class="keyword">for</span> ; <span class="built_in">len</span>(runningTasks) &lt; maxActiveDialTasks &amp;&amp; i &lt; <span class="built_in">len</span>(ts); i++ &#123;</span><br><span class="line">			t := ts[i]</span><br><span class="line">			<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">				<span class="comment">//log.Error("###### start task.","task",t)</span></span><br><span class="line">				<span class="comment">//time.Sleep(time.Second*time.Duration(rand.Intn(3)))</span></span><br><span class="line">				t.Do(srv)</span><br><span class="line">				<span class="comment">//time.Sleep(time.Second*time.Duration(rand.Intn(3)))</span></span><br><span class="line">				<span class="comment">//log.Error("###### task done.")</span></span><br><span class="line">				taskdone &lt;- t</span><br><span class="line">				&#125;()</span><br><span class="line">			runningTasks = <span class="built_in">append</span>(runningTasks, t)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> ts[i:]</span><br><span class="line">	&#125;</span><br><span class="line">	scheduleTasks := <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="comment">// Start from queue first.</span></span><br><span class="line">		queuedTasks = <span class="built_in">append</span>(queuedTasks[:<span class="number">0</span>], startTasks(queuedTasks)...)</span><br><span class="line">		<span class="comment">// Query dialer for new tasks and start as many as possible now.</span></span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(runningTasks) &lt; maxActiveDialTasks &#123;</span><br><span class="line">			<span class="keyword">var</span> nt []task</span><br><span class="line">			<span class="keyword">if</span> srv.localType == discover.BootNode &#123;</span><br><span class="line">				nt = <span class="built_in">append</span>(nt, &amp;waitExpireTask&#123;time.Second&#125;)</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				nt = dialstate.newTasks(<span class="built_in">len</span>(runningTasks)+<span class="built_in">len</span>(queuedTasks), peers, time.Now())</span><br><span class="line">			&#125;</span><br><span class="line">			queuedTasks = <span class="built_in">append</span>(queuedTasks, startTasks(nt)...)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">running:</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		scheduleTasks()</span><br><span class="line"></span><br><span class="line">		srv.delHist.expire(time.Now())</span><br><span class="line">		log.Trace(<span class="string">"###### Server running: expire node from history."</span>,<span class="string">"DelHist"</span>,srv.delHist.Len())</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-srv.quit:</span><br><span class="line">			<span class="comment">// The server was stopped. Run the cleanup logic.</span></span><br><span class="line">			<span class="keyword">break</span> running</span><br><span class="line">		<span class="keyword">case</span> n := &lt;-srv.addstatic:</span><br><span class="line">			<span class="comment">// This channel is used by AddPeer to add to the</span></span><br><span class="line">			<span class="comment">// ephemeral static peer list. Add it to the dialer,</span></span><br><span class="line">			<span class="comment">// it will keep the node connected.</span></span><br><span class="line">			log.Debug(<span class="string">"Adding static node"</span>, <span class="string">"node"</span>, n)</span><br><span class="line">			dialstate.addStatic(n)</span><br><span class="line">		<span class="keyword">case</span> n := &lt;-srv.removestatic:</span><br><span class="line">			<span class="comment">// This channel is used by RemovePeer to send a</span></span><br><span class="line">			<span class="comment">// disconnect request to a peer and begin the</span></span><br><span class="line">			<span class="comment">// stop keeping the node connected</span></span><br><span class="line">			log.Debug(<span class="string">"Removing static node"</span>, <span class="string">"node"</span>, n)</span><br><span class="line">			dialstate.removeStatic(n)</span><br><span class="line">			<span class="keyword">if</span> p, ok := peers[n.ID]; ok &#123;</span><br><span class="line">				p.Disconnect(DiscRequested)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> op := &lt;-srv.peerOp:</span><br><span class="line">			<span class="comment">// This channel is used by Peers and PeerCount.</span></span><br><span class="line">			op(peers)</span><br><span class="line">			srv.peerOpDone &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		<span class="keyword">case</span> t := &lt;-taskdone:</span><br><span class="line">			<span class="comment">// A task got done. Tell dialstate about it so it</span></span><br><span class="line">			<span class="comment">// can update its state and remove it from the active</span></span><br><span class="line">			<span class="comment">// tasks list.</span></span><br><span class="line">			<span class="comment">//log.Error("###### Dial task done", "task", t)</span></span><br><span class="line">			dialstate.taskDone(t, time.Now())</span><br><span class="line">			delTask(t)</span><br><span class="line">		<span class="keyword">case</span> c := &lt;-srv.posthandshake:</span><br><span class="line">			<span class="comment">// A connection has passed the encryption handshake so</span></span><br><span class="line">			<span class="comment">// the remote identity is known (but hasn't been verified yet).</span></span><br><span class="line">			<span class="comment">// <span class="doctag">TODO:</span> track in-progress inbound node IDs (pre-Peer) to avoid dialing them.</span></span><br><span class="line">			<span class="keyword">select</span> &#123;</span><br><span class="line">			<span class="keyword">case</span> c.cont &lt;- srv.encHandshakeChecks(peers, c):</span><br><span class="line">			<span class="keyword">case</span> &lt;-srv.quit:</span><br><span class="line">				<span class="keyword">break</span> running</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> c := &lt;-srv.addpeer:</span><br><span class="line">			<span class="comment">// At this point the connection is past the protocol handshake.</span></span><br><span class="line">			<span class="comment">// Its capabilities are known and the remote identity is verified.</span></span><br><span class="line">			err := srv.protoHandshakeChecks(peers, c)</span><br><span class="line">			<span class="keyword">if</span> err == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="comment">// The handshakes are done and it passed all checks.</span></span><br><span class="line">				p := newPeerBase(c, srv.Protocols[<span class="number">0</span>], srv.ntab)</span><br><span class="line">				<span class="comment">// If message events are enabled, pass the peerFeed</span></span><br><span class="line">				<span class="comment">// to the peer</span></span><br><span class="line">				<span class="keyword">if</span> srv.EnableMsgEvents &#123;</span><br><span class="line">					p.events = srv.peerEvent</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				p.beatStart  = time.Now()</span><br><span class="line">				srv.setPeerInitType(p, c.isboe)</span><br><span class="line">				<span class="comment">//////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">				log.Debug(<span class="string">"Server add peer base to run."</span>, <span class="string">"id"</span>, c.id, <span class="string">"raddr"</span>, c.fd.RemoteAddr())</span><br><span class="line">				peers[c.id] = p</span><br><span class="line">				<span class="keyword">go</span> srv.runPeer(p)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// The dialer logic relies on the assumption that</span></span><br><span class="line">			<span class="comment">// dial tasks complete after the peer has been added or</span></span><br><span class="line">			<span class="comment">// discarded. Unblock the task last.</span></span><br><span class="line">			<span class="keyword">select</span> &#123;</span><br><span class="line">			<span class="keyword">case</span> c.cont &lt;- err:</span><br><span class="line">			<span class="keyword">case</span> &lt;-srv.quit:</span><br><span class="line">				<span class="keyword">break</span> running</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> pd := &lt;-srv.delpeer:</span><br><span class="line">			<span class="comment">// A peer disconnected.</span></span><br><span class="line">			nid := pd.ID()</span><br><span class="line">			d := common.PrettyDuration(mclock.Now() - pd.created)</span><br><span class="line">			pd.log.Info(<span class="string">"Removing p2p peer"</span>, <span class="string">"duration"</span>, d)</span><br><span class="line">			pd.log.Debug(<span class="string">"Removing p2p peer"</span>, <span class="string">"duration"</span>, d, <span class="string">"req"</span>, pd.requested, <span class="string">"err"</span>, pd.err)</span><br><span class="line">			<span class="built_in">delete</span>(peers, nid)</span><br><span class="line"></span><br><span class="line">			shortid := fmt.Sprintf(<span class="string">"%x"</span>, nid[<span class="number">0</span>:<span class="number">8</span>])</span><br><span class="line">			<span class="keyword">if</span> err := PeerMgrInst().unregister(shortid); err != <span class="literal">nil</span> &#123;</span><br><span class="line">				log.Debug(<span class="string">"Peer removal failed"</span>, <span class="string">"peer"</span>, shortid, <span class="string">"err"</span>, err)</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			srv.ntab.RemoveNode(nid)</span><br><span class="line"></span><br><span class="line">			expire := time.Second*time.Duration(<span class="number">10</span>+rand.Intn(<span class="number">20</span>))</span><br><span class="line">			srv.delHist.add(nid, time.Now().Add(expire))</span><br><span class="line">			log.Debug(<span class="string">"Server running: add node to history."</span>,<span class="string">"expire"</span>,expire)</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	log.Debug(<span class="string">"P2P networking is spinning down"</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Terminate discovery. If there is a running lookup it will terminate soon.</span></span><br><span class="line">	<span class="keyword">if</span> srv.ntab != <span class="literal">nil</span> &#123;</span><br><span class="line">		srv.ntab.Close()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Disconnect all peers.</span></span><br><span class="line">	<span class="keyword">for</span> _, p := <span class="keyword">range</span> peers &#123;</span><br><span class="line">		p.Disconnect(DiscQuitting)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Wait for peers to shut down. Pending connections and tasks are</span></span><br><span class="line">	<span class="comment">// not handled here and will terminate soon-ish because srv.quit</span></span><br><span class="line">	<span class="comment">// is closed.</span></span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">len</span>(peers) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		p := &lt;-srv.delpeer</span><br><span class="line">		p.log.Trace(<span class="string">"&lt;-delpeer (spindown)"</span>, <span class="string">"remainingTasks"</span>, <span class="built_in">len</span>(runningTasks))</span><br><span class="line">		<span class="built_in">delete</span>(peers, p.ID())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>这块代码挺复杂的，各种go routine和chan的使用。😂😂😂😂😂😂😂😂</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-交易入池（二）/" rel="next" title="GO-HPB源码解读--交易入池（二）">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--交易入池（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-PRC服务启动/" rel="prev" title="GO-HPB源码解读--PRC服务启动">
+                GO-HPB源码解读--PRC服务启动 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–P2P启动"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–P2P启动</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

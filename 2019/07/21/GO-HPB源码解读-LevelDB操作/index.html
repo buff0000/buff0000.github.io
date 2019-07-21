@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="java,thread,">
+  <meta name="keywords" content="HPB,区块链,">
 
 
 
@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="图片测试">
-<meta name="keywords" content="java,thread">
+<meta name="description" content="#GO-HPB源码解读–LevelDB操作HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
+<meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexotest">
-<meta property="og:url" content="http://yoursite.com/2019/07/21/hexotest/index.html">
+<meta property="og:title" content="GO-HPB源码解读--LevelDB操作">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-LevelDB操作/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="图片测试">
+<meta property="og:description" content="#GO-HPB源码解读–LevelDB操作HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/statedb.png">
-<meta property="og:updated_time" content="2019-07-21T02:12:24.427Z">
+<meta property="og:updated_time" content="2019-07-21T05:51:10.453Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hexotest">
-<meta name="twitter:description" content="图片测试">
-<meta name="twitter:image" content="http://yoursite.com/images/statedb.png">
+<meta name="twitter:title" content="GO-HPB源码解读--LevelDB操作">
+<meta name="twitter:description" content="#GO-HPB源码解读–LevelDB操作HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/07/21/hexotest/">
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-LevelDB操作/">
 
 
 
 
 
-  <title>hexotest | Buff</title>
+  <title>GO-HPB源码解读--LevelDB操作 | Buff</title>
   
 
 
@@ -265,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/hexotest/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-LevelDB操作/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -282,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">hexotest</h1>
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--LevelDB操作</h1>
         
 
         <div class="post-meta">
@@ -294,7 +292,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T09:45:03+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:39:30+08:00">
                 2019-07-21
               </time>
             
@@ -317,8 +315,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
                   </a>
                 </span>
 
@@ -354,7 +352,32 @@
       
 
       
-        <p>图片测试<br><img src="/images/statedb.png" alt></p>
+        <h2 id="GO-HPB源码解读–LevelDB操作"><a href="#GO-HPB源码解读–LevelDB操作" class="headerlink" title="#GO-HPB源码解读–LevelDB操作"></a>#GO-HPB源码解读–LevelDB操作</h2><p>HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&lt;k, v&gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。</p>
+<a id="more"></a>
+
+<p>···<br>    voteResultKey   = []byte(“vote-result-key”)</p>
+<pre><code>headHeaderKey = []byte(&quot;LastHeader&quot;)
+headBlockKey  = []byte(&quot;LastBlock&quot;)
+headFastKey   = []byte(&quot;LastFast&quot;)
+
+// Data item prefixes (use single byte to avoid mixing data types, avoid `i`).
+headerPrefix        = []byte(&quot;h&quot;) // headerPrefix + num (uint64 big endian) + hash -&gt; header
+tdSuffix            = []byte(&quot;t&quot;) // headerPrefix + num (uint64 big endian) + hash + tdSuffix -&gt; td
+numSuffix           = []byte(&quot;n&quot;) // headerPrefix + num (uint64 big endian) + numSuffix -&gt; hash
+blockHashPrefix     = []byte(&quot;H&quot;) // blockHashPrefix + hash -&gt; num (uint64 big endian)
+bodyPrefix          = []byte(&quot;b&quot;) // bodyPrefix + num (uint64 big endian) + hash -&gt; block body
+blockReceiptsPrefix = []byte(&quot;r&quot;) // blockReceiptsPrefix + num (uint64 big endian) + hash -&gt; block receipts
+lookupPrefix        = []byte(&quot;l&quot;) // lookupPrefix + hash -&gt; transaction/receipt lookup metadata
+bloomBitsPrefix     = []byte(&quot;B&quot;) // bloomBitsPrefix + bit (uint16 big endian) + section (uint64 big endian) + hash -&gt; bloom bits
+randomPrefix        = []byte(&quot;random&quot;) // randomPrefix + num (uint64 big endian) + hash -&gt; header
+
+preimagePrefix = &quot;secure-key-&quot;              // preimagePrefix + hash -&gt; preimage
+configPrefix   = []byte(&quot;hpb-config-&quot;) // config prefix for the db
+BloomBitsIndexPrefix = []byte(&quot;iB&quot;) // BloomBitsIndexPrefix is the data table of a chain indexer to track its progress
+oldReceiptsPrefix = []byte(&quot;receipts-&quot;)
+oldTxMetaSuffix   = []byte{0x01}</code></pre><p>  这里对主要数据的k前缀整理下,其中hash指的是区块的hash，等于header中的hash，代码中称canonical hash。num是指区块的高度或者位置，表示第几个区块<br>  key|Value<br>  -|-<br>  h+num+hash|header<br>  h+num+hash+t|td<br>h+num+n  |hash<br>H+hash  |  num<br>b+num+hash  |block body<br>r+num+hash  |block receipts<br>l+hash  |  transaction/receipt lookup metadata<br>B+bit+section+hash  |bloom bits</p>
+<h2 id="database-util-go文件大部分内容是write和get方法，以前对前缀的拼接"><a href="#database-util-go文件大部分内容是write和get方法，以前对前缀的拼接" class="headerlink" title="database_util.go文件大部分内容是write和get方法，以前对前缀的拼接"></a>database_util.go文件大部分内容是write和get方法，以前对前缀的拼接</h2><p>  以下内容转自<a href="https://blog.csdn.net/weixin_39842528/article/details/81000164" target="_blank" rel="noopener">网络</a>，作个备注</p>
+<p>StateObject:<br>        是一个账号(地址)的状态信息<br>    对于普通账号，这个对象保存了balance, nonce等信息<br>    对于智能合约账号，还额外保留了智能合约的状态，这个状态就是智能合约里的定义的各种变量的值。以太坊虚拟机的变量是以&lt;k, v&gt;存储的，所以这个状态就是大量&lt;k, v&gt;对象。</p>
 
       
     </div>
@@ -372,9 +395,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"># java</a>
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
           
-            <a href="/tags/thread/" rel="tag"># thread</a>
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
           
         </div>
       
@@ -387,8 +410,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/20/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2019/07/21/GO-HPB源码解读-多帐号解锁/" rel="next" title="GO-HPB源码解读--多帐号解锁">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--多帐号解锁
               </a>
             
           </div>
@@ -397,8 +420,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/21/GO-HPB源码解读-创建帐号/" rel="prev" title="GO-HPB源码解读--创建帐号">
-                GO-HPB源码解读--创建帐号 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/07/21/GO-HPB源码解读-挖矿流程（一）/" rel="prev" title="GO-HPB源码解读--挖矿流程（一）">
+                GO-HPB源码解读--挖矿流程（一） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -451,8 +474,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -469,7 +501,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -514,6 +546,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–LevelDB操作"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–LevelDB操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#database-util-go文件大部分内容是write和get方法，以前对前缀的拼接"><span class="nav-number">2.</span> <span class="nav-text">database_util.go文件大部分内容是write和get方法，以前对前缀的拼接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

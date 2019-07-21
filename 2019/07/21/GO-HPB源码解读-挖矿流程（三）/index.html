@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HPB,区块链,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#GO-HPB源码解读–挖矿流程（三）在挖矿流程（三）的最后，看到在go self.mine(work, self.quitCurrentOp)中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程 1234567891011121314151617181920// Work is the workers current enviro">
+<meta name="keywords" content="HPB,区块链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO-HPB源码解读--挖矿流程（三）">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（三）/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="#GO-HPB源码解读–挖矿流程（三）在挖矿流程（三）的最后，看到在go self.mine(work, self.quitCurrentOp)中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程 1234567891011121314151617181920// Work is the workers current enviro">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-21T05:49:22.084Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO-HPB源码解读--挖矿流程（三）">
+<meta name="twitter:description" content="#GO-HPB源码解读–挖矿流程（三）在挖矿流程（三）的最后，看到在go self.mine(work, self.quitCurrentOp)中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程 1234567891011121314151617181920// Work is the workers current enviro">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（三）/">
+
+
+
+
+
+  <title>GO-HPB源码解读--挖矿流程（三） | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--挖矿流程（三）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:40:16+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="GO-HPB源码解读–挖矿流程（三）"><a href="#GO-HPB源码解读–挖矿流程（三）" class="headerlink" title="#GO-HPB源码解读–挖矿流程（三）"></a>#GO-HPB源码解读–挖矿流程（三）</h2><p>在挖矿流程（三）的最后，看到在<code>go self.mine(work, self.quitCurrentOp)</code>中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Work is the workers current environment and holds</span></span><br><span class="line"><span class="comment">// all of the current state information</span></span><br><span class="line"><span class="keyword">type</span> Work <span class="keyword">struct</span> &#123;</span><br><span class="line">	config *config.ChainConfig</span><br><span class="line">	signer types.Signer</span><br><span class="line"></span><br><span class="line">	state     *state.StateDB <span class="comment">// apply state changes here</span></span><br><span class="line">	ancestors *set.Set       <span class="comment">// ancestor set (used for checking uncle parent validity)</span></span><br><span class="line">	family    *set.Set       <span class="comment">// family set (used for checking uncle invalidity)</span></span><br><span class="line">	uncles    *set.Set       <span class="comment">// uncle set</span></span><br><span class="line">	tcount    <span class="keyword">int</span>            <span class="comment">// tx count in cycle</span></span><br><span class="line"></span><br><span class="line">	Block *types.Block <span class="comment">// the new block</span></span><br><span class="line"></span><br><span class="line">	header   *types.Header</span><br><span class="line">	txs      []*types.Transaction</span><br><span class="line">	receipts []*types.Receipt</span><br><span class="line"></span><br><span class="line">	createdAt time.Time</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config</td>
+<td>*config.ChainConfig</td>
+<td>chain的配置参数</td>
+<td></td>
+</tr>
+<tr>
+<td>signer</td>
+<td>types.Signer</td>
+<td>签名</td>
+<td></td>
+</tr>
+<tr>
+<td>state</td>
+<td>*state.StateDB</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ancestors</td>
+<td>*set.Set</td>
+<td>祖先哈希集合，也就是最近的7个区块的哈希，</td>
+<td></td>
+</tr>
+<tr>
+<td>family</td>
+<td>*set.Set</td>
+<td>家族哈希集合，也就是最近的7个区块的哈希以及每个区块的叔区块集合的哈希</td>
+<td></td>
+</tr>
+<tr>
+<td>uncles</td>
+<td>*set.Set</td>
+<td>叔块集合</td>
+<td></td>
+</tr>
+<tr>
+<td>tcount</td>
+<td>int</td>
+<td>交易周期内的交易数量</td>
+<td></td>
+</tr>
+<tr>
+<td>Block</td>
+<td>*types.Block</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>header</td>
+<td>*types.Header</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>txs</td>
+<td>[]*types.Transaction</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>receipts</td>
+<td>[]*types.Receipt</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>time.Time</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>startNewMinerRound()方法主要是创建了一个work并push到workch通道中，大至流程是：</p>
+<ol>
+<li>确定区块的时间戳，因为上一区块可能来自节点同步，所以时间可能存在差异，这里确保了两个点，一是新块的时间一定要比上一区块的时间大，至少1；二是新块的时间和自己系统时间差不要超过1，也就是说计算出来的新块时间戳比当前时间加1s还大，那就只能等一会儿再执行了。比如当前时间是1，新区时间戳是8，那么就需要等7s了。</li>
+<li>组织新块的header</li>
+<li>初始化当前work对象</li>
+<li>把appending的交易打包进来</li>
+<li>使用共识引擎组装成一个完整的区块</li>
+<li>提交挖矿任务work<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(self *worker)</span> <span class="title">startNewMinerRound</span><span class="params">()</span></span> &#123;</span><br><span class="line">	self.mu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> self.mu.Unlock()</span><br><span class="line">	self.uncleMu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> self.uncleMu.Unlock()</span><br><span class="line">	self.currentMu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> self.currentMu.Unlock()</span><br><span class="line"></span><br><span class="line">	tstart := time.Now()</span><br><span class="line">	parent := self.chain.CurrentBlock()</span><br><span class="line"></span><br><span class="line">	tstamp := tstart.Unix()</span><br><span class="line">	<span class="keyword">if</span> parent.Time().Cmp(<span class="built_in">new</span>(big.Int).SetInt64(tstamp)) &gt;= <span class="number">0</span> &#123;</span><br><span class="line">		tstamp = parent.Time().Int64() + <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// this will ensure we're not going off too far in the future</span></span><br><span class="line">	<span class="keyword">if</span> now := time.Now().Unix(); tstamp &gt; now+<span class="number">1</span> &#123;</span><br><span class="line">		wait := time.Duration(tstamp-now) * time.Second</span><br><span class="line">		log.Info(<span class="string">"Mining too far in the future"</span>, <span class="string">"wait"</span>, common.PrettyDuration(wait))</span><br><span class="line">		time.Sleep(wait)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	num := parent.Number()</span><br><span class="line">	header := &amp;types.Header&#123;</span><br><span class="line">		ParentHash: parent.Hash(),</span><br><span class="line">		Number:     num.Add(num, common.Big1),</span><br><span class="line">		GasLimit:   bc.CalcGasLimit(parent),</span><br><span class="line">		GasUsed:    <span class="built_in">new</span>(big.Int),</span><br><span class="line">		Extra:      self.extra,</span><br><span class="line">		Time:       big.NewInt(tstamp),</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Only set the coinbase if we are mining (avoid spurious block rewards)</span></span><br><span class="line">	<span class="keyword">if</span> atomic.LoadInt32(&amp;self.mining) == <span class="number">1</span> &#123;</span><br><span class="line">		header.Coinbase = self.coinbase</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pstate, _ := self.chain.StateAt(parent.Root())</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := self.engine.PrepareBlockHeader(self.chain, header,pstate); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to prepare header for mining"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	err := self.makeCurrent(parent, header)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to create mining context"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Create the current work task and check any fork transitions needed</span></span><br><span class="line">	work := self.current</span><br><span class="line">	<span class="comment">//if self.config.DAOForkSupport &amp;&amp; self.config.DAOForkBlock != nil &amp;&amp; self.config.DAOForkBlock.Cmp(header.Number) == 0 &#123;</span></span><br><span class="line">	<span class="comment">//	misc.ApplyDAOHardFork(work.state)</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	pending, err := txpool.GetTxPool().Pending()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to fetch pending transactions"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//log.Error("----read tx from pending is ", "number is", len(pending))</span></span><br><span class="line">	txs := types.NewTransactionsByPriceAndNonce(self.current.signer, pending)</span><br><span class="line">	work.commitTransactions(self.mux, txs, self.coinbase)</span><br><span class="line">	<span class="comment">// compute uncles for the new block.</span></span><br><span class="line">	<span class="keyword">var</span> (</span><br><span class="line">		uncles    []*types.Header</span><br><span class="line">		badUncles []common.Hash</span><br><span class="line">	)</span><br><span class="line">	<span class="keyword">for</span> hash, uncle := <span class="keyword">range</span> self.possibleUncles &#123;</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(uncles) == <span class="number">2</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> err := self.commitUncle(work, uncle.Header()); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Trace(<span class="string">"Bad uncle found and will be removed"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">			log.Trace(fmt.Sprint(uncle))</span><br><span class="line"></span><br><span class="line">			badUncles = <span class="built_in">append</span>(badUncles, hash)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			log.Debug(<span class="string">"Committing new uncle to block"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">			uncles = <span class="built_in">append</span>(uncles, uncle.Header())</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> _, hash := <span class="keyword">range</span> badUncles &#123;</span><br><span class="line">		<span class="built_in">delete</span>(self.possibleUncles, hash)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Create the new block to seal with the consensus engine</span></span><br><span class="line">	<span class="keyword">if</span> work.Block, err = self.engine.Finalize(self.chain, header, work.state, work.txs, uncles, work.receipts); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to finalize block for sealing"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// We only care about logging if we're actually mining.</span></span><br><span class="line">	<span class="keyword">if</span> atomic.LoadInt32(&amp;self.mining) == <span class="number">1</span> &#123;</span><br><span class="line">		log.Info(<span class="string">"Commit new mining work"</span>, <span class="string">"number"</span>, work.Block.Number(), <span class="string">"txs"</span>, work.tcount, <span class="string">"uncles"</span>, <span class="built_in">len</span>(uncles), <span class="string">"elapsed"</span>, common.PrettyDuration(time.Since(tstart)))</span><br><span class="line">		self.unconfirmed.Shift(work.Block.NumberU64() - <span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	self.push(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">makeCurrent(...)方法即初始化了一个work对象，之后会设置work的tcount、uncles等其他属性</span><br><span class="line"><span class="comment">// makeCurrent creates a new environment for the current cycle.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(self *worker)</span> <span class="title">makeCurrent</span><span class="params">(parent *types.Block, header *types.Header)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	state, err := self.chain.StateAt(parent.Root())</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	work := &amp;Work&#123;</span><br><span class="line">		config:    self.config,</span><br><span class="line">		signer:    types.NewBoeSigner(self.config.ChainId),</span><br><span class="line">		state:     state,</span><br><span class="line">		ancestors: set.New(),</span><br><span class="line">		family:    set.New(),</span><br><span class="line">		uncles:    set.New(),</span><br><span class="line">		header:    header,</span><br><span class="line">		createdAt: time.Now(),</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// when 08 is processed ancestors contain 07 (quick block)</span></span><br><span class="line">	<span class="keyword">for</span> _, ancestor := <span class="keyword">range</span> self.chain.GetBlocksFromHash(parent.Hash(), <span class="number">7</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> _, uncle := <span class="keyword">range</span> ancestor.Uncles() &#123;</span><br><span class="line">			work.family.Add(uncle.Hash())</span><br><span class="line">		&#125;</span><br><span class="line">		work.family.Add(ancestor.Hash())</span><br><span class="line">		work.ancestors.Add(ancestor.Hash())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Keep track of transactions which return errors so they can be removed</span></span><br><span class="line">	work.tcount = <span class="number">0</span></span><br><span class="line">	self.current = work</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-挖矿流程（二）/" rel="next" title="GO-HPB源码解读--挖矿流程（二）">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--挖矿流程（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-挖矿流程（四）/" rel="prev" title="GO-HPB源码解读--挖矿流程（四）">
+                GO-HPB源码解读--挖矿流程（四） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–挖矿流程（三）"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–挖矿流程（三）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

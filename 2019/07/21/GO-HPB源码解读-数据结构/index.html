@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HPB,区块链,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#GO-HPB源码解读–数据结构区块链本身就是通过特定的机制来生成和维护数据，使数据具有极高的稳定性和可靠性。所以了解区块链，首先要必须熟悉其数据结构，然后才能更好的理解数据运算机制也就是区块链的运行原理。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// Bloc">
+<meta name="keywords" content="HPB,区块链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO-HPB源码解读--数据结构">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-数据结构/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="#GO-HPB源码解读–数据结构区块链本身就是通过特定的机制来生成和维护数据，使数据具有极高的稳定性和可靠性。所以了解区块链，首先要必须熟悉其数据结构，然后才能更好的理解数据运算机制也就是区块链的运行原理。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// Bloc">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-21T05:43:43.839Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO-HPB源码解读--数据结构">
+<meta name="twitter:description" content="#GO-HPB源码解读–数据结构区块链本身就是通过特定的机制来生成和维护数据，使数据具有极高的稳定性和可靠性。所以了解区块链，首先要必须熟悉其数据结构，然后才能更好的理解数据运算机制也就是区块链的运行原理。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// Bloc">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-数据结构/">
+
+
+
+
+
+  <title>GO-HPB源码解读--数据结构 | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-数据结构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--数据结构</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:39:01+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="GO-HPB源码解读–数据结构"><a href="#GO-HPB源码解读–数据结构" class="headerlink" title="#GO-HPB源码解读–数据结构"></a>#GO-HPB源码解读–数据结构</h2><p>区块链本身就是通过特定的机制来生成和维护数据，使数据具有极高的稳定性和可靠性。所以了解区块链，首先要必须熟悉其数据结构，然后才能更好的理解数据运算机制也就是区块链的运行原理。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BlockChain represents the canonical chain given a database with a genesis</span></span><br><span class="line"><span class="comment">// block. The Blockchain manages chain imports, reverts, chain reorganisations.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Importing blocks in to the block chain happens according to the set of rules</span></span><br><span class="line"><span class="comment">// defined by the two stage Validator. Processing of blocks is done using the</span></span><br><span class="line"><span class="comment">// Processor which processes the included transaction. The validation of the state</span></span><br><span class="line"><span class="comment">// is done in the second part of the Validator. Failing results in aborting of</span></span><br><span class="line"><span class="comment">// the import.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The BlockChain also helps in returning blocks from **any** chain included</span></span><br><span class="line"><span class="comment">// in the database as well as blocks that represents the canonical chain. It's</span></span><br><span class="line"><span class="comment">// important to note that GetBlock can return any block and does not need to be</span></span><br><span class="line"><span class="comment">// included in the canonical one where as GetBlockByNumber always represents the</span></span><br><span class="line"><span class="comment">// canonical chain.</span></span><br><span class="line"></span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> BlockChain <span class="keyword">struct</span> &#123;</span><br><span class="line">	config *config.ChainConfig <span class="comment">// chain &amp; network configuration</span></span><br><span class="line">	hc            *HeaderChain</span><br><span class="line">	chainDb       hpbdb.Database</span><br><span class="line">	rmLogsFeed    sub.Feed</span><br><span class="line">	chainFeed     sub.Feed</span><br><span class="line">	chainSideFeed sub.Feed</span><br><span class="line">	chainHeadFeed sub.Feed</span><br><span class="line">	logsFeed      sub.Feed</span><br><span class="line">	scope         sub.SubscriptionScope</span><br><span class="line">	genesisBlock  *types.Block</span><br><span class="line">	mu               sync.RWMutex <span class="comment">// global mutex for locking chain operations</span></span><br><span class="line">	chainmu          sync.RWMutex <span class="comment">// blockchain insertion lock</span></span><br><span class="line">	procmu           sync.RWMutex <span class="comment">// block processor lock</span></span><br><span class="line">	checkpoint       <span class="keyword">int</span>          <span class="comment">// checkpoint counts towards the new checkpoint</span></span><br><span class="line">	currentBlock     *types.Block <span class="comment">// Current head of the block chain</span></span><br><span class="line">	currentFastBlock *types.Block <span class="comment">// Current head of the fast-sync chain (may be above the block chain!)</span></span><br><span class="line">	stateCache   state.Database <span class="comment">// State database to reuse between imports (contains state cache)</span></span><br><span class="line">	bodyCache    *lru.Cache     <span class="comment">// Cache for the most recent block bodies</span></span><br><span class="line">	bodyRLPCache *lru.Cache     <span class="comment">// Cache for the most recent block bodies in RLP encoded format</span></span><br><span class="line">	blockCache   *lru.Cache     <span class="comment">// Cache for the most recent entire blocks</span></span><br><span class="line">	futureBlocks *lru.Cache     <span class="comment">// future blocks are blocks added for later processing</span></span><br><span class="line">	quit    <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125; <span class="comment">// blockchain quit channel</span></span><br><span class="line">	running <span class="keyword">int32</span>         <span class="comment">// running must be called atomically</span></span><br><span class="line">	<span class="comment">// procInterrupt must be atomically called</span></span><br><span class="line">	procInterrupt <span class="keyword">int32</span>          <span class="comment">// interrupt signaler for block processing</span></span><br><span class="line">	wg            sync.WaitGroup <span class="comment">// chain processing wait group for shutting down</span></span><br><span class="line">	engine    consensus.Engine</span><br><span class="line">	processor Processor <span class="comment">// block processor interface</span></span><br><span class="line">	validator Validator <span class="comment">// block and state validator interface</span></span><br><span class="line">	badBlocks *lru.Cache <span class="comment">// Bad block cache</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config</td>
+<td>*config.ChainConfig</td>
+<td>定义了chainID和监控参数</td>
+<td></td>
+</tr>
+<tr>
+<td>hc</td>
+<td>*HeaderChain</td>
+<td>区块头组成的链</td>
+<td></td>
+</tr>
+<tr>
+<td>chainDb</td>
+<td>hpbdb.Database</td>
+<td>数据库</td>
+<td></td>
+</tr>
+<tr>
+<td>rmLogsFeed</td>
+<td>sub.Feed</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chainFeed</td>
+<td>sub.Feed</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chainSideFeed</td>
+<td>sub.Feed</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chainHeadFeed</td>
+<td>sub.Feed</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>logsFeed</td>
+<td>sub.Feed</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>scope</td>
+<td>sub.SubscriptionScope</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>genesisBlock</td>
+<td>*types.Block</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>mu</td>
+<td>sync.RWMutex</td>
+<td>区块链的全局锁</td>
+<td></td>
+</tr>
+<tr>
+<td>chainmu</td>
+<td>sync.RWMutex</td>
+<td>区块链插入锁</td>
+<td></td>
+</tr>
+<tr>
+<td>procmu</td>
+<td>sync.RWMutex</td>
+<td>区块处理的锁</td>
+<td></td>
+</tr>
+<tr>
+<td>checkpoint</td>
+<td>int</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>currentBlock</td>
+<td>*types.Block</td>
+<td>主链的头区块</td>
+<td></td>
+</tr>
+<tr>
+<td>currentFastBlock</td>
+<td>*types.Block</td>
+<td>快速同步模式下链的头区块，这种情况下可能比主链长</td>
+<td></td>
+</tr>
+<tr>
+<td>stateCache</td>
+<td>state.Database</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>bodyCache</td>
+<td>*lru.Cache</td>
+<td>最近区块体的缓存信息</td>
+<td></td>
+</tr>
+<tr>
+<td>bodyRLPCache</td>
+<td>*lru.Cache</td>
+<td>最近区块体的RLP格式的缓存信息</td>
+<td></td>
+</tr>
+<tr>
+<td>blockCache</td>
+<td>*lru.Cache</td>
+<td>最近区块的缓存</td>
+<td></td>
+</tr>
+<tr>
+<td>futureBlocks</td>
+<td>*lru.Cache</td>
+<td>将来等待上链的区块</td>
+<td></td>
+</tr>
+<tr>
+<td>quit</td>
+<td>chan struct{}</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>running</td>
+<td>int32</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>procInterrupt</td>
+<td>int32</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>wg</td>
+<td>sync.WaitGroup</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>engine</td>
+<td>consensus.Engine</td>
+<td>验证区块的引擎</td>
+<td></td>
+</tr>
+<tr>
+<td>processor</td>
+<td>Processor</td>
+<td>执行区块交易的接口</td>
+<td></td>
+</tr>
+<tr>
+<td>validator</td>
+<td>Validator</td>
+<td>验证区块和state有效性的接口</td>
+<td></td>
+</tr>
+<tr>
+<td>badBlocks</td>
+<td>*lru.Cache</td>
+<td>验证失败的区块缓存，来自DAO事件</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>关键的元素：</p>
+<ol>
+<li>db：连接到底层数据储存，即leveldb；</li>
+<li>hc：headerchain区块头链，由blockchain额外维护的另一条链，由于Header和Block的储存空间是有很大差别的，但同时Block的Hash值就是Header（RLP）的Hash值，所以维护一个headerchain可以用于快速延长链，验证通过后再下载blockchain，或者可以与blockchain进行相互验证；</li>
+<li>genesisBlock：创始区块；</li>
+<li>currentBlock：当前区块，blockchain中并不是储存链所有的block，而是通过currentBlock向前回溯直到genesisBlock，这样就构成了区块链。</li>
+<li>bodyCache、bodyRLPCache、blockCache、futureBlocks：区块链中的缓存结构，用于加快区块链的读取和构建；</li>
+<li>engine：是consensus模块中的接口，用来验证block的接口；</li>
+<li>processor：执行区块链交易的接口，收到一个新的区块时，要对区块中的所有交易执行一遍，一方面是验证，一方面是更新worldState；</li>
+<li>validator：验证数据有效性的接口</li>
+<li>futureBlocks：收到的区块时间大于当前头区块时间15s而小于30s的区块，可作为当前节点待处理的区块。</li>
+</ol>
+<p>下边是区块的数据结构</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Block represents an entire block in the Hpb blockchain.</span></span><br><span class="line"><span class="keyword">type</span> Block <span class="keyword">struct</span> &#123;</span><br><span class="line">	header       *Header</span><br><span class="line">	uncles       []*Header</span><br><span class="line">	transactions Transactions</span><br><span class="line"></span><br><span class="line">	<span class="comment">// caches</span></span><br><span class="line">	hash atomic.Value</span><br><span class="line">	size atomic.Value</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Td is used by package core to store the total difficulty</span></span><br><span class="line">	<span class="comment">// of the chain up to and including the block.</span></span><br><span class="line">	td *big.Int</span><br><span class="line"></span><br><span class="line">	<span class="comment">// These fields are used by package eth to track</span></span><br><span class="line">	<span class="comment">// inter-peer block relay.</span></span><br><span class="line">	ReceivedAt   time.Time</span><br><span class="line">	ReceivedFrom <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>header</td>
+<td>*Header</td>
+<td>当前区块头</td>
+<td></td>
+</tr>
+<tr>
+<td>uncles</td>
+<td>[]*Header</td>
+<td>叔区块，因出块速度快，导致分叉概率高，为了增加矿工挖矿积极性，对于分叉后的无用区块也进行打包，奖励矿工，那么这些无用区块就是叔区块。同时为了为了抵消整个Ethereum网络中那些计算能力特别强大的节点会对区块的产生有过大的影响力，防止这些节点破坏“去中心化”这个根本宗旨</td>
+<td></td>
+</tr>
+<tr>
+<td>transactions</td>
+<td>Transactions</td>
+<td>交易集合</td>
+<td></td>
+</tr>
+<tr>
+<td>hash</td>
+<td>atomic.Value</td>
+<td>区块的哈希，是从Header中缓存下来的，等于Header中的哈希值，是header中除nonce和mixDigest数据外的rlp的hash，这样相同的交易内容的相同该区块hash是一样，哪怕是由不同的节点创建出来的。区块的header和body是分开存储的，key都是前缀加上当前hash</td>
+<td></td>
+</tr>
+<tr>
+<td>size</td>
+<td>atomic.Value</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>td</td>
+<td>*big.Int</td>
+<td>td是totalDifficulty的缩写，表示从创世区块到当前区块的所有Difficulty之和，而每个区块的Difficulty是保存在header中的</td>
+<td></td>
+</tr>
+<tr>
+<td>ReceivedAt</td>
+<td>time.Time</td>
+<td>区块生成时间</td>
+<td></td>
+</tr>
+<tr>
+<td>ReceivedFrom</td>
+<td>interface{}</td>
+<td>区块生成来源</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Header represents a block header in the Hpb blockchain.</span></span><br><span class="line"><span class="keyword">type</span> Header <span class="keyword">struct</span> &#123;</span><br><span class="line">	ParentHash     common.Hash    <span class="string">`json:"parentHash"       `</span></span><br><span class="line">	UncleHash      common.Hash    <span class="string">`json:"sha3Uncles"       `</span></span><br><span class="line">	Coinbase       common.Address <span class="string">`json:"miner"            `</span></span><br><span class="line">	CandAddress    common.Address <span class="string">`json:"candAddress"      `</span></span><br><span class="line">	ComdAddress    common.Address <span class="string">`json:"comdAddress"      `</span></span><br><span class="line">	VoteIndex      *big.Int       <span class="string">`json:"voteIndex"        `</span></span><br><span class="line">	Root           common.Hash    <span class="string">`json:"stateRoot"        `</span></span><br><span class="line">	TxHash         common.Hash    <span class="string">`json:"transactionsRoot" `</span></span><br><span class="line">	ReceiptHash    common.Hash    <span class="string">`json:"receiptsRoot"     `</span></span><br><span class="line">	Bloom          Bloom          <span class="string">`json:"logsBloom"        `</span></span><br><span class="line">	Difficulty     *big.Int       <span class="string">`json:"difficulty"       `</span></span><br><span class="line">	Number         *big.Int       <span class="string">`json:"number"           `</span></span><br><span class="line">	GasLimit       *big.Int       <span class="string">`json:"gasLimit"         `</span></span><br><span class="line">	GasUsed        *big.Int       <span class="string">`json:"gasUsed"          `</span></span><br><span class="line">	Time           *big.Int       <span class="string">`json:"timestamp"        `</span></span><br><span class="line">	Extra          []<span class="keyword">byte</span>         <span class="string">`json:"extraData"        `</span></span><br><span class="line">	MixDigest      common.Hash    <span class="string">`json:"mixHash"          `</span></span><br><span class="line">	Nonce          BlockNonce     <span class="string">`json:"nonce"            `</span></span><br><span class="line">	HardwareRandom []<span class="keyword">byte</span>         <span class="string">`json:"hardwareRandom"   `</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ParentHash</td>
+<td>common.Hash</td>
+<td>父区块的hash</td>
+<td></td>
+</tr>
+<tr>
+<td>UncleHash</td>
+<td>common.Hash</td>
+<td>叔区块的hash</td>
+<td></td>
+</tr>
+<tr>
+<td>Coinbase</td>
+<td>common.Address</td>
+<td>挖矿生成该区块的地址，挖矿是由节点来完成的，每个full节点都个默认的Coinbase地址，用来接收挖矿（矿工费和打包区块的奖金）奖励</td>
+<td></td>
+</tr>
+<tr>
+<td>CandAddress</td>
+<td>common.Address</td>
+<td>？</td>
+<td></td>
+</tr>
+<tr>
+<td>ComdAddress</td>
+<td>common.Address</td>
+<td>？</td>
+<td></td>
+</tr>
+<tr>
+<td>VoteIndex</td>
+<td>*big.Int</td>
+<td>投票索引</td>
+<td></td>
+</tr>
+<tr>
+<td>Root</td>
+<td>common.Hash</td>
+<td>存储账户（合约帐户和用户帐户）状态的Merkle树的根节点的哈希,StateDB中的“state Trie”的根节点的RLP哈希值。Block中，每个账户以stateObject对象表示，账户以Address为唯一标示，其信息在相关交易(Transaction)的执行中被修改。所有账户对象可以逐个插入一个Merkle-PatricaTrie(MPT)结构里，形成“state Trie”。</td>
+<td></td>
+</tr>
+<tr>
+<td>TxHash</td>
+<td>common.Hash</td>
+<td>Block中交易树 “tx Trie”的根节点的RLP哈希值。Block的成员变量transactions中所有的tx对象，被逐个插入一个MPT结构，形成“tx Trie”。</td>
+<td></td>
+</tr>
+<tr>
+<td>ReceiptHash</td>
+<td>common.Hash</td>
+<td>“Receipt Trie”的根节点的RLP哈希值。Block的所有Transaction执行完后会生成一个Receipt数组，这个数组中的所有Receipt被逐个插入一个MPT结构中，最后形成”Receipt Trie”</td>
+<td></td>
+</tr>
+<tr>
+<td>Bloom</td>
+<td>Bloom</td>
+<td>Bloom过滤器(Filter)，用来快速判断一个参数Log对象是否存在于一组已知的Log集合中。</td>
+<td></td>
+</tr>
+<tr>
+<td>Difficulty</td>
+<td>*big.Int</td>
+<td>区块的难度。Block的Difficulty由共识算法基于parentBlock的Time和Difficulty计算得出，它会应用在区块的‘挖掘’阶段。</td>
+<td></td>
+</tr>
+<tr>
+<td>Number</td>
+<td>*big.Int</td>
+<td>区块的序号。Block的Number等于其父区块Number +1。</td>
+<td></td>
+</tr>
+<tr>
+<td>GasLimit</td>
+<td>*big.Int</td>
+<td>区块内所有Gas消耗的上限。该数值在区块创建时赋值，与父区块的数据相关。具体来说，根据父区块的GasUsed同创世块的GasLimit * 2/3的大小关系来计算得出。</td>
+<td></td>
+</tr>
+<tr>
+<td>GasUsed</td>
+<td>*big.Int</td>
+<td>区块内所有Transaction执行时所实际消耗的Gas总和。</td>
+<td></td>
+</tr>
+<tr>
+<td>Time</td>
+<td>*big.Int</td>
+<td>区块“应该”被创建的时间。由共识算法确定，一般来说，要么等于parentBlock.Time + 10s，要么等于当前系统时间。区块开始打包时间戳（调用Engine.Prepare函数的时候设置）</td>
+<td></td>
+</tr>
+<tr>
+<td>Extra</td>
+<td>[]byte</td>
+<td>扩展信息</td>
+<td></td>
+</tr>
+<tr>
+<td>MixDigest</td>
+<td>common.Hash</td>
+<td>区块头除去Nonce, mixDigest数据的hash+nonce的RLP的hash值</td>
+<td></td>
+</tr>
+<tr>
+<td>Nonce</td>
+<td>BlockNonce</td>
+<td>一个64bit的哈希数，它被用于POW等挖块算法，暴力碰撞得出,该哈希值与MixDigest哈希值一起证明该区块上已经进行了足够的计算，用于证明挖矿成功</td>
+<td></td>
+</tr>
+<tr>
+<td>HardwareRandom</td>
+<td>[]byte</td>
+<td>BOE硬件随机数</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Body <span class="keyword">struct</span> &#123;</span><br><span class="line">	Transactions []*Transaction</span><br><span class="line">	Uncles       []*Header</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transactions</td>
+<td>[]*Transaction</td>
+<td>交易集合</td>
+<td></td>
+</tr>
+<tr>
+<td>Uncles</td>
+<td>[]*Header</td>
+<td>叔区块头集合</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Transaction <span class="keyword">struct</span> &#123;</span><br><span class="line">	data txdata</span><br><span class="line">	<span class="comment">// caches</span></span><br><span class="line">	hash    atomic.Value</span><br><span class="line">	size    atomic.Value</span><br><span class="line">	from    atomic.Value</span><br><span class="line">	fromP2P <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>txdata</td>
+<td>交易数据</td>
+<td></td>
+</tr>
+<tr>
+<td>hash</td>
+<td>atomic.Value</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>size</td>
+<td>atomic.Value</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>from</td>
+<td>atomic.Value</td>
+<td>tx的转帐转出方地址，就是对该tx对象作ECDSA签名计算时所用的公钥publicKey</td>
+<td></td>
+</tr>
+<tr>
+<td>fromP2P</td>
+<td>bool</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> txdata <span class="keyword">struct</span> &#123;</span><br><span class="line">	AccountNonce <span class="keyword">uint64</span>          <span class="string">`json:"nonce"    gencodec:"required"`</span></span><br><span class="line">	Price        *big.Int        <span class="string">`json:"gasPrice" gencodec:"required"`</span></span><br><span class="line">	GasLimit     *big.Int        <span class="string">`json:"gas"      gencodec:"required"`</span></span><br><span class="line">	Recipient    *common.Address <span class="string">`json:"to"       rlp:"nil"`</span> <span class="comment">// nil means contract creation</span></span><br><span class="line">	Amount       *big.Int        <span class="string">`json:"value"    gencodec:"required"`</span></span><br><span class="line">	Payload      []<span class="keyword">byte</span>          <span class="string">`json:"input"    gencodec:"required"`</span></span><br><span class="line">	<span class="comment">// Signature values</span></span><br><span class="line">	V *big.Int <span class="string">`json:"v" gencodec:"required"`</span></span><br><span class="line">	R *big.Int <span class="string">`json:"r" gencodec:"required"`</span></span><br><span class="line">	S *big.Int <span class="string">`json:"s" gencodec:"required"`</span></span><br><span class="line">	<span class="comment">// This is only used when marshaling to JSON.</span></span><br><span class="line">	Hash *common.Hash <span class="string">`json:"hash" rlp:"-"`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AccountNonce</td>
+<td>uint64</td>
+<td>发送者发起的交易总数</td>
+<td></td>
+</tr>
+<tr>
+<td>Price</td>
+<td>*big.Int</td>
+<td>交易的Gas价格</td>
+<td></td>
+</tr>
+<tr>
+<td>GasLimit</td>
+<td>*big.Int</td>
+<td>交易允许消耗的最大Gas</td>
+<td></td>
+</tr>
+<tr>
+<td>Recipient</td>
+<td>*common.Address</td>
+<td>交易接收者地址，</td>
+<td></td>
+</tr>
+<tr>
+<td>Amount</td>
+<td>*big.Int</td>
+<td>交易额</td>
+<td></td>
+</tr>
+<tr>
+<td>Payload</td>
+<td>[]byte</td>
+<td>它既可以作为所创建合约的指令数组，其中每一个byte作为一个单独的虚拟机指令；也可以作为数据数组，由合约指令进行操作。合约由以太坊虚拟机(Ethereum Virtual Machine, EVM)创建并执行。</td>
+<td></td>
+</tr>
+<tr>
+<td>V</td>
+<td>*big.Int</td>
+<td>tx的数字签名（ECDSA）,是一个长度为65bytes的字节数组，它被截成三段放进tx中，前32bytes赋值给成员变量R, 再32bytes赋值给S，末1byte赋给V</td>
+<td></td>
+</tr>
+<tr>
+<td>R</td>
+<td>*big.Int</td>
+<td>同上</td>
+<td></td>
+</tr>
+<tr>
+<td>S</td>
+<td>*big.Int</td>
+<td>同上</td>
+<td></td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>*common.Hash</td>
+<td>交易HAsh，只在JSON转换时使用</td>
+<td></td>
+</tr>
+<tr>
+<td>以上便是区块链中最主要的“区块链”数据结构，有些字段描述不是很清楚，后续再逐步完善。</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-节点初始化/" rel="next" title="GO-HPB源码解读--节点初始化">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--节点初始化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-多帐号解锁/" rel="prev" title="GO-HPB源码解读--多帐号解锁">
+                GO-HPB源码解读--多帐号解锁 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–数据结构"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–数据结构</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HPB,区块链,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#GO-HPB源码解读–挖矿流程（一）在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
+<meta name="keywords" content="HPB,区块链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO-HPB源码解读--挖矿流程（一）">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（一）/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="#GO-HPB源码解读–挖矿流程（一）在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-21T05:51:16.291Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO-HPB源码解读--挖矿流程（一）">
+<meta name="twitter:description" content="#GO-HPB源码解读–挖矿流程（一）在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（一）/">
+
+
+
+
+
+  <title>GO-HPB源码解读--挖矿流程（一） | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--挖矿流程（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:39:48+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="GO-HPB源码解读–挖矿流程（一）"><a href="#GO-HPB源码解读–挖矿流程（一）" class="headerlink" title="#GO-HPB源码解读–挖矿流程（一）"></a>#GO-HPB源码解读–挖矿流程（一）</h2><p>在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类</p>
+<ul>
+<li>miner是入口，负责与外部交互，控制挖矿流程的启停操作</li>
+<li>worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着</li>
+<li>cpuAgent负责具体挖矿计算工作</li>
+</ul>
+<a id="more"></a>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Miner creates blocks and searches for proof-of-work values.</span></span><br><span class="line"><span class="keyword">type</span> Miner <span class="keyword">struct</span> &#123;</span><br><span class="line">	mux *sub.TypeMux</span><br><span class="line">	worker *worker</span><br><span class="line">	coinbase common.Address</span><br><span class="line">	mining   <span class="keyword">int32</span></span><br><span class="line">	engine   consensus.Engine</span><br><span class="line"></span><br><span class="line">	canStart    <span class="keyword">int32</span> <span class="comment">// can start indicates whether we can start the mining operation</span></span><br><span class="line">	shouldStart <span class="keyword">int32</span> <span class="comment">// should start indicates whether we should start after sync</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mux</td>
+<td>*sub.TypeMux</td>
+<td>接收来自同步模块的StartEvent DoneEvent FailedEvent事件通知。在网络中，不可能只有一个矿工节点,当节点开始从其他节点同步Block时，我们就没有必要再继续挖矿了</td>
+<td></td>
+</tr>
+<tr>
+<td>worker</td>
+<td>*worker</td>
+<td>具体执行挖矿的工人</td>
+<td></td>
+</tr>
+<tr>
+<td>coinbase</td>
+<td>common.Address</td>
+<td>挖矿地址，挖矿所得的收入将计入该账户</td>
+<td></td>
+</tr>
+<tr>
+<td>mining</td>
+<td>int32</td>
+<td>挖矿状态</td>
+<td></td>
+</tr>
+<tr>
+<td>engine</td>
+<td>consensus.Engine</td>
+<td>共识引擎</td>
+<td></td>
+</tr>
+<tr>
+<td>canStart</td>
+<td>int32</td>
+<td>是否可以开始挖矿</td>
+<td></td>
+</tr>
+<tr>
+<td>shouldStart</td>
+<td>int32</td>
+<td>quitCurrentOp</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// worker is the main object which takes care of applying messages to the new state</span></span><br><span class="line"><span class="keyword">type</span> worker <span class="keyword">struct</span> &#123;</span><br><span class="line">	config *config.ChainConfig</span><br><span class="line">	engine consensus.Engine</span><br><span class="line">	mu sync.Mutex</span><br><span class="line">	<span class="comment">// update loop</span></span><br><span class="line">	mux          *sub.TypeMux</span><br><span class="line">	pool         *txpool.TxPool</span><br><span class="line">	txCh         <span class="keyword">chan</span> bc.TxPreEvent</span><br><span class="line">	txSub		 sub.Subscription</span><br><span class="line">	<span class="comment">//txSub        sub.Subscription</span></span><br><span class="line">	chainHeadCh  <span class="keyword">chan</span> bc.ChainHeadEvent</span><br><span class="line">	chainHeadSub sub.Subscription</span><br><span class="line">	chainSideCh  <span class="keyword">chan</span> bc.ChainSideEvent</span><br><span class="line">	chainSideSub sub.Subscription</span><br><span class="line">	wg           sync.WaitGroup</span><br><span class="line">	producers <span class="keyword">map</span>[Producer]<span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">	recv   <span class="keyword">chan</span> *Result</span><br><span class="line">	chain   *bc.BlockChain</span><br><span class="line">	proc    bc.Validator</span><br><span class="line">	chainDb hpbdb.Database</span><br><span class="line">	coinbase common.Address</span><br><span class="line">	extra    []<span class="keyword">byte</span></span><br><span class="line">	currentMu sync.Mutex</span><br><span class="line">	current   *Work</span><br><span class="line">	uncleMu        sync.Mutex</span><br><span class="line">	possibleUncles <span class="keyword">map</span>[common.Hash]*types.Block</span><br><span class="line">	unconfirmed *unconfirmedBlocks <span class="comment">// set of locally mined blocks pending canonicalness confirmations</span></span><br><span class="line">	<span class="comment">// atomic status counters</span></span><br><span class="line">	mining <span class="keyword">int32</span></span><br><span class="line">	atWork <span class="keyword">int32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config</td>
+<td>*config.ChainConfig</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>engine</td>
+<td>consensus.Engine</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>mu</td>
+<td>sync.Mutex</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>mux</td>
+<td>*sub.TypeMux</td>
+<td>注意与miner.mux属性不同，这里是向外部发布已经挖到新Block</td>
+<td></td>
+</tr>
+<tr>
+<td>pool</td>
+<td>*txpool.TxPool</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>txCh</td>
+<td>chan bc.TxPreEvent</td>
+<td>接收txPool中tx的通道</td>
+<td></td>
+</tr>
+<tr>
+<td>txSub</td>
+<td>sub.Subscription</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chainHeadCh</td>
+<td>chan bc.ChainHeadEvent</td>
+<td>接收区块头的通道</td>
+<td></td>
+</tr>
+<tr>
+<td>chainHeadSub</td>
+<td>sub.Subscription</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chainSideCh</td>
+<td>chan bc.ChainSideEvent</td>
+<td>接收主备链变更通道</td>
+<td></td>
+</tr>
+<tr>
+<td>chainSideSub</td>
+<td>sub.Subscription</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>wg</td>
+<td>sync.WaitGroup</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>producers</td>
+<td>map[Producer]struct{}</td>
+<td>worker拥有一个Producer的map集合</td>
+<td></td>
+</tr>
+<tr>
+<td>recv</td>
+<td>chan *Result</td>
+<td>Producer结果发送通道，每个管理的Producer都可能将挖出的Block发到该Channel,也就是说,这个收方向Channel是一对多的</td>
+<td></td>
+</tr>
+<tr>
+<td>chain</td>
+<td>*bc.BlockChain</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>proc</td>
+<td>bc.Validator</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>chainDb</td>
+<td>hpbdb.Database</td>
+<td>存储数据库</td>
+<td></td>
+</tr>
+<tr>
+<td>coinbase</td>
+<td>common.Address</td>
+<td>挖矿地址</td>
+<td></td>
+</tr>
+<tr>
+<td>extra</td>
+<td>[]byte</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>currentMu</td>
+<td>sync.Mutex</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>current</td>
+<td>*Work</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>uncleMu</td>
+<td>sync.Mutex</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>possibleUncles</td>
+<td>map[common.Hash]*types.Block</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>unconfirmed</td>
+<td>*unconfirmedBlocks</td>
+<td>本地挖出的待确认的块</td>
+<td></td>
+</tr>
+<tr>
+<td>mining</td>
+<td>int32</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>atWork</td>
+<td>int32</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Agent can register themself with the worker</span></span><br><span class="line"><span class="keyword">type</span> Producer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Work() <span class="keyword">chan</span>&lt;- *Work</span><br><span class="line">	SetReturnCh(<span class="keyword">chan</span>&lt;- *Result)</span><br><span class="line">	Stop()</span><br><span class="line">	Start()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Producer是个接口类，主要定义了一些操作方法，在HPB中，该接口类只有CpuAgent这一个实现类</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> CpuAgent <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu sync.Mutex</span><br><span class="line"></span><br><span class="line">	workCh        <span class="keyword">chan</span> *Work</span><br><span class="line">	stop          <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">	quitCurrentOp <span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line">	returnCh      <span class="keyword">chan</span>&lt;- *Result</span><br><span class="line"></span><br><span class="line">	chain  consensus.ChainReader</span><br><span class="line">	engine consensus.Engine</span><br><span class="line"></span><br><span class="line">	isMining <span class="keyword">int32</span> <span class="comment">// 正在挖矿</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mu</td>
+<td>sync.Mutex</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>workCh</td>
+<td>chan *Work</td>
+<td>接收来自worker下发的工作任务Work</td>
+<td></td>
+</tr>
+<tr>
+<td>stop</td>
+<td>chan struct{}</td>
+<td>使该CpuAgent停止工作的信号</td>
+<td></td>
+</tr>
+<tr>
+<td>quitCurrentOp</td>
+<td>chan struct{}</td>
+<td>退出当前操作通道</td>
+<td></td>
+</tr>
+<tr>
+<td>returnCh</td>
+<td>chan&lt;- *Result</td>
+<td>向worker反馈工作任务的完成情况,实际上就是挖出的新Block</td>
+<td></td>
+</tr>
+<tr>
+<td>chain</td>
+<td>consensus.ChainReader</td>
+<td>用于访问本地节点BlockChain数据的接口</td>
+<td></td>
+</tr>
+<tr>
+<td>engine</td>
+<td>consensus.Engine</td>
+<td>计算所采用的共识引擎</td>
+<td></td>
+</tr>
+<tr>
+<td>isMining</td>
+<td>int32</td>
+<td>是否正在挖矿</td>
+<td></td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-LevelDB操作/" rel="next" title="GO-HPB源码解读--LevelDB操作">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--LevelDB操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-挖矿流程（二）/" rel="prev" title="GO-HPB源码解读--挖矿流程（二）">
+                GO-HPB源码解读--挖矿流程（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–挖矿流程（一）"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–挖矿流程（一）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

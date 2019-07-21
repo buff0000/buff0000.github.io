@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Buff">
 <meta property="og:description" content="#GO-HPB源码解读–创建帐号HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:34:07.564Z">
+<meta property="og:updated_time" content="2019-07-21T05:37:37.676Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--创建帐号">
 <meta name="twitter:description" content="#GO-HPB源码解读–创建帐号HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个">
@@ -355,6 +355,8 @@
         <h2 id="GO-HPB源码解读–创建帐号"><a href="#GO-HPB源码解读–创建帐号" class="headerlink" title="#GO-HPB源码解读–创建帐号"></a>#GO-HPB源码解读–创建帐号</h2><p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data account init</code><br>通过代码看下创建流程</p>
 <p>go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：<strong>you are 废物</strong>，这里有个不错的<a href="https://ruby.ctolib.com/urfavecli.html" target="_blank" rel="noopener">帖子</a>介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个地方开始。</p>
 <p>account命令定义在accountcmd.go文件中，通过源码可以看到account命令有list、new、update、import四个子命令。每一个命令都有flags参数。</p>
+<a id="more"></a>
+
 <p>github.com\hpb-project\go-hpb\cmd\accountcmd.go</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">accountCommand = cli.Command&#123;</span><br><span class="line">		Name:     <span class="string">"account"</span>,</span><br><span class="line">		Usage:    <span class="string">"Manage accounts"</span>,</span><br><span class="line">		Category: <span class="string">"ACCOUNT COMMANDS"</span>,</span><br><span class="line">		Description: <span class="string">``</span>,</span><br><span class="line">		Subcommands: []cli.Command&#123;</span><br><span class="line">			&#123;</span><br><span class="line">				Name:   <span class="string">"list"</span>,</span><br><span class="line">				Usage:  <span class="string">"Print summary of existing accounts"</span>,</span><br><span class="line">				Action: utils.MigrateFlags(accountList),</span><br><span class="line">				Flags: []cli.Flag&#123;</span><br><span class="line">					utils.DataDirFlag,</span><br><span class="line">					utils.KeyStoreDirFlag,</span><br><span class="line">				&#125;,</span><br><span class="line">				Description: <span class="string">`Print a short summary of all accounts`</span>,</span><br><span class="line">			&#125;,</span><br><span class="line">			&#123;</span><br><span class="line">				Name:   <span class="string">"new"</span>,</span><br><span class="line">				Usage:  <span class="string">"Create a new account"</span>,</span><br><span class="line">				Action: utils.MigrateFlags(accountCreate),</span><br><span class="line">				Flags: []cli.Flag&#123;</span><br><span class="line">					utils.DataDirFlag,</span><br><span class="line">					utils.KeyStoreDirFlag,</span><br><span class="line">					utils.PasswordFileFlag,</span><br><span class="line">					utils.LightKDFFlag,</span><br><span class="line">				&#125;,</span><br><span class="line">				Description: <span class="string">``</span>,</span><br><span class="line">			&#125;,</span><br><span class="line">			&#123;</span><br><span class="line">				Name:      <span class="string">"update"</span>,</span><br><span class="line">				Usage:     <span class="string">"Update an existing account"</span>,</span><br><span class="line">				Action:    utils.MigrateFlags(accountUpdate),</span><br><span class="line">				ArgsUsage: <span class="string">"&lt;address&gt;"</span>,</span><br><span class="line">				Flags: []cli.Flag&#123;</span><br><span class="line">					utils.DataDirFlag,</span><br><span class="line">					utils.KeyStoreDirFlag,</span><br><span class="line">					utils.LightKDFFlag,</span><br><span class="line">				&#125;,</span><br><span class="line">				Description: <span class="string">``</span>,</span><br><span class="line">			&#125;,</span><br><span class="line">			&#123;</span><br><span class="line">				Name:   <span class="string">"import"</span>,</span><br><span class="line">				Usage:  <span class="string">"Import a private key into a new account"</span>,</span><br><span class="line">				Action: utils.MigrateFlags(accountImport),</span><br><span class="line">				Flags: []cli.Flag&#123;</span><br><span class="line">					utils.DataDirFlag,</span><br><span class="line">					utils.KeyStoreDirFlag,</span><br><span class="line">					utils.PasswordFileFlag,</span><br><span class="line">					utils.LightKDFFlag,</span><br><span class="line">				&#125;,</span><br><span class="line">				ArgsUsage: <span class="string">"&lt;keyFile&gt;"</span>,</span><br><span class="line">				Description: <span class="string">`,</span></span><br><span class="line"><span class="string">			&#125;,</span></span><br><span class="line"><span class="string">		&#125;,</span></span><br><span class="line"><span class="string">	&#125;</span></span><br><span class="line"><span class="string">)</span></span><br></pre></td></tr></table></figure>
 
@@ -409,8 +411,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/21/hexotest/" rel="next" title="hexotest">
-                <i class="fa fa-chevron-left"></i> hexotest
+              <a href="/2019/07/20/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
               </a>
             
           </div>
@@ -418,6 +420,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-节点初始化/" rel="prev" title="GO-HPB源码解读--节点初始化">
+                GO-HPB源码解读--节点初始化 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -496,7 +502,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

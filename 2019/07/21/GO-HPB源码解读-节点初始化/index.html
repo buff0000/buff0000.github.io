@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HPB,区块链,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#GO-HPB源码解读–节点初始化HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：">
+<meta name="keywords" content="HPB,区块链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO-HPB源码解读--节点初始化">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-节点初始化/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="#GO-HPB源码解读–节点初始化HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-21T05:42:57.391Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO-HPB源码解读--节点初始化">
+<meta name="twitter:description" content="#GO-HPB源码解读–节点初始化HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-节点初始化/">
+
+
+
+
+
+  <title>GO-HPB源码解读--节点初始化 | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-节点初始化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--节点初始化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:38:44+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="GO-HPB源码解读–节点初始化"><a href="#GO-HPB源码解读–节点初始化" class="headerlink" title="#GO-HPB源码解读–节点初始化"></a>#GO-HPB源码解读–节点初始化</h2><p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data init gensis.json</code><br>通过代码看下节点初始化做了什么事情</p>
+<p>init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在<strong>创建帐号</strong>中做过说明，这里直接看下initGenesis做了什么事情。</p>
+<p>initGenesis方法流程：</p>
+<ol>
+<li>MakeConfigNode方法配置节点的默认参数信息，这个时候如果很多参数没有通过命令很输入进来，程序会把所有的参数信息设置为默认值</li>
+<li>加载文件gensis.json文件，文件名通过init的flag参数输入进行。后边我们对gensis.json文件解读一下。</li>
+<li>创建bc.Genesis对象，然后通过gensis.json文件的信息进行赋值</li>
+<li>db.OpenDatabase创建数据库</li>
+<li>bc.SetupGenesisBlockf进行初始块的生成和写入文件</li>
+</ol>
+<a id="more"></a>
+
+<p>github.com\hpb-project\go-hpb\cmd\chaincmd.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">	initCommand = cli.Command&#123;</span><br><span class="line">		Action:    utils.MigrateFlags(initGenesis),</span><br><span class="line">		Name:      <span class="string">"init"</span>,</span><br><span class="line">		Usage:     <span class="string">"Bootstrap and initialize a new genesis block"</span>,</span><br><span class="line">		ArgsUsage: <span class="string">"&lt;genesisPath&gt;"</span>,</span><br><span class="line">		Flags: []cli.Flag&#123;</span><br><span class="line">			utils.DataDirFlag,</span><br><span class="line">			utils.LightModeFlag,</span><br><span class="line">		&#125;,</span><br><span class="line">		Category: <span class="string">"BLOCKCHAIN COMMANDS"</span>,</span><br><span class="line">		Description: <span class="string">``</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// initGenesis will initialise the given JSON format genesis file and writes it as</span></span><br><span class="line"><span class="comment">// the zero'd block (i.e. genesis) or will fail hard if it can't succeed.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">initGenesis</span><span class="params">(ctx *cli.Context)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="comment">// Open an initialise both full and light databases</span></span><br><span class="line">	<span class="comment">//stack, _ := MakeConfigNode(ctx)</span></span><br><span class="line">	MakeConfigNode(ctx)</span><br><span class="line">	<span class="comment">// Make sure we have a valid genesis JSON</span></span><br><span class="line">	genesisPath := ctx.Args().First()</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(genesisPath) == <span class="number">0</span> &#123;</span><br><span class="line">		utils.Fatalf(<span class="string">"Must supply path to genesis JSON file"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	file, err := os.Open(genesisPath)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Warn(<span class="string">"genesis path is %s"</span>, genesisPath)</span><br><span class="line">		utils.Fatalf(<span class="string">"Failed to read genesis file: %v"</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line"></span><br><span class="line">	genesis := <span class="built_in">new</span>(bc.Genesis)</span><br><span class="line">	<span class="keyword">if</span> err := json.NewDecoder(file).Decode(genesis); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		utils.Fatalf(<span class="string">"invalid genesis file: %v"</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, name := <span class="keyword">range</span> []<span class="keyword">string</span>&#123;<span class="string">"chaindata"</span>&#125; &#123;</span><br><span class="line">		chaindb, err := db.OpenDatabase(name, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			utils.Fatalf(<span class="string">"Failed to open database: %v"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		_, hash, err := bc.SetupGenesisBlock(chaindb, genesis)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			utils.Fatalf(<span class="string">"Failed to write genesis block: %v"</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line">		log.Info(<span class="string">"Successfully wrote genesis state"</span>, <span class="string">"database"</span>, name, <span class="string">"hash"</span>, hash)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看下创建数据库的代码，数据库实例通过atomic.Value{}来实现线程安全操作。当没有传入–datadir参数时，会直接返回内存数据库,否则会创建chaindata数据库文件。ResolvePath方法会在chaindata路径前加个ghpb路径。数据库使用的是Google的levelDB,</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// OpenDatabase opens an existing database with the given name (or creates one</span></span><br><span class="line"><span class="comment">// if no previous can be found) from within the node's data directory. If the</span></span><br><span class="line"><span class="comment">// node is an ephemeral one, a memory database is returned.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">OpenDatabase</span><span class="params">(name <span class="keyword">string</span>, cache <span class="keyword">int</span>, handles <span class="keyword">int</span>)</span> <span class="params">(hpbdb.Database, error)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> DBINSTANCE.Load() != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> DBINSTANCE.Load().(*hpbdb.LDBDatabase),<span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> cfg = config.GetHpbConfigInstance()</span><br><span class="line">	<span class="keyword">if</span> cfg.Node.DataDir == <span class="string">""</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> hpbdb.NewMemDatabase()</span><br><span class="line">	&#125;</span><br><span class="line">	db, err := hpbdb.NewLDBDatabase(cfg.Node.ResolvePath(name), cache, handles)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	DBINSTANCE.Store(db)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> db, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SetupGenesisBlock方法主要是对初始区块的文件写入。</p>
+<ol>
+<li>GetCanonicalHash(db, 0)首先从数据库获取第0个hash，如果没有则返回一个初始hash，即[32]byte{0}</li>
+<li>把初始的genesis信息生成初始区块提交到数据库</li>
+<li>…</li>
+<li>…</li>
+<li>…后续再读</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetupGenesisBlock</span><span class="params">(db hpbdb.Database, genesis *Genesis)</span> <span class="params">(*config.ChainConfig, common.Hash, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> genesis != <span class="literal">nil</span> &amp;&amp; genesis.Config == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> config.MainnetChainConfig, common.Hash&#123;&#125;, errGenesisNoConfig</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Just commit the new block if there is no stored genesis block.</span></span><br><span class="line">	stored := GetCanonicalHash(db, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (stored == common.Hash&#123;&#125;) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> genesis == <span class="literal">nil</span> &#123;</span><br><span class="line">			genesis = DefaultGenesisBlock()</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			log.Info(<span class="string">"Writing custom genesis block"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		block, err := genesis.Commit(db)</span><br><span class="line">		<span class="keyword">return</span> genesis.Config, block.Hash(), err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check whether the genesis block is already written.</span></span><br><span class="line">	<span class="keyword">if</span> genesis != <span class="literal">nil</span> &#123;</span><br><span class="line">		block, _ := genesis.ToBlock()</span><br><span class="line">		hash := block.Hash()</span><br><span class="line">		<span class="keyword">if</span> hash != stored &#123;</span><br><span class="line">			<span class="keyword">return</span> genesis.Config, block.Hash(), &amp;GenesisMismatchError&#123;stored, hash&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Get the existing chain configuration.</span></span><br><span class="line">	newcfg := genesis.configOrDefault(stored)</span><br><span class="line">	storedcfg, err := GetChainConfig(db, stored)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err == ErrChainConfigNotFound &#123;</span><br><span class="line">			<span class="comment">// This case happens if a genesis write was interrupted.</span></span><br><span class="line">			log.Warn(<span class="string">"Found genesis block without chain config"</span>)</span><br><span class="line">			err = WriteChainConfig(db, stored, newcfg)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> newcfg, stored, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Special case: don't change the existing config of a non-mainnet chain if no new</span></span><br><span class="line">	<span class="comment">// config is supplied. These chains would get AllProtocolChanges (and a compat error)</span></span><br><span class="line">	<span class="comment">// if we just continued here.</span></span><br><span class="line">	<span class="keyword">if</span> genesis == <span class="literal">nil</span> &amp;&amp; stored != config.MainnetGenesisHash &#123;</span><br><span class="line">		<span class="keyword">return</span> storedcfg, stored, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Check config compatibility and write the config. Compatibility errors</span></span><br><span class="line">	<span class="comment">// are returned to the caller unless we're already at block zero.</span></span><br><span class="line">	height := GetBlockNumber(db, GetHeadHeaderHash(db))</span><br><span class="line">	<span class="keyword">if</span> height == missingNumber &#123;</span><br><span class="line">		<span class="keyword">return</span> newcfg, stored, fmt.Errorf(<span class="string">"missing block number for head header hash"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	compatErr := storedcfg.CheckCompatible(newcfg, height)</span><br><span class="line">	<span class="keyword">if</span> compatErr != <span class="literal">nil</span> &amp;&amp; height != <span class="number">0</span> &amp;&amp; compatErr.RewindTo != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> newcfg, stored, compatErr</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> newcfg, stored, WriteChainConfig(db, stored, newcfg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>genesis.Commit(db)方法中，首先将genesis转化成一个区块，然后再将区块信息写入数据库，同时包含其他一些数据内容，比如blockReceipts、GetCanonicalHash,WriteHeadBlockHash等等。此时已接触到初始block，后续文章我们对相关数据结构进行详细说明</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Commit writes the block and state of a genesis specification to the database.</span></span><br><span class="line"><span class="comment">// The block is committed as the canonical head block.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *Genesis)</span> <span class="title">Commit</span><span class="params">(db hpbdb.Database)</span> <span class="params">(*types.Block, error)</span></span> &#123;</span><br><span class="line">	block, statedb := g.ToBlock()</span><br><span class="line">	<span class="keyword">if</span> block.Number().Sign() != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">"can't commit genesis block with number &gt; 0"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> _, err := statedb.CommitTo(db, <span class="literal">false</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">"cannot write state: %v"</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := WriteTd(db, block.Hash(), block.NumberU64(), g.Difficulty); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := WriteBlock(db, block); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := WriteBlockReceipts(db, block.Hash(), block.NumberU64(), <span class="literal">nil</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := WriteCanonicalHash(db, block.Hash(), block.NumberU64()); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := WriteHeadBlockHash(db, block.Hash()); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err := WriteHeadHeaderHash(db, block.Hash()); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	configtemp := g.Config</span><br><span class="line">	<span class="keyword">if</span> configtemp == <span class="literal">nil</span> &#123;</span><br><span class="line">		configtemp = config.MainnetChainConfig</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> block, WriteChainConfig(db, block.Hash(), configtemp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-创建帐号/" rel="next" title="GO-HPB源码解读--创建帐号">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--创建帐号
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-数据结构/" rel="prev" title="GO-HPB源码解读--数据结构">
+                GO-HPB源码解读--数据结构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–节点初始化"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–节点初始化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

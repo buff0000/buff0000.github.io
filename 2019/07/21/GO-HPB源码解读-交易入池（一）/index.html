@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HPB,区块链,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="#GO-HPB源码解读–交易入池（一）在本地启动节点后，通过控制台输入命令hpb.sendTransaction({from:&amp;quot;db3cf5c98af974d3cccdc8662f1ab3c27c6e47ee&amp;quot;,to:&amp;quot;742c8a59152a397ad09f7fb280c4fc378598a4ba&amp;quot;,value:web3.toWei(10000,&amp;quot">
+<meta name="keywords" content="HPB,区块链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO-HPB源码解读--交易入池（一）">
+<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-交易入池（一）/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="#GO-HPB源码解读–交易入池（一）在本地启动节点后，通过控制台输入命令hpb.sendTransaction({from:&amp;quot;db3cf5c98af974d3cccdc8662f1ab3c27c6e47ee&amp;quot;,to:&amp;quot;742c8a59152a397ad09f7fb280c4fc378598a4ba&amp;quot;,value:web3.toWei(10000,&amp;quot">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-21T05:50:01.367Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO-HPB源码解读--交易入池（一）">
+<meta name="twitter:description" content="#GO-HPB源码解读–交易入池（一）在本地启动节点后，通过控制台输入命令hpb.sendTransaction({from:&amp;quot;db3cf5c98af974d3cccdc8662f1ab3c27c6e47ee&amp;quot;,to:&amp;quot;742c8a59152a397ad09f7fb280c4fc378598a4ba&amp;quot;,value:web3.toWei(10000,&amp;quot">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-交易入池（一）/">
+
+
+
+
+
+  <title>GO-HPB源码解读--交易入池（一） | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-交易入池（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--交易入池（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:40:56+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="GO-HPB源码解读–交易入池（一）"><a href="#GO-HPB源码解读–交易入池（一）" class="headerlink" title="#GO-HPB源码解读–交易入池（一）"></a>#GO-HPB源码解读–交易入池（一）</h2><p>在本地启动节点后，通过控制台输入命令<code>hpb.sendTransaction({from:&quot;db3cf5c98af974d3cccdc8662f1ab3c27c6e47ee&quot;,to:&quot;742c8a59152a397ad09f7fb280c4fc378598a4ba&quot;,value:web3.toWei(10000,&quot;hpb&quot;)})</code>来完成转账交易。交易内容最初始会进入到SendTransaction。</p>
+<ol>
+<li>打印了一下传进来的参数args<br>{From:[219 60 245 201 138 249 116 211 204 205 200 102 47 26 179 194 124 110 71 238] To:[116 44 138 89 21 42 57 122 208 159 127 178 128 196 252 55 133 152 164 186] Gas:<nil> GasPrice:<nil> Value:0x21e19e0c9bab2400000 Data:0x Nonce:<nil>}</nil></nil></nil></li>
+<li>首先检查一下from地址是不是存在钱包中，如果不存在就返回错误</li>
+<li>锁定交易的nonce，因为nonce是唯一的，防止交易的重播攻击</li>
+<li>对交易需要的其他参数进行设置，Gas默认值为90000，GasPrice和Nonce经由计算获得，这个后续再分析</li>
+<li>创建一个交易对象，将以上参数进行赋值</li>
+<li>使用from的帐户钱包对交易进行签名，来证明这签交易确实是from发出的。<br>签名过程：<br>(1). 首先使用from的私钥对nonce、price、gaslimit、recipient、amount、payload进行secp256k1签名<br>(2). 然后签名结果分解成R、S、V，并赋给交易对象，注意这个时候交易对象中并没有from地址</li>
+<li>最后提交交易</li>
+</ol>
+<a id="more"></a>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SendTransaction creates a transaction for the given argument, sign it and submit it to the</span></span><br><span class="line"><span class="comment">// transaction pool.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *PublicTransactionPoolAPI)</span> <span class="title">SendTransaction</span><span class="params">(ctx context.Context, args SendTxArgs)</span> <span class="params">(common.Hash, error)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Look up the wallet containing the requested signer</span></span><br><span class="line">	account := accounts.Account&#123;Address: args.From&#125;</span><br><span class="line"></span><br><span class="line">	wallet, err := s.b.AccountManager().Find(account)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> common.Hash&#123;&#125;, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> args.Nonce == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// Hold the addresse's mutex around signing to prevent concurrent assignment of</span></span><br><span class="line">		<span class="comment">// the same nonce to multiple accounts.</span></span><br><span class="line">		s.nonceLock.LockAddr(args.From)</span><br><span class="line">		<span class="keyword">defer</span> s.nonceLock.UnlockAddr(args.From)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Set some sanity defaults and terminate on failure</span></span><br><span class="line">	<span class="keyword">if</span> err := args.setDefaults(ctx, s.b); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> common.Hash&#123;&#125;, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Assemble the transaction and sign with the wallet</span></span><br><span class="line">	tx := args.toTransaction()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> chainID *big.Int</span><br><span class="line">	<span class="keyword">if</span> config := s.b.ChainConfig(); <span class="literal">true</span> &#123;</span><br><span class="line">		chainID = config.ChainId</span><br><span class="line">	&#125;</span><br><span class="line">	signed, err := wallet.SignTx(account, tx, chainID)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> common.Hash&#123;&#125;, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> submitTransaction(ctx, s.b, signed)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>submitTransaction方法把交易提交到交易池txpool</p>
+<ol>
+<li>首先计算交易的hash，这个交易在输入交易命令后显示的那个hash值</li>
+<li>判断交易池中是否包含该交易，包含的话就直接回退失败</li>
+<li>验证交易</li>
+<li>锁定交易，也就是把交易保存到交易池的过程<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AddTx attempts to queue a transactions if valid.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pool *TxPool)</span> <span class="title">AddTx</span><span class="params">(tx *types.Transaction)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	pool.mu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> pool.mu.Unlock()</span><br><span class="line"></span><br><span class="line">	hash := tx.Hash()</span><br><span class="line">	<span class="keyword">if</span> pool.all[hash] != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"Discarding already known transaction"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">		<span class="keyword">return</span> fmt.Errorf(<span class="string">"known transaction: %x"</span>, hash)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// If the transaction fails basic validation, discard it</span></span><br><span class="line">	<span class="keyword">if</span> err := pool.validateTx(tx); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"Discarding invalid transaction"</span>, <span class="string">"hash"</span>, hash, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> pool.addTxLocked(tx)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>validateTx对交易进行验证</p>
+<ol>
+<li>交易的大小是否超过32k，其中的tx.Size主要计算的是交易的data部分的数据大小</li>
+<li>交易金额不能小于0</li>
+<li>当前交易的gasLimit是否大于当前区块的最大gas值，每个区块块都有一个总的gas限制，也就是一个区块中的所有交易的gas总和不能超过区块的gas限制</li>
+<li>验证签名是否有效，并还原出地址from（这块没细看，之后再看下）</li>
+<li>交易给出的gas价格必须大于txpool的最低价格，要不然挖工收益会少</li>
+<li>当前交易的nonce必须要大于上一次的交易nonce。帐户信息直接保存在stateDB中，可以从中获取</li>
+<li>交易花费gasprice*gasLimit必须大于帐户余额</li>
+<li>如果交易是创建合约或者调用合约，需要计算一下需要多少gas，如果交易支付的最大gas不够多也是拒绝的（这块没细看，之后再看下）<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// validateTx checks whether a transaction is valid according to the consensus</span></span><br><span class="line"><span class="comment">// rules and adheres to some heuristic limits of the local node (price and size).</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pool *TxPool)</span> <span class="title">validateTx</span><span class="params">(tx *types.Transaction)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="comment">// Heuristic limit, reject transactions over 32KB to prevent DOS attacks</span></span><br><span class="line">	<span class="keyword">if</span> tx.Size() &gt; maxTransactionSize &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrOversizedData maxTransactionSize"</span>, <span class="string">"ErrOversizedData"</span>,ErrOversizedData)</span><br><span class="line">		<span class="keyword">return</span> ErrOversizedData</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Transactions can't be negative. This may never happen using RLP decoded</span></span><br><span class="line">	<span class="comment">// transactions but may occur if you create a transaction using the RPC.</span></span><br><span class="line">	<span class="keyword">if</span> tx.Value().Sign() &lt; <span class="number">0</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrNegativeValue"</span>, <span class="string">"ErrNegativeValue"</span>,ErrNegativeValue)</span><br><span class="line">		<span class="keyword">return</span> ErrNegativeValue</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Ensure the transaction doesn't exceed the current block limit gas.</span></span><br><span class="line">	<span class="keyword">if</span> pool.currentMaxGas.Cmp(tx.Gas()) &lt; <span class="number">0</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrGasLimit"</span>, <span class="string">"ErrGasLimit"</span>,ErrGasLimit)</span><br><span class="line">		<span class="keyword">return</span> ErrGasLimit</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Call BOE recover sender.</span></span><br><span class="line">	from, err := types.Sender(pool.signer, tx)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrInvalidSender"</span>, <span class="string">"ErrInvalidSender"</span>,ErrInvalidSender)</span><br><span class="line">		<span class="keyword">return</span> ErrInvalidSender</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Check gasPrice.</span></span><br><span class="line">	<span class="keyword">if</span> pool.gasPrice.Cmp(tx.GasPrice()) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrUnderpriced"</span>, <span class="string">"ErrUnderpriced"</span>,ErrUnderpriced)</span><br><span class="line">		<span class="keyword">return</span> ErrUnderpriced</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Ensure the transaction adheres to nonce ordering</span></span><br><span class="line">	<span class="keyword">if</span> pool.currentState.GetNonce(from) &gt; tx.Nonce() &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrNonceTooLow"</span>, <span class="string">"tx.Nonce()"</span>,tx.Nonce())</span><br><span class="line">		<span class="keyword">return</span> ErrNonceTooLow</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Transactor should have enough funds to cover the costs</span></span><br><span class="line">	<span class="comment">// cost == V + GP * GL</span></span><br><span class="line">	<span class="keyword">if</span> pool.currentState.GetBalance(from).Cmp(tx.Cost()) &lt; <span class="number">0</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrInsufficientFunds"</span>, <span class="string">"ErrInsufficientFunds"</span>,ErrInsufficientFunds)</span><br><span class="line">		<span class="keyword">return</span> ErrInsufficientFunds</span><br><span class="line">	&#125;</span><br><span class="line">	intrGas := types.IntrinsicGas(tx.Data(), tx.To() == <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> tx.Gas().Cmp(intrGas) &lt; <span class="number">0</span> &#123;</span><br><span class="line">		log.Trace(<span class="string">"ErrIntrinsicGas"</span>, <span class="string">"ErrIntrinsicGas"</span>,ErrIntrinsicGas)</span><br><span class="line">		<span class="keyword">return</span> ErrIntrinsicGas</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// addTx enqueues a single transaction into the pool if it is valid.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pool *TxPool)</span> <span class="title">addTxLocked</span><span class="params">(tx *types.Transaction)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="comment">// Try to inject the transaction and update any state</span></span><br><span class="line">	replace, err := pool.add(tx)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// If we added a new transaction, run promotion checks and return</span></span><br><span class="line">	<span class="keyword">if</span> !replace &#123;</span><br><span class="line">		from, _ := types.Sender(pool.signer, tx) <span class="comment">// already validated</span></span><br><span class="line">		pool.promoteExecutables([]common.Address&#123;from&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>pool.add方法中</p>
+<ol>
+<li>首先计算交易的hash，并获取from地址</li>
+<li>判断交易池是否满了，如果满了就返回失败。这里需要注意一下交易池维护着两个集合一个是pending，一个是queue，pending存放的是可以处理的交易，queue存放的是不可以处理的交易。</li>
+<li>把交易池中pending所有from地址的交易都取出来赋到list，看看是不是包含相同的nonce的交易。（上边在创建交易的时候判断了nonce大于当前的，什么情况下会重复呢？）如果包含的话就往list里插入，但是插入的时候要判断一下这笔交易值不值替换上一笔相同nonce的交易。<br>交易池有个参数priceBump，表示上浮价格，比如是20，当旧交易的old_gasprice*(100+20)/100=1.2倍的old_gaspreice，如果当前交易的价格大于1.2倍的old_gaspreice，则进行替换。同时list也会更新一下最大交易额和最大gas<br>这时txpool才会把当前交易缓存起来</li>
+<li>如果list也就是pending中没有重复的交易，那么对于queue也做同样的替换操作。注意如果queue中不存在该交易是会插入的，pending是不会的。（txpool.queue是个map，key是from地址，value是个list，保存着所有from地址的交易信息，也就是上边提到的list）</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pool *TxPool)</span> <span class="title">add</span><span class="params">(tx *types.Transaction)</span> <span class="params">(<span class="keyword">bool</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="comment">// If the transaction is already known, discard it</span></span><br><span class="line">	hash := tx.Hash()</span><br><span class="line">	from, _ := types.Sender(pool.signer, tx) <span class="comment">// already validated</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// If the transaction pool is full, reject</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">uint64</span>(<span class="built_in">len</span>(pool.all)) &gt;= pool.config.GlobalSlots+pool.config.GlobalQueue &#123;</span><br><span class="line">		log.Warn(<span class="string">"TxPool is full, reject tx"</span>, <span class="string">"current size"</span>, <span class="built_in">len</span>(pool.all),</span><br><span class="line">			<span class="string">"max size"</span>, pool.config.GlobalSlots+pool.config.GlobalQueue, <span class="string">"hash"</span>, hash, <span class="string">"from"</span>, from, <span class="string">"to"</span>, tx.To())</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, ErrTxPoolFull</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// If the transaction is replacing an already pending one, do directly</span></span><br><span class="line">	<span class="keyword">if</span> list := pool.pending[from]; list != <span class="literal">nil</span> &amp;&amp; list.Overlaps(tx) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Nonce already pending, check if required price bump is met</span></span><br><span class="line">		inserted, old := list.Add(tx, pool.config.PriceBump)</span><br><span class="line">		<span class="keyword">if</span> !inserted &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>, ErrReplaceUnderpriced</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// New transaction is better, replace old one</span></span><br><span class="line">		<span class="keyword">if</span> old != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">delete</span>(pool.all, old.Hash())</span><br><span class="line">		&#125;</span><br><span class="line">		pool.all[tx.Hash()] = tx</span><br><span class="line">		pool.tmpqueue[tx.Hash()] = tx</span><br><span class="line"></span><br><span class="line">		log.Trace(<span class="string">"Pooled new executable transaction"</span>, <span class="string">"hash"</span>, hash, <span class="string">"from"</span>, from, <span class="string">"to"</span>, tx.To())</span><br><span class="line"></span><br><span class="line">		<span class="comment">// We've directly injected a replacement transaction, notify subsystems</span></span><br><span class="line">		<span class="comment">//TODO why inject event here</span></span><br><span class="line">		<span class="comment">//event.FireEvent(&amp;event.Event&#123;Trigger: pool.txPreTrigger, Payload: event.TxPreEvent&#123;tx&#125;, Topic: event.TxPreTopic&#125;)</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> old != <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// New transaction isn't replacing a pending one, push into queue</span></span><br><span class="line">	replace, err := pool.enqueueTx(hash, tx)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	log.Trace(<span class="string">"Pooled new future transaction"</span>, <span class="string">"hash"</span>, hash, <span class="string">"from"</span>, from, <span class="string">"to"</span>, tx.To())</span><br><span class="line">	<span class="keyword">return</span> replace, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果交易池中的queue插入成功的话，queue数据发生变化，接下来promoteExecutables方法就是要把queue中某些交易移到pending中，从不可以处理的状态变成可处理的状态</p>
+<ol>
+<li>删除所有nonce太低的交易</li>
+<li>删除帐户余额太低或gas超过交易池限制的交易</li>
+<li>将queue交易添加到pending中，同时会把交易发送到chan通道，chan接收之后广播到网络中的其他peer节点</li>
+<li>删除超过queue容量限制的交易</li>
+<li>最后keepFit处理超过pending容量限制的交易<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pool *TxPool)</span> <span class="title">promoteExecutables</span><span class="params">(accounts []common.Address)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Gather all the accounts potentially needing updates</span></span><br><span class="line">	<span class="keyword">if</span> accounts == <span class="literal">nil</span> &#123;</span><br><span class="line">		accounts = <span class="built_in">make</span>([]common.Address, <span class="number">0</span>, <span class="built_in">len</span>(pool.queue))</span><br><span class="line">		<span class="keyword">for</span> addr := <span class="keyword">range</span> pool.queue &#123;</span><br><span class="line">			accounts = <span class="built_in">append</span>(accounts, addr)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Iterate over all accounts and promote any executable transactions</span></span><br><span class="line">	<span class="keyword">for</span> _, addr := <span class="keyword">range</span> accounts &#123;</span><br><span class="line">		list := pool.queue[addr]</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> list == <span class="literal">nil</span> &#123;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">continue</span> <span class="comment">// Just in case someone calls with a non existing account</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Drop all transactions that are deemed too old (low nonce)</span></span><br><span class="line">		<span class="keyword">for</span> _, tx := <span class="keyword">range</span> list.Forward(pool.currentState.GetNonce(addr)) &#123;</span><br><span class="line">			hash := tx.Hash()</span><br><span class="line">			log.Trace(<span class="string">"Removed old queued transaction"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">			<span class="built_in">delete</span>(pool.all, hash)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Drop all transactions that are too costly (low balance or out of gas)</span></span><br><span class="line">		drops, _ := list.Filter(pool.currentState.GetBalance(addr), pool.currentMaxGas)</span><br><span class="line">		<span class="keyword">for</span> _, tx := <span class="keyword">range</span> drops &#123;</span><br><span class="line">			hash := tx.Hash()</span><br><span class="line">			log.Trace(<span class="string">"Removed unpayable queued transaction"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">			<span class="built_in">delete</span>(pool.all, hash)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Gather all executable transactions and promote them</span></span><br><span class="line">		<span class="keyword">for</span> _, tx := <span class="keyword">range</span> list.Ready(pool.pendingState.GetNonce(addr)) &#123;</span><br><span class="line">			hash := tx.Hash()</span><br><span class="line">			log.Trace(<span class="string">"Promoting queued transaction"</span>, <span class="string">"hash"</span>, hash,<span class="string">"pool.pendingState.GetNonce(addr)"</span>,pool.pendingState.GetNonce(addr))</span><br><span class="line">			pool.promoteTx(addr, hash, tx)</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Delete a single queue transaction</span></span><br><span class="line">			<span class="keyword">if</span> list != <span class="literal">nil</span> &#123;</span><br><span class="line">				list.Remove(tx)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Drop all transactions over the allowed limit</span></span><br><span class="line">		<span class="keyword">for</span> _, tx := <span class="keyword">range</span> list.Cap(<span class="keyword">int</span>(pool.config.AccountQueue)) &#123;</span><br><span class="line">			hash := tx.Hash()</span><br><span class="line">			<span class="built_in">delete</span>(pool.all, hash)</span><br><span class="line">			log.Trace(<span class="string">"Removed cap-exceeding queued transaction"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Delete the entire queue entry if it became empty.</span></span><br><span class="line">		<span class="keyword">if</span> list.Empty() &#123;</span><br><span class="line">			log.Trace(<span class="string">"promoteExecutables list.Empty()"</span>)</span><br><span class="line">			<span class="built_in">delete</span>(pool.queue, addr)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pool.keepFit()</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HPB/" rel="tag"># HPB</a>
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-投票机制/" rel="next" title="GO-HPB源码解读--投票机制">
+                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--投票机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/21/GO-HPB源码解读-交易入池（二）/" rel="prev" title="GO-HPB源码解读--交易入池（二）">
+                GO-HPB源码解读--交易入池（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–交易入池（一）"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–交易入池（一）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
