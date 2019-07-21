@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–节点初始化HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：">
+<meta name="description" content="HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：  MakeConfigNode方法配">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--节点初始化">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-节点初始化/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–节点初始化HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：">
+<meta property="og:description" content="HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：  MakeConfigNode方法配">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:42:57.391Z">
+<meta property="og:updated_time" content="2019-07-21T06:20:42.295Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--节点初始化">
-<meta name="twitter:description" content="#GO-HPB源码解读–节点初始化HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：">
+<meta name="twitter:description" content="HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data init gensis.json通过代码看下节点初始化做了什么事情 init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在创建帐号中做过说明，这里直接看下initGenesis做了什么事情。 initGenesis方法流程：  MakeConfigNode方法配">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–节点初始化"><a href="#GO-HPB源码解读–节点初始化" class="headerlink" title="#GO-HPB源码解读–节点初始化"></a>#GO-HPB源码解读–节点初始化</h2><p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data init gensis.json</code><br>通过代码看下节点初始化做了什么事情</p>
+        <p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data init gensis.json</code><br>通过代码看下节点初始化做了什么事情</p>
 <p>init命令定义在chaincmd.go文件中，关于urfave和utils.MigrateFlags在<strong>创建帐号</strong>中做过说明，这里直接看下initGenesis做了什么事情。</p>
 <p>initGenesis方法流程：</p>
 <ol>
@@ -511,17 +511,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -583,22 +574,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–节点初始化"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–节点初始化</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–创建帐号HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个">
+<meta name="description" content="HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个地方开始。 account命令定">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--创建帐号">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-创建帐号/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–创建帐号HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个">
+<meta property="og:description" content="HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个地方开始。 account命令定">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:37:37.676Z">
+<meta property="og:updated_time" content="2019-07-21T06:20:46.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--创建帐号">
-<meta name="twitter:description" content="#GO-HPB源码解读–创建帐号HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个">
+<meta name="twitter:description" content="HPB在创建帐号时使用的命令是  ./ghpb --datadir node/data account init通过代码看下创建流程 go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：you are 废物，这里有个不错的帖子介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个地方开始。 account命令定">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–创建帐号"><a href="#GO-HPB源码解读–创建帐号" class="headerlink" title="#GO-HPB源码解读–创建帐号"></a>#GO-HPB源码解读–创建帐号</h2><p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data account init</code><br>通过代码看下创建流程</p>
+        <p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data account init</code><br>通过代码看下创建流程</p>
 <p>go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：<strong>you are 废物</strong>，这里有个不错的<a href="https://ruby.ctolib.com/urfavecli.html" target="_blank" rel="noopener">帖子</a>介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个地方开始。</p>
 <p>account命令定义在accountcmd.go文件中，通过源码可以看到account命令有list、new、update、import四个子命令。每一个命令都有flags参数。</p>
 <a id="more"></a>
@@ -507,17 +507,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -579,22 +570,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–创建帐号"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–创建帐号</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

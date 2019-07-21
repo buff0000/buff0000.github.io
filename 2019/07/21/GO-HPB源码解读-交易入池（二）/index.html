@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–交易入池（二）上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要">
+<meta name="description" content="上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要把订单者的chan发进来就可以了。">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--交易入池（二）">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-交易入池（二）/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–交易入池（二）上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要">
+<meta property="og:description" content="上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要把订单者的chan发进来就可以了。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:50:08.679Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:27.074Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--交易入池（二）">
-<meta name="twitter:description" content="#GO-HPB源码解读–交易入池（二）上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要">
+<meta name="twitter:description" content="上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要把订单者的chan发进来就可以了。">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–交易入池（二）"><a href="#GO-HPB源码解读–交易入池（二）" class="headerlink" title="#GO-HPB源码解读–交易入池（二）"></a>#GO-HPB源码解读–交易入池（二）</h2><p>上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要把订单者的chan发进来就可以了。  （Feed通过反射包reflect中的selectcase、trySend和tryReceive方法进行的，操作包装在Feed文件中，golang的源码包中有all_test.go测试文件可以详细看下）<br>订阅这个消费的一共有三个地方，分中在api_backend.go、synctrl.go、worker.go中。这里主要看一下广播和evn执行。</p>
+        <p>上一节看到交易通过pool.promoteTx(addr, hash, tx)方法进行了传递，在该方法的最后一步通过pool.txFeed.Send(bc.TxPreEvent{tx})，将交易封装成bc.TxPreEvent发送了出去。而这个Feed实现了订阅发布模式，Send方法是发布消息，SubscribeTxPreEvent是订阅消息，订单的时候只需要把订单者的chan发进来就可以了。  （Feed通过反射包reflect中的selectcase、trySend和tryReceive方法进行的，操作包装在Feed文件中，golang的源码包中有all_test.go测试文件可以详细看下）<br>订阅这个消费的一共有三个地方，分中在api_backend.go、synctrl.go、worker.go中。这里主要看一下广播和evn执行。</p>
 <ul>
 <li>api_backend.go中只是订单并没处理</li>
 <li>synctrl.go中进行消费的广播</li>
@@ -501,17 +501,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -573,22 +564,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–交易入池（二）"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–交易入池（二）</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

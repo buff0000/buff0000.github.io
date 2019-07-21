@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–work.go在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&amp;gt; =2 hash -&amp;gt; =8060c5…80af4c difficulty">
+<meta name="description" content="在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&amp;gt; =2 hash -&amp;gt; =8060c5…80af4c difficulty -&amp;gt; =1ERROR[01-2">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--work.go">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-work-go/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–work.go在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&amp;gt; =2 hash -&amp;gt; =8060c5…80af4c difficulty">
+<meta property="og:description" content="在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&amp;gt; =2 hash -&amp;gt; =8060c5…80af4c difficulty -&amp;gt; =1ERROR[01-2">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:51:02.114Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:11.336Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--work.go">
-<meta name="twitter:description" content="#GO-HPB源码解读–work.go在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&amp;gt; =2 hash -&amp;gt; =8060c5…80af4c difficulty">
+<meta name="twitter:description" content="在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&amp;gt; =2 hash -&amp;gt; =8060c5…80af4c difficulty -&amp;gt; =1ERROR[01-2">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–work-go"><a href="#GO-HPB源码解读–work-go" class="headerlink" title="#GO-HPB源码解读–work.go"></a>#GO-HPB源码解读–work.go</h2><p>在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下：</p>
+        <p>在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">INFO [01-27|22:54:54]  HPB : Successfully sealed new block     number -&gt; =2 hash -&gt; =8060c5…80af4c difficulty -&gt; =1</span><br><span class="line">ERROR[01-27|22:54:54]  HPB : mdatabase                         %s=&quot;goroutine 56 [running]:\nruntime/debug.Stack(0xc001ad3940, 0x41167f, 0x10)</span><br><span class="line">/usr/local/go/src/runtime/debug/stack.go:24 +0xa7\ngithub.com/hpb-project/go-hpb/blockchain/storage.(*LMDBDatabase).Put(0xc0001452b0, 0xc0018ab7a0, 0x2a, 0x30, 0xc0017f9c20, 0x1, 0x1, 0x0, 0x0)</span><br><span class="line">/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/storage/mdatabase.go:65 +0x42\ngithub.com/hpb-project/go-hpb/blockchain.WriteTd(0x7fd9a9b5cbf0, 0xc0001452b0, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x2, 0xc001ac7de0, 0x0, 0x0)</span><br><span class="line">/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/database_util.go:481 +0x212\ngithub.com/hpb-project/go-hpb/blockchain.(*HeaderChain).WriteTd(0xc00012a400, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x2, 0xc001ac7de0, 0x0, 0x0)</span><br><span class="line">/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/headerchain.go:333 +0xa5\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).WriteBlockAndState(0xc000056e00, 0xc001a83680, 0x0, 0x0, 0x0, 0xc001cc4690, 0x0, 0x0, 0x0)</span><br><span class="line">/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:846 +0x381\ngithub.com/hpb-project/go-hpb/worker.(*worker).handlerSelfMinedBlock(0xc0000ec360)</span><br><span class="line">/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:345 +0x22e\ncreated by github.com/hpb-project/go-hpb/worker.newWorker</span><br><span class="line">/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:165 +0x385\n&quot;</span><br><span class="line">ERROR[01-27|22:54:54]  HPB : mdatabase                         put=1</span><br></pre></td></tr></table></figure>
 
 <a id="more"></a>
@@ -492,17 +492,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -564,22 +555,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–work-go"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–work.go</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

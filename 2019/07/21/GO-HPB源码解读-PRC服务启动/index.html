@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–PRC服务启动RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是： 12hpbnode.SetNodeAPI()hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)  其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPI">
+<meta name="description" content="RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是： 12hpbnode.SetNodeAPI()hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)  其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPIs，然后再传给Start方法。API的">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--PRC服务启动">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-PRC服务启动/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–PRC服务启动RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是： 12hpbnode.SetNodeAPI()hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)  其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPI">
+<meta property="og:description" content="RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是： 12hpbnode.SetNodeAPI()hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)  其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPIs，然后再传给Start方法。API的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:50:52.745Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:15.830Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--PRC服务启动">
-<meta name="twitter:description" content="#GO-HPB源码解读–PRC服务启动RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是： 12hpbnode.SetNodeAPI()hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)  其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPI">
+<meta name="twitter:description" content="RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是： 12hpbnode.SetNodeAPI()hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)  其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPIs，然后再传给Start方法。API的">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–PRC服务启动"><a href="#GO-HPB源码解读–PRC服务启动" class="headerlink" title="#GO-HPB源码解读–PRC服务启动"></a>#GO-HPB源码解读–PRC服务启动</h2><p>RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是：</p>
+        <p>RPC服务是在节点启动的时候通过参数–rpcaddr 0.0.0.0 –rpcport 8541来指定的，启动代码是：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hpbnode.SetNodeAPI()</span><br><span class="line">hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)</span><br></pre></td></tr></table></figure>
 
 <p>其中SetNodeAPI是把所有的API定义以[]rpc.API的数据类型保存hpbnode.RpcAPIs，然后再传给Start方法。API的结构如下，其中public为false的话是不会发布出去了。</p>
@@ -497,17 +497,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -569,22 +560,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–PRC服务启动"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–PRC服务启动</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

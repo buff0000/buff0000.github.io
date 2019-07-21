@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–多帐号解锁在启动节点时，解锁参数可以同时指定多个帐号，格式为--unlock &amp;quot;addr1,addr2,addr3...&amp;quot; --password &amp;quot;pwd&amp;quot;,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。在创建帐号时，命令./ghpb --datadir node/data">
+<meta name="description" content="在启动节点时，解锁参数可以同时指定多个帐号，格式为--unlock &amp;quot;addr1,addr2,addr3...&amp;quot; --password &amp;quot;pwd&amp;quot;,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。在创建帐号时，命令./ghpb --datadir node/data account init可以多次">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--多帐号解锁">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-多帐号解锁/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–多帐号解锁在启动节点时，解锁参数可以同时指定多个帐号，格式为--unlock &amp;quot;addr1,addr2,addr3...&amp;quot; --password &amp;quot;pwd&amp;quot;,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。在创建帐号时，命令./ghpb --datadir node/data">
+<meta property="og:description" content="在启动节点时，解锁参数可以同时指定多个帐号，格式为--unlock &amp;quot;addr1,addr2,addr3...&amp;quot; --password &amp;quot;pwd&amp;quot;,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。在创建帐号时，命令./ghpb --datadir node/data account init可以多次">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:51:58.493Z">
+<meta property="og:updated_time" content="2019-07-21T06:20:51.477Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--多帐号解锁">
-<meta name="twitter:description" content="#GO-HPB源码解读–多帐号解锁在启动节点时，解锁参数可以同时指定多个帐号，格式为--unlock &amp;quot;addr1,addr2,addr3...&amp;quot; --password &amp;quot;pwd&amp;quot;,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。在创建帐号时，命令./ghpb --datadir node/data">
+<meta name="twitter:description" content="在启动节点时，解锁参数可以同时指定多个帐号，格式为--unlock &amp;quot;addr1,addr2,addr3...&amp;quot; --password &amp;quot;pwd&amp;quot;,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。在创建帐号时，命令./ghpb --datadir node/data account init可以多次">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–多帐号解锁"><a href="#GO-HPB源码解读–多帐号解锁" class="headerlink" title="#GO-HPB源码解读–多帐号解锁"></a>#GO-HPB源码解读–多帐号解锁</h2><p>在启动节点时，解锁参数可以同时指定多个帐号，格式为<br><code>--unlock &quot;addr1,addr2,addr3...&quot; --password &quot;pwd&quot;</code>,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。<br>在创建帐号时，命令<code>./ghpb --datadir node/data account init</code>可以多次执行，每次执行后，会在路径node/data/keystore下生成多个帐号文件，比如UTC–2018-11-29T08-21-25.565157387Z–3e8aadb68222c70b309e87cd5c27e97950879076。当节点启动指定多个帐号时，会加载对应的帐号文件，并解锁。下边看一下解锁的代码。</p>
+        <p>在启动节点时，解锁参数可以同时指定多个帐号，格式为<br><code>--unlock &quot;addr1,addr2,addr3...&quot; --password &quot;pwd&quot;</code>,其中unlock参数为多个帐号的地址，用逗号分隔；password参数为口令文件，文件中的口令每行一个口令。<br>在创建帐号时，命令<code>./ghpb --datadir node/data account init</code>可以多次执行，每次执行后，会在路径node/data/keystore下生成多个帐号文件，比如UTC–2018-11-29T08-21-25.565157387Z–3e8aadb68222c70b309e87cd5c27e97950879076。当节点启动指定多个帐号时，会加载对应的帐号文件，并解锁。下边看一下解锁的代码。</p>
 <p>启动节点入口main.go的init方法，调用过程为init()–&gt;ghpb–&gt;startNode()</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// Initialize the CLI app and start Geth</span></span><br><span class="line">	app.Action = ghpb</span><br><span class="line">	app.HideVersion = <span class="literal">true</span> <span class="comment">// we have a command to print the version</span></span><br><span class="line">	app.Copyright = <span class="string">"Copyright 2013-2018 The go-hpb Authors "</span></span><br><span class="line">	app.Commands = []cli.Command&#123;</span><br><span class="line">  ...省略...</span><br></pre></td></tr></table></figure>
 
@@ -498,17 +498,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -570,22 +561,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–多帐号解锁"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–多帐号解锁</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

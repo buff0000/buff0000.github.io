@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–P2P启动P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#12">
+<meta name="description" content="P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#123;	if config.GetH">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--P2P启动">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-P2P启动/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–P2P启动P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#12">
+<meta property="og:description" content="P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#123;	if config.GetH">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:50:20.221Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:21.004Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--P2P启动">
-<meta name="twitter:description" content="#GO-HPB源码解读–P2P启动P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#12">
+<meta name="twitter:description" content="P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase) 123456789101112131415161718192021222324252627282930func (hpbnode *Node) Start(conf *config.HpbConfig) error &amp;#123;	if config.GetH">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–P2P启动"><a href="#GO-HPB源码解读–P2P启动" class="headerlink" title="#GO-HPB源码解读–P2P启动"></a>#GO-HPB源码解读–P2P启动</h2><p>P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase)</p>
+        <p>P2P启动是在节点启动的时候进行的，启动代码是hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase)</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hpbnode *Node)</span> <span class="title">Start</span><span class="params">(conf *config.HpbConfig)</span> <span class="title">error</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> config.GetHpbConfigInstance().Node.TestCodeParam == <span class="number">1</span> &#123;</span><br><span class="line">		consensus.SetTestParam()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	hpbnode.startBloomHandlers()</span><br><span class="line"></span><br><span class="line">	err := hpbnode.WorkerInit(conf)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Worker init failed"</span>, <span class="string">":"</span>, err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> hpbnode.Hpbsyncctr == <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"syncctrl is nil"</span>)</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">"synctrl is nil"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	hpbnode.Hpbsyncctr.Start()</span><br><span class="line">	retval := hpbnode.Hpbpeermanager.Start(hpbnode.hpberbase)</span><br><span class="line">	<span class="keyword">if</span> retval != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Start hpbpeermanager error"</span>)</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">`start peermanager error ".ipc"`</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	hpbnode.SetNodeAPI()</span><br><span class="line">	hpbnode.Hpbrpcmanager.Start(hpbnode.RpcAPIs)</span><br><span class="line">	hpbnode.Hpbtxpool.Start()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <a id="more"></a>
@@ -538,17 +538,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -610,22 +601,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–P2P启动"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–P2P启动</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

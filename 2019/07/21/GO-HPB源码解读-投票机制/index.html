@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–投票机制在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。投票结果是通过结构体进行保存的。CandAddress 节点地址(当前的授权用户)VoteNumbers 获得票数VoteIndexs">
+<meta name="description" content="在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。投票结果是通过结构体进行保存的。CandAddress 节点地址(当前的授权用户)VoteNumbers 获得票数VoteIndexs  获胜者的指标总和VotePerc">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--投票机制">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-投票机制/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–投票机制在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。投票结果是通过结构体进行保存的。CandAddress 节点地址(当前的授权用户)VoteNumbers 获得票数VoteIndexs">
+<meta property="og:description" content="在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。投票结果是通过结构体进行保存的。CandAddress 节点地址(当前的授权用户)VoteNumbers 获得票数VoteIndexs  获胜者的指标总和VotePerc">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:49:48.598Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:39.502Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--投票机制">
-<meta name="twitter:description" content="#GO-HPB源码解读–投票机制在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。投票结果是通过结构体进行保存的。CandAddress 节点地址(当前的授权用户)VoteNumbers 获得票数VoteIndexs">
+<meta name="twitter:description" content="在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。投票结果是通过结构体进行保存的。CandAddress 节点地址(当前的授权用户)VoteNumbers 获得票数VoteIndexs  获胜者的指标总和VotePerc">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–投票机制"><a href="#GO-HPB源码解读–投票机制" class="headerlink" title="#GO-HPB源码解读–投票机制"></a>#GO-HPB源码解读–投票机制</h2><p>在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。<br>投票结果是通过结构体进行保存的。<br>CandAddress 节点地址(当前的授权用户)<br>VoteNumbers 获得票数<br>VoteIndexs  获胜者的指标总和<br>VotePercent 占比</p>
+        <p>在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。<br>投票结果是通过结构体进行保存的。<br>CandAddress 节点地址(当前的授权用户)<br>VoteNumbers 获得票数<br>VoteIndexs  获胜者的指标总和<br>VotePercent 占比</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Tally <span class="keyword">struct</span> &#123;</span><br><span class="line">	CandAddress common.Address <span class="string">`json:"candAddress"`</span> <span class="comment">// 通过投票的个数</span></span><br><span class="line">	VoteNumbers *big.Int       <span class="string">`json:"voteNumbers"`</span> <span class="comment">// 通过投票的个数</span></span><br><span class="line">	VoteIndexs  *big.Int       <span class="string">`json:"voteIndexs"`</span>  <span class="comment">// 通过投票的个数</span></span><br><span class="line">	VotePercent *big.Int       <span class="string">`json:"votePercent"`</span> <span class="comment">// 通过投票的个数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> HpbNodeSnap <span class="keyword">struct</span> &#123;</span><br><span class="line">	config   *config.PrometheusConfig</span><br><span class="line">	sigcache *lru.ARCCache</span><br><span class="line">	<span class="comment">//Number  uint64                      `json:"number"`  // 生成快照的时间点</span></span><br><span class="line">	CheckPointNum  <span class="keyword">uint64</span>                      <span class="string">`json:"checkPointNum"`</span>  <span class="comment">// 最近的检查点</span></span><br><span class="line">	CheckPointHash common.Hash                 <span class="string">`json:"checkPointHash"`</span> <span class="comment">// 生成快照的Block hash</span></span><br><span class="line">	Signers        <span class="keyword">map</span>[common.Address]<span class="keyword">struct</span>&#123;&#125; <span class="string">`json:"signers"`</span>        <span class="comment">// 当前的授权用户</span></span><br><span class="line">	Recents        <span class="keyword">map</span>[<span class="keyword">uint64</span>]common.Address   <span class="string">`json:"recents"`</span>        <span class="comment">// 最近签名者 spam</span></span><br><span class="line">	Tally          <span class="keyword">map</span>[common.Address]Tally    <span class="string">`json:"tally"`</span>          <span class="comment">// 目前的计票情况</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>接下来看一下代码实现，其中HpbNodeCheckpointInterval==200</p>
@@ -594,7 +594,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–投票机制"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–投票机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在确定节点地址区间的逻辑比较简单-就是从前往后，隔100-标记100个为可取的-然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。"><span class="nav-number">2.</span> <span class="nav-text">在确定节点地址区间的逻辑比较简单,就是从前往后，隔100,标记100个为可取的,然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。"><span class="nav-number">3.</span> <span class="nav-text">VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#在确定节点地址区间的逻辑比较简单-就是从前往后，隔100-标记100个为可取的-然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。"><span class="nav-number">1.</span> <span class="nav-text">在确定节点地址区间的逻辑比较简单,就是从前往后，隔100,标记100个为可取的,然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。"><span class="nav-number">2.</span> <span class="nav-text">VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。</span></a></li></ol></div>
             
 
           </div>

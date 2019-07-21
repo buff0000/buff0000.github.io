@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–LevelDB操作HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
+<meta name="description" content="HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--LevelDB操作">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-LevelDB操作/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–LevelDB操作HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
+<meta property="og:description" content="HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:51:10.453Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:07.208Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--LevelDB操作">
-<meta name="twitter:description" content="#GO-HPB源码解读–LevelDB操作HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
+<meta name="twitter:description" content="HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&amp;lt;k, v&amp;gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–LevelDB操作"><a href="#GO-HPB源码解读–LevelDB操作" class="headerlink" title="#GO-HPB源码解读–LevelDB操作"></a>#GO-HPB源码解读–LevelDB操作</h2><p>HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&lt;k, v&gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。</p>
+        <p>HPB使用LevelDB存储数据。go-hpb/blockchain/database_util.go文件封装了LevelDB的操作。因为LevelDB是&lt;k, v&gt;数据库，所以所有数据的存储都需要指定k。以下代码列出了所有需要保存的数据的k或者k的前缀。</p>
 <a id="more"></a>
 
 <p>···<br>    voteResultKey   = []byte(“vote-result-key”)</p>
@@ -588,7 +588,7 @@ oldTxMetaSuffix   = []byte{0x01}</code></pre><p>  这里对主要数据的k前�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–LevelDB操作"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–LevelDB操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#database-util-go文件大部分内容是write和get方法，以前对前缀的拼接"><span class="nav-number">2.</span> <span class="nav-text">database_util.go文件大部分内容是write和get方法，以前对前缀的拼接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#database-util-go文件大部分内容是write和get方法，以前对前缀的拼接"><span class="nav-number">1.</span> <span class="nav-text">database_util.go文件大部分内容是write和get方法，以前对前缀的拼接</span></a></li></ol></div>
             
 
           </div>

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="#GO-HPB源码解读–挖矿流程（一）在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
+<meta name="description" content="在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
 <meta name="keywords" content="HPB,区块链">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GO-HPB源码解读--挖矿流程（一）">
 <meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（一）/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="#GO-HPB源码解读–挖矿流程（一）在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
+<meta property="og:description" content="在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T05:51:16.291Z">
+<meta property="og:updated_time" content="2019-07-21T06:21:02.879Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GO-HPB源码解读--挖矿流程（一）">
-<meta name="twitter:description" content="#GO-HPB源码解读–挖矿流程（一）在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
+<meta name="twitter:description" content="在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类  miner是入口，负责与外部交互，控制挖矿流程的启停操作 worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着 cpuAgent负责具体挖矿计算工作">
 
 
 
@@ -384,7 +384,7 @@
       
 
       
-        <h2 id="GO-HPB源码解读–挖矿流程（一）"><a href="#GO-HPB源码解读–挖矿流程（一）" class="headerlink" title="#GO-HPB源码解读–挖矿流程（一）"></a>#GO-HPB源码解读–挖矿流程（一）</h2><p>在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类</p>
+        <p>在开析流程前先看下主要的数据结构，挖矿工作主要由三个对象来完成的，miner、worker、cpuAgent，其中cpuAgent实现Producer接口类</p>
 <ul>
 <li>miner是入口，负责与外部交互，控制挖矿流程的启停操作</li>
 <li>worker管理Work任务，他代理着Producer接口类，也就是代理着具体挖矿执行着</li>
@@ -777,17 +777,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -849,22 +840,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GO-HPB源码解读–挖矿流程（一）"><span class="nav-number">1.</span> <span class="nav-text">#GO-HPB源码解读–挖矿流程（一）</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
