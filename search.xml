@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Solidity编程语言（13）--地址（Address）]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8813%EF%BC%89-%E5%9C%B0%E5%9D%80%EF%BC%88Address%EF%BC%89%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（12）--结构体struct]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8812%EF%BC%89-%E7%BB%93%E6%9E%84%E4%BD%93struct%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（11）--枚举enum]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8811%EF%BC%89-%E6%9E%9A%E4%B8%BEenum%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（10）--十六进制串]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8810%EF%BC%89-%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E4%B8%B2%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（9）--mapping]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%889%EF%BC%89-mapping%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（8）--字节数组]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%888%EF%BC%89-%E5%AD%97%E8%8A%82%E6%95%B0%E7%BB%84%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（7）--数组]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%887%EF%BC%89-%E6%95%B0%E7%BB%84%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（6）--字符串]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%886%EF%BC%89-%E5%AD%97%E7%AC%A6%E4%B8%B2%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（5）--布尔型和整型]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%885%EF%BC%89-%E5%B8%83%E5%B0%94%E5%9E%8B%E5%92%8C%E6%95%B4%E5%9E%8B%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity编程语言（4）--HelloWorld]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%884%EF%BC%89-HelloWorld%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity开发环境（3）--Mist]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%883%EF%BC%89-Mist%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity开发环境（2）--Remix-IDE]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%882%EF%BC%89-Remix-IDE%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Solidity开发环境（1）--快速搭建以太坊私链]]></title>
+    <url>%2F2019%2F07%2F22%2FSolidity%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%881%EF%BC%89-%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%A7%81%E9%93%BE%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
     <title><![CDATA[GO-HPB源码解读--work.go]]></title>
     <url>%2F2019%2F07%2F21%2FGO-HPB%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB-work-go%2F</url>
     <content type="text"><![CDATA[在了解HPB持久化区块的时候，在levelDB的put方法中打印了一下调用栈，发现一共调用了5次，日志如下： 12345678910INFO [01-27|22:54:54] HPB : Successfully sealed new block number -&gt; =2 hash -&gt; =8060c5…80af4c difficulty -&gt; =1ERROR[01-27|22:54:54] HPB : mdatabase %s=&quot;goroutine 56 [running]:\nruntime/debug.Stack(0xc001ad3940, 0x41167f, 0x10)/usr/local/go/src/runtime/debug/stack.go:24 +0xa7\ngithub.com/hpb-project/go-hpb/blockchain/storage.(*LMDBDatabase).Put(0xc0001452b0, 0xc0018ab7a0, 0x2a, 0x30, 0xc0017f9c20, 0x1, 0x1, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/storage/mdatabase.go:65 +0x42\ngithub.com/hpb-project/go-hpb/blockchain.WriteTd(0x7fd9a9b5cbf0, 0xc0001452b0, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x2, 0xc001ac7de0, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/database_util.go:481 +0x212\ngithub.com/hpb-project/go-hpb/blockchain.(*HeaderChain).WriteTd(0xc00012a400, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x2, 0xc001ac7de0, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/headerchain.go:333 +0xa5\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).WriteBlockAndState(0xc000056e00, 0xc001a83680, 0x0, 0x0, 0x0, 0xc001cc4690, 0x0, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:846 +0x381\ngithub.com/hpb-project/go-hpb/worker.(*worker).handlerSelfMinedBlock(0xc0000ec360)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:345 +0x22e\ncreated by github.com/hpb-project/go-hpb/worker.newWorker/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:165 +0x385\n&quot;ERROR[01-27|22:54:54] HPB : mdatabase put=1 123456789ERROR[01-27|22:54:54] HPB : mdatabase %s=&quot;goroutine 56 [running]:\nruntime/debug.Stack(0x479eae, 0x41167f, 0x431301)/usr/local/go/src/runtime/debug/stack.go:24 +0xa7\ngithub.com/hpb-project/go-hpb/blockchain/storage.(*LMDBDatabase).Put(0xc0001452b0, 0xc0017f9dd0, 0xa, 0x10, 0xc001a6df60, 0x20, 0x20, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/storage/mdatabase.go:65 +0x42\ngithub.com/hpb-project/go-hpb/blockchain.WriteCanonicalHash(0x7fd9a9b5cbf0, 0xc0001452b0, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x2, 0x30, 0xc0017f9d98)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/database_util.go:406 +0x156\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).insert(0xc000056e00, 0xc001a83680)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:501 +0x1db\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).WriteBlockAndState(0xc000056e00, 0xc001a83680, 0x0, 0x0, 0x0, 0xc001cc4690, 0x1, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:890 +0x80e\ngithub.com/hpb-project/go-hpb/worker.(*worker).handlerSelfMinedBlock(0xc0000ec360)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:345 +0x22e\ncreated by github.com/hpb-project/go-hpb/worker.newWorker/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:165 +0x385\n&quot;ERROR[01-27|22:54:54] HPB : mdatabase put=32 123456789ERROR[01-27|22:54:54] HPB : mdatabase %s=&quot;goroutine 56 [running]:\nruntime/debug.Stack(0x20, 0x0, 0x0)/usr/local/go/src/runtime/debug/stack.go:24 +0xa7\ngithub.com/hpb-project/go-hpb/blockchain/storage.(*LMDBDatabase).Put(0xc0001452b0, 0x1983068, 0x9, 0x9, 0xc001a6dfc0, 0x20, 0x20, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/storage/mdatabase.go:65 +0x42\ngithub.com/hpb-project/go-hpb/blockchain.WriteHeadBlockHash(0x7fd9a9b5cbf0, 0xc0001452b0, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x2, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/database_util.go:422 +0x9f\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).insert(0xc000056e00, 0xc001a83680)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:504 +0x2f0\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).WriteBlockAndState(0xc000056e00, 0xc001a83680, 0x0, 0x0, 0x0, 0xc001cc4690, 0x1, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:890 +0x80e\ngithub.com/hpb-project/go-hpb/worker.(*worker).handlerSelfMinedBlock(0xc0000ec360)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:345 +0x22e\ncreated by github.com/hpb-project/go-hpb/worker.newWorker/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:165 +0x385\n&quot;ERROR[01-27|22:54:54] HPB : mdatabase put=32 12345678910ERROR[01-27|22:54:54] HPB : mdatabase %s=&quot;goroutine 56 [running]:\nruntime/debug.Stack(0xc001ad3868, 0x563c36, 0xc001d4e060)/usr/local/go/src/runtime/debug/stack.go:24 +0xa7\ngithub.com/hpb-project/go-hpb/blockchain/storage.(*LMDBDatabase).Put(0xc0001452b0, 0x1983098, 0xa, 0xa, 0xc001d4e080, 0x20, 0x20, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/storage/mdatabase.go:65 +0x42\ngithub.com/hpb-project/go-hpb/blockchain.WriteHeadHeaderHash(0x7fd9a9b5cbf0, 0xc0001452b0, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x9ca0cf, 0xc001cd65d0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/database_util.go:414 +0x9f\ngithub.com/hpb-project/go-hpb/blockchain.(*HeaderChain).SetCurrentHeader(0xc00012a400, 0xc001245400)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/headerchain.go:396 +0xaa\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).insert(0xc000056e00, 0xc001a83680)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:511 +0x3da\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).WriteBlockAndState(0xc000056e00, 0xc001a83680, 0x0, 0x0, 0x0, 0xc001cc4690, 0x1, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:890 +0x80e\ngithub.com/hpb-project/go-hpb/worker.(*worker).handlerSelfMinedBlock(0xc0000ec360)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:345 +0x22e\ncreated by github.com/hpb-project/go-hpb/worker.newWorker/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:165 +0x385\n&quot;ERROR[01-27|22:54:54] HPB : mdatabase put=32 123456789ERROR[01-27|22:54:54] HPB : mdatabase %s=&quot;goroutine 56 [running]:\nruntime/debug.Stack(0xc001d4e100, 0xc001d35500, 0xc001d4e0e0)/usr/local/go/src/runtime/debug/stack.go:24 +0xa7\ngithub.com/hpb-project/go-hpb/blockchain/storage.(*LMDBDatabase).Put(0xc0001452b0, 0x1982cb0, 0x8, 0x8, 0xc001d4e120, 0x20, 0x20, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/storage/mdatabase.go:65 +0x42\ngithub.com/hpb-project/go-hpb/blockchain.WriteHeadFastBlockHash(0x7fd9a9b5cbf0, 0xc0001452b0, 0x7eef19c735c56080, 0x558872de29feac8, 0x69fb026f2a700595, 0x4caf80c4389aafac, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/database_util.go:430 +0x9f\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).insert(0xc000056e00, 0xc001a83680)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:513 +0x455\ngithub.com/hpb-project/go-hpb/blockchain.(*BlockChain).WriteBlockAndState(0xc000056e00, 0xc001a83680, 0x0, 0x0, 0x0, 0xc001cc4690, 0x1, 0x0, 0x0)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/blockchain/blockchain.go:890 +0x80e\ngithub.com/hpb-project/go-hpb/worker.(*worker).handlerSelfMinedBlock(0xc0000ec360)/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:345 +0x22e\ncreated by github.com/hpb-project/go-hpb/worker.newWorker/home/buff/workspace/goland/src/github.com/hpb-project/go-hpb/build/workspace/src/github.com/hpb-project/go-hpb/worker/worker.go:165 +0x385\n&quot;ERROR[01-27|22:54:54] HPB : mdatabase put=32 11’atom-workspace’: ‘ctrl-v’: ‘markdown-img-paste:paste’ !ls../images/SubscribeTxPreEvent.png 通过日志发现入口都是worker.go这个文件中的]]></content>
