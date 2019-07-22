@@ -3,67 +3,151 @@
   <entry>
     <title><![CDATA[Solidity编程语言（13）--地址（Address）]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8813%EF%BC%89-%E5%9C%B0%E5%9D%80%EF%BC%88Address%EF%BC%89%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[这里要说的地址并不是通常的编程语言中的内存地址，而是交易地址。我们知道区块链进行价值传递的时候必须是通过一个地址传递到另一个地址，无论交易或者合约都离不开地址。因此把地址作Address为Solidity语言的内嵌数据类型会十分方便开发的，更重要的一点就是在Solidity中，所有合约都继承地址Address类型。这不仅仅是单纯的为了在语法上的实现，而在实际情况是合约本身就离不开地址，包括合约的部署和执行都需要地址的参与。地址是两种类型，一种是address，一种是address payable。其中address payable相比address类型多了两个成员方法send和transfer，表示可以向address payable类型的变量进行转帐操作。 ###地址类型格式要求以太坊中的地址是20个字节，比如0x52908400098527886E0F7030069857D2E4169EE7，由于一个字节等于8位，所以地址也可以使用uint160来声明。地址通常可以进行比较运算。 123456789101112131415pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgAddress&#123; function testType() public &#123; address _addr = 0x52908400098527886E0F7030069857D2E4169EE7; uint160 _addi = 471360049350540642640628028220064440840608208820; string memory h = hex&quot;52908400098527886E0F7030069857D2E4169EE7&quot;; address addr = address(_addi); //addr = address(h); uint160 addi = uint160(_addr); &#125;&#125; 注意的是hex类型是不能直接和address进行转换的 address虽然是十六进制串，address是有格式要求的，检验方法是可参考EIP55###合约地址我们知道每个合约都是径过一个帐户部署到区块连上的，同时这个合约也会生成一个地址，并可以向这个合约地址进行转帐操作。那么这个部署的帐户地址和合约地址是怎么得到呢。 123456789101112131415161718192021pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgAddress&#123; address public owner; constructor() public &#123; owner = msg.sender; &#125; function getOwner() public returns(address)&#123; return owner; &#125; function getContractAddr() public view returns(address)&#123; return address(this); &#125; function getSenderAddr() public returns (address)&#123; return msg.sender; &#125;&#125; msg.sender是内置方法，他返回当前方法的调用者地址，也就是说我通过A帐户调用合约方法getSenderAddr，则返回的是A的地址，通过B帐户调用合约方法getSenderAddr，则返回的是B的地址。（另外还有msg.value和msg.data都通过调用者传进来的数据） 构造函数constructor是在合约进行部署时执行，且只执行一次。 在获取合约的创建者则是通过“曲线”的方式获取，首先声明状态变量owner，接着在构造函数中将方法的调用者的地址赋值给owner，因为构造函数只有在合约创建时才会被调用，所以owner保存的就是合约创建者的地址，最后通过公有方法getOwner将状态变量的值返回出去。 在获取合约本身的地址是通过this来获取，旧的版本可能this本身就是address类型的，可以直接返回this，但本示例中的版本需要将this是EgAddress类型的，需要做个类型转换才能返回address类型。###成员变量balance每个地址都代表着一个价值的持有者，所以可以直接查看其余额，即通过balance属性###成员方法除了成员变量balance外，还有以下几个成员方法 成员方法 &lt;address&gt;.balance (uint256) &lt;address payable&gt;.transfer(uint256 amount) &lt;address payable&gt;.send(uint256 amount) returns (bool) &lt;address&gt;.call(bytes memory) returns (bool, bytes memory) &lt;address&gt;.delegatecall(bytes memory) returns (bool, bytes memory) &lt;address&gt;.staticcall(bytes memory) returns (bool, bytes memory) 123456789101112131415161718192021222324252627282930313233pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgAddress&#123; function testSend()payable public &#123; address payable to = 0x52908400098527886E0F7030069857D2E4169EE7; to.send(msg.value); &#125; function testTranser()payable public &#123; address payable to = 0x52908400098527886E0F7030069857D2E4169EE7; to.transfer(msg.value); &#125; function testStack1024(uint depth) payable public&#123; address payable to = 0x52908400098527886E0F7030069857D2E4169EE7; bool r = to.send(1 wei); if (depth &gt;1 &amp;&amp; r)&#123; testStack1024(depth -1); &#125; &#125; /*function testCSend() payable public &#123; address payable to = address(this); this.send(msg.value); address(this).send(msg.value); &#125;*/ /*function testCTranser()payable public &#123; // address payable to = 0x52908400098527886E0F7030069857D2E4169EE7; address(this).transfer(msg.value); &#125;*/&#125; send send方法相比较transfer方法来说更“底层”一些，如果send方法执行失败，并不会抛出异常，而是返回false。 send调用栈深度不能超过1024，否则会执行失败。这个问题在testStack1024方法中进行了验证，不过传入的数字太大的话，会执行失败，即使没到1024，原因还没找到。。。。。 send方法会返回bool类型的结果来表示执行结果 如果gas不够会执行失败 建议使用transfer方法，相对更安全些 transfer transfer和send使用方法上一样，也是用来进行转帐操作，如果当前帐户余额不足或者对方帐户拒绝转帐，则会执行失败。 如果transfer的调用地址是一个合约地址，则合约的回调函数将被执行 关call及delegatecall、staticcall单独使用一篇幅来讲]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（12）--结构体struct]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8812%EF%BC%89-%E7%BB%93%E6%9E%84%E4%BD%93struct%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[使用结构体struct可以自定义数据类型，结构体内可以包含除自身以外的所有数据类型，如果包含自身则会形成递归。 ###定义与初始化 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgStruct &#123; mapping (string =&gt; Book) bookList; struct Book&#123; string name; uint pages; string[] contents; &#125; struct Reader&#123; mapping (string =&gt; Book) books; string name; &#125; Reader r; function init() public&#123; string[] memory b1c = new string[](3); b1c[0] = &quot;1.0.1&quot;; b1c[1] = &quot;1.0.2&quot;; b1c[2] = &quot;2.0.1&quot;; Book memory b1 = Book(&quot;book1&quot;,10,b1c); Book memory b2 = Book(&#123; name:&quot;book2&quot;, pages:20, contents:b1c &#125;); Reader memory r1 = Reader(&quot;jack&quot;); Reader memory r2 = Reader(&#123; name:&quot;rosh&quot; &#125;); // Reader memory r2 = Reader(bookList,&quot;jack&quot;); // Reader memory r3 = Reader(&#123; // books:bookList, // name:&quot;rosh&quot; // &#125;); r = r2; r.books[&quot;book1&quot;] = b1; //r2.bookList[&quot;book2&quot;] = b2; //r2.books = bookList; //r.books = bookList; &#125;&#125; 结构体struct的初始化有两种方式，一种是Book(“book1”,10,b1c)，需要按结构体的非mapping定义顺序传入，一种种Book({name:”book2”,pages:20,contents:b1c }) 当结构体中包含mapping成员时，初始化的时候不能对mapping成员进行传参赋值 结构体的mapping成员变量是不能直接去引用其他mapping的（storage），不管该结构体对象是storage还是memory 只有结构体对象是状态变量（storage）的，才能使用其mapping成员进行赋值操作###可见性 12345678910111213141516171819202122232425262728293031323334pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgStruct &#123; struct Book&#123; string name; uint pages; &#125; function read(Book memory b) internal&#123;&#125; function callTmp(EgStructTmp tmp) public&#123; Book memory b = Book(&quot;jingpinmei&quot;,10); tmp.seal(b.name,b.pages); &#125;&#125;contract EgStructSub is EgStruct&#123; function write(Book memory b) internal&#123;&#125;&#125;contract EgStructOut &#123; /*function seal(Book memory b) &#123;&#125;*/&#125;contract EgStructTmp&#123; struct Book&#123; string name; uint pages; &#125; function seal(string memory name, uint pages) public &#123; Book memory b = Book(name, pages); &#125;&#125; Solidity中的结构只在当前合约或者子类合约中可用，外部是不可见的，而且使用结构体的函数需要修饰为internal。 非要这么做的话，则可以通过函数调用进行传递基本类型的数据，然后再次组装成同样的结构体###数组参数这里有碰到个问题就是在函数参数不能是不固定的复杂类型参数，下边代码中seal1就无法编译通过 12345678910111213141516pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgStructTmp&#123; struct Book&#123; string name; uint pages; &#125; function seal1(string memory name, uint pages,string[] memory s) public &#123; Book memory b = Book(name, pages); &#125; function seal2(string memory name, uint pages, string[] memory s) internal &#123; Book memory b = Book(name, pages); &#125;&#125;]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（11）--枚举enum]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8811%EF%BC%89-%E6%9E%9A%E4%B8%BEenum%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[Solidity中枚举类型与其他编程语言基本一样。我们来看一个例子，比如定义个季节的枚举。 123456789101112131415161718192021222324pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgEnum&#123; enum Season&#123;Spring, Summer, Autumn, Winter&#125; function printSeason(Season s) public returns(Season) &#123; return s; &#125; function test1() public returns(Season)&#123; return printSeason(Season.Spring); &#125; function test2() public returns(uint)&#123; uint s = uint(Season.Spring); return s; &#125; function test3() public returns(Season)&#123; //Season s = Season(5);//越界 Season s = Season(3); return s; &#125;&#125; enum的实际类型是无符号整数，当枚举数量是0-127范围内，则enum是uint8类型的，如果是0-32,767范围内，则enum是uint16类型的，以次类推。 既然enum是uint类型，则可以进行类型转换，比如uint s = uint(Season.Spring)是将枚举Season类型转换在uint，当然也可以转成uint8，只要不越界就可以。同样Season s = Season(3)是将uint转成Season类型的。同样需要注意的是整数不要超过枚举的范围，比如Season的范围是0-3，如果将5转换成Season则会在运行进出现异常，而编译可以通过。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（10）--十六进制串]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%8810%EF%BC%89-%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E4%B8%B2%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[个人觉得十六进制串hex并不是一种Solidity的数据类型，因为你无法将hex作为一个类型去使用。当把hex加到字面量前的时候，其作用就是限定了字面量的数据格式，必须是偶数位的[0-9a-fA-F]的字符串。这样当使用特定的数据类型去引用hex串的时候，隐式的会进行转换。比如string memory h = hex”010A31”，转换后的字符串h实际内容是\u0001\n1。另外在使用bytes4类型的固定长度字节数组进行引用时，hex长度不能超过引用类型的实际长度，比如bytes4 b = hex”AABBccddee”是无法编译的。 1234567891011121314151617181920212223242526pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgHex&#123; function test() public returns(string memory)&#123; string memory h = hex&quot;010A31&quot;; //string memory h = hex&quot;010G&quot; return h; &#125; function test1() public returns(string memory)&#123; string memory h = hex&quot;010A&quot;; return h; &#125; function test2() public returns(bytes4)&#123; //bytes4 b = hex&quot;AABBccddee&quot;; bytes4 c = hex&quot;AABB&quot;; bytes4 b = hex&quot;AABBccdd&quot;; return b; &#125; function test3() public returns(bytes memory)&#123; bytes memory b = hex&quot;AABBccdd&quot;; return b; &#125;&#125;]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（9）--mapping]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%889%EF%BC%89-mapping%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[###mapping的使用特性mapping是用来保存键值对的，其书写方式与一般的编程语言有些不同，mapping(keyType =&gt; valueType)。mapping只能使用在合约的状态变量中，或者在函数内进行storage的引用，如var storage mappVal的用于存储状态变量的引用的对象，不能使用非状态变量来初始化这个引用，也就是mapping最终会保存在区块链上的，不可能是内存型变量。 123456789101112pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgMapping&#123; mapping(uint =&gt; string) public kvs; function put () public&#123; kvs[1] = &quot;a&quot;; kvs[2] = &quot;b&quot;; mapping(uint =&gt; string) storage kvs1 = kvs; string memory a = kvs[1]; &#125;&#125; mapping的key可以使用除了mapping类型以外的所有类型，value没有任何限制。 mapping实际上并不存储key的值，而是把key转换成keccak256的哈希值进行存储，所以通过mapping是无法获取保存的key的。 mapping只能用来定义状态变量，如果要在函数内部使用的话，则也需要将其声名为一个storage类型的引用，引用指向的是还是状态变量。###CURD操作 增加元素，比如kvs[1] = “a”。 更新元素，和增加一样，只不过key已经存在了。 查找元素，比如string memory a = kvs[1]。 删除元素，使用关键delete，比如delete kvs[1]。注意delete操作修改的是状态变量，所以会有gas的消耗，一般不会轻易的delete元素的。###遍历上边已经知道mapping是不保存key的值的，所以无法进行mapping的直接遍历。但是如果把key保存下来不就可以进行遍历了吗。其具体实现可以看这个工具包，是将key保存到一个不固定长度的数组中，所以你在插入元素的时候也需要使用这个工具包的插入方法。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（8）--字节数组]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%888%EF%BC%89-%E5%AD%97%E8%8A%82%E6%95%B0%E7%BB%84%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[字节数组可以看作一种特殊的数组，其元素类型是字节。在类型声名时有其专有的声名方式。作为数组他有不固定长度字节数组和固定长度字节数组。 ###不固定长度字节数组 ###固定长度字节数组 123456789101112131415161718pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgFixedByteArray &#123; byte[5] ba5; bytes5 bs5; function modify() public&#123; ba5 = [byte(&apos;1&apos;),&apos;2&apos;,&apos;3&apos;,&apos;4&apos;,&apos;5&apos;]; //ba5.push(6); //ba5.length = 6; //bs5 = [byte(&apos;1&apos;),&apos;2&apos;,&apos;3&apos;,&apos;4&apos;,&apos;5&apos;]; ba5[1] = &apos;0&apos;; bs5 = &apos;12345&apos;; //bs5.length = 6; //bs5.push(6); //bs5[1] = &apos;0&apos;; &#125;&#125; 固定长度字节数组可以使用以下两种方式声名，一种是使用数组声名，一种是使用关键字声名，其中bytes后边的数字范围是从1至32，即不能使用bytes33。在实际编码中，如果确定长度最好使用这种方式。 byte[5] bs5; bytes5 bs5_; 不管哪种方式声名的，都不可以修改length以及使用push方法 bytes5这种方式的声名不能使用数组来进行赋值的 bytes5这种方式声名的字节数组其内容是不可修改的###不固定长度字节数组（动态数组）不固定长度字节数组同理也有两种方式声名，数组和关键字。数组方式其特性就是数组的特性，这里我们看下使用关键字bytes的方式12345678910111213pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgUnFixedByteArray &#123; bytes name = new bytes(5); function modifyName() public returns( bytes memory) &#123; name.length = 6; name.push(&apos;9&apos;); name[1] = &apos;1&apos;; return name; &#125;&#125; ###转换这里主要说下固定长度字节数组、不固定长度字节数组以及string之间的转换 固定长度字节数组之间的转换12345678contract EgSwitchBytes&#123; function switchBytes1() public returns(bytes2) &#123; bytes2 bs2 = &apos;12&apos;; bytes5 bs5 = &apos;00000&apos;; //return bytes2(bs5); return bytes2(bs5); &#125;&#125; 长度较长的固定长度字节数组可以转成转短的，反过来则不行，而长的转成短的会将后边的部分长度截取掉，比如上边的bs5转成bytes2的时候会把‘234’截取掉的。 固定长度字节数组和不固定长度字节数组或者string的转换function switchBytes2() public { /*bytes5 bs5 = &apos;00000&apos;; bytes bs = bytes(bs5);//固定长度字节数组与不固定长度字节数组不能直接转换 bytes memory bs = new bytes(10); bytes5 bs5 = bytes5(bs);//固定长度字节数组与不固定长度字节数组不能直接转换 */ bytes memory bs = new bytes(10); string memory str = string(bs); string memory str1 = &quot;abcd&quot;; bytes memory bs1 = bytes(str1); /*bytes5 memory bs5 = &apos;00000&apos;; string memory str2 = string(bs5);//固定长度字节数组与string不能直接转换 string memory str3 = &quot;abcd&quot;; bytes5 memory bs5_ = bytes5(str3);//固定长度字节数组与string不能直接转换 */ }固定长度字节数组与不固定长度字节数组或者string（本质也是不固定长度字节数组）不能互相直接转换，但是string和bytes可以。 怎么转换固定长度字节数组这里说下思路，就是遍历固定长度字节数组，然后逐个把元素赋值到不固定长度字节数组中，这样就得到了不固定长度字节数组，也可以再次通过不固定长度字节数组转换成string。其中有个问题是比如bytes5 bs5 = ‘1’，本来bs5的类型是bytes5，也就是应该包含5个字节，但实际只赋值了‘1’，那么其余4个字节是啥呢？是空的，也就是\u0000，即空字符（不是空格，也不是null），所以在遍历的时候会把四个\u0000也进行了遍历。导致不固定长度字节数组中包含了4个\u0000，转成的string也有问题。所在在转换的时候要考虑\u0000的问题。 bytes和string是一种特殊的数组。bytes类似byte[]，但在外部函数作为参数调用中，会进行压缩打包，更省空间，所以应该尽量使用bytes4。string类似bytes，但不提供长度和按序号的访问方式。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（7）--数组]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%887%EF%BC%89-%E6%95%B0%E7%BB%84%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[在solidity中，数组分为固定长度数组和不固定长度数组，顾名思义就是在声名后的数组长度是否可以发生变化。 ###固定长度数组 123456789101112131415161718pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgFixedArray &#123; uint[5] arr1 = [1,2,3,4,5]; //uint[5] arr1 = []; //uint[5] arr2 = new uint[](5); function modifyLen()public&#123; // arr1.length = 2;编译失败 &#125; function modifyElement()public &#123; arr1[1] = 3; &#125; function pushToArray() public&#123; // arr1.push(1);编译失败 &#125;&#125; 固定长度数组必须初始化元素，并且无法通过new来创建。 固定长度数组的长度length属性是不可以修改的，否则会报编译错误。 固定长度数组元素是可以修改的，但是需要通过索引操作。 固定长度数组不可以使用push方法，编译无法通过。###不固定长度数组 1234567891011121314151617pragma solidity &gt;=0.4.0 &lt;0.6.0;contract EgUnFixedArray &#123; //uint[] arr1 = [1,2,3,4,5]; uint[] arr1 = new uint[](5); function modifyLen()public&#123; arr1.length = 2; &#125; function modifyElement()public &#123; arr1[1] = 3; &#125; function pushToArray() public &#123; arr1.push(1); &#125;&#125; 不固定长度数组，可以通过new来声名，元素默认取值为数组类型的默认值。 length可以修改，如果修改的length小于原先，则数组元素从后往前被去掉。 元素可以修改 可以使用push方法，push之后数据长度加一，push方法返回的是数组的长度###memory修饰数组 123456function modifyMemoryArr() public returns(uint)&#123; uint8[5] memory arr2 = [1,2,3,4,5]; // arr2.push(6); // arr2.length = 6; return arr2.length;&#125; memory修饰的数组必须指定数组长度 memory修饰的数组不能使用push方法 memory修饰的数组不能修改length属性 1234function inputArr(uint[5] arr) public&#123; // arr.length = 6; // arr.push(6);&#125; 对于方法参数是数组类型的参数，其默认也是memory修饰的，所以也无法使用length属性和push方法 123456function assignment() public&#123; // uint[] memory x = [uint(1), 3, 4]; // uint[] x = [uint(1), 3, 4]; uint[3] memory x = [uint(1), 3, 4]; uint[] memory x1 = new uint[](3);&#125; 固定长度数组不能赋值于memory修饰的不固定长度数组 不固定长度数组不能使用数组字面量进行赋值123456789function testReturn1() public returns(uint[3] memory)&#123; uint[3] memory u1 = [uint(1),2,3]; return u1;&#125;function testReturn2() public returns(uint[] memory)&#123; uint[] memory u2 = new uint[](5); return u2;&#125; 网上有看到说是返回值不能使用不固定长度数组，我使用0.5.2的solidity版本验了一下是可以的。有可能是旧版本不行吧。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（6）--字符串]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%886%EF%BC%89-%E5%AD%97%E7%AC%A6%E4%B8%B2%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[字符串的定义使用单引号或双引号都可以。这里主要说一下有关string的常见操作，在solidity中不是很方便。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667pragma solidity &gt;=0.4.0 &lt;0.6.0;//import &quot;github.com/Arachnid/solidity-stringutils/strings.sol&quot;;contract EgString &#123; string name = &apos;buff&apos;; string addr = &quot;beijing&quot;; function getAddrLength()public returns(uint)&#123; return bytes(addr).length;//获取字符串 &#125; function concatenateWithAbi ()public returns(string memory)&#123; return string(abi.encodePacked(name, addr)); &#125; /*function concatenateWithGit() public returns(string memory)&#123; return name.toSlice().concat(addr.toSlice()); &#125;*/ function compare1() public returns(bool)&#123; return keccak256(bytes(name)) == keccak256(bytes(addr)); &#125; function compare2() public returns (bool)&#123; for (uint i = 0; i &lt; bytes(name).length; i ++) &#123; if(bytes(name)[i] != bytes(addr)[i]) &#123; return false; &#125; &#125; &#125;/* // parseInt(parseFloat*10^_b) function parseInt(string memory _a, uint _b) internal returns (uint) &#123; bytes memory bresult = bytes(_a); uint mint = 0; bool decimals = false; for (uint i=0; i&lt;bresult.length; i++)&#123; if ((bresult[i] &gt;= 48)&amp;&amp;(bresult[i] &lt;= 57))&#123; if (decimals)&#123; if (_b == 0) break; else _b--; &#125; mint *= 10; mint += uint(bresult[i]) - 48; &#125; else if (bresult[i] == 46) decimals = true; &#125; if (_b &gt; 0) mint *= 10**_b; return mint; &#125; function uint2str(uint i) internal returns (string memory) &#123; if (i == 0) return &quot;0&quot;; uint j = i; uint len; while (j != 0)&#123; len++; j /= 10; &#125; bytes memory bstr = new bytes(len); uint k = len - 1; while (i != 0)&#123; bstr[k--] = byte(48 + i % 10); i /= 10; &#125; return string(bstr); &#125;*/&#125; ###长度字符串长度的获取需要将string转换成bytes，然后使用bytes的length属性获取长度。 ###拼接 字符串拼接，官网上给出的方法是使用abi.encodePacked方法 也可以自己写一个方法，思路就是把string转换成bytes，然后将bytes合并成一个大的bytes，最后再将结果bytes转换成string。其中bytes与string转换方法为bytes(string),string(bytes)，这里就不写代码了。 网上有人使用git上的一个工具包，不过我自己编译一直通不过，后续再查下原因。浏览了下代码，可以学习下。###比较Solidity同样不支持字符串的比较，需要自己实现，这里提供两种方式（这里不包含其他的工具包方式），当然出于性能要求以及gas消耗情况，可以首先对字符串的长度进行比较，然后再比较内容。这个文章写的不错，而且有gas消耗测试统计。 比较两字字符串的hash是否相等 逐个比较每个字符###int转换Solidity同样不支持string与int的互相转换。这里可以直接查看工具类oraclize。其转换思路就是把string首先转换成bytes类型，然后逐个遍历，进行数值累加。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（5）--布尔型和整型]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%885%EF%BC%89-%E5%B8%83%E5%B0%94%E5%9E%8B%E5%92%8C%E6%95%B4%E5%9E%8B%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[布尔型bool类型同其他语言一样，取值为true或false， 其运算操作有!、||、&amp;&amp;、!=、==，注意这里并没有|、&amp; 12345678910111213141516171819202122232425262728293031pragma solidity &gt;=0.4.22 &lt;0.6.0;contract EgBool &#123; bool isOne; bool isTwo; function operation() public &#123; isOne = true; if (isOne)&#123; // dosomething &#125; if (!isOne)&#123; // dosomething &#125; if (isOne || isTwo )&#123; // dosomething &#125; if (isOne &amp;&amp; isTwo )&#123; // dosomething &#125; if (isOne != isTwo )&#123; // dosomething &#125; if (isOne == isTwo )&#123; // dosomething &#125; &#125;&#125; 整型整型包含无符号uint和有符号int两种类型，每种类型有多种长度，比如uint8、uint64、int128等等，长度范围是8至256，相差8个长度，8，16，24，32……256。其中uint和uint256一样，int和int256一样。运算操作有比较、位操作和算术操作三种。 比较操作：&lt;= , &lt; , == , != , &gt;= , &gt; 位操作： &amp;(与） , |(或) , ^ (异或)， ~ (非） 算术操作：+ , - , * , /, % , (乘方，求幂) ，&lt;&lt;(左移) , &gt;&gt;(右移)其中左移和右移操作，a&lt;&lt;b，可以理解为a乘以2的b次方，表示为a*2b，同理右移a&gt;&gt;b表示为a/2**b。123456789101112131415161718192021222324252627282930313233343536373839pragma solidity &gt;=0.4.22 &lt;0.6.0;contract EgInt &#123; int i = 0; int8 i8 = -1; int256 i256 = 256; uint ui = 0; uint ui8 = 1; uint256 ui256 = 256; function operation() public &#123; if ( i &lt; i8 || i &lt;= i8 || i == i8 || i != i8 || i &gt; i8 || i &gt;= i8 )&#123; //dosomeing &#125; int a; int b; int c; c = a &amp; b; c = a | b; c = a ^ b; c = ~ b; c = a + b; c = a - b; c = a * b; c = a / b; c = a % b; c = a &lt;&lt; b; c = a &gt;&gt; b; //c = a**b; uint d; uint e; uint f; f = d**e; //c = d**e; &#125;&#125; 注意 有符号整数是不能够使用”**”操作， 有符号和无符号不能进行类型转换，不能同时参数运算，比如c = d + e;]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity编程语言（4）--HelloWorld]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%EF%BC%884%EF%BC%89-HelloWorld%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[智能合约就像是一份合同一样，你书写的每个代码都是合同的内容。所以合约一经部署，合约内容就无法修改，好比你和别人签苹写了合同之后，是没法再修改的。这也是正是基于区块链不可篡改的特性。在通常的编程语言中，一般会使用标准输出来打印“Hello World”，Solidity作为一门智能合约编程语言，是有别与一般的编程语言，他是基于以太坊，并且是用来编写“合约”的。所以这里不再使用“HelloWorld”作为示例，而是使用Solidity官网中的一个入门示例。 12345678910pragma solidity &gt;=0.4.0 &lt;0.6.0;contract SimpleStorage &#123; uint storedData; function set(uint x) public &#123; storedData = x; &#125; function get() public view returns (uint) &#123; return storedData; &#125;&#125; 以上代码就是一个使用Solidity编写的名为SimpleStorage的合约。 第一行代码是用来指定Solidity的语言版本，pragma solidity是固定格式，后边加上版本号，版本号通过范围来确定的，即大等于0.4.0，小于0.6.0。在网上会经常看到^0.4.21这样的书写方式，这种格式是支持在0.5.2及之前的版本。比如在remix-ide环境中编写pragma solidity ^0.5.3，则会提示编译错误：browser/Untitled.sol:3:1: ParserError: Source file requires different compiler version (current compiler is 0.5.2+commit.1df8f40c.Emscripten.clang - note that nightly builds are considered to be strictly less than the released version。 第二代码创建名为SimpleStorage的合约。contract 是关键字，SimpleStorage为合约名称。这个类似于java的类定义一样，class Person{}，比较容易理解。 第三行代码定了一个无符号整数storedData，这个状态变量将会保存在区块链上，好比写入数据库进行了持久化，什么时候都可以进行读取。 定义set方法，对状态变量storedData进行赋值，其中public是关键定，修饰set方法可以被合约外部调用。 定义get方法，返回状态变量storedData的值，对于返回值的书写稍有不同，关键字是returns，而不是return，另外返回值可以是多个，使用圆括号包起来。这就是一个简单的Solidity编写的合约了，有编程经验的人很容易理解。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity开发环境（3）--Mist]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%883%EF%BC%89-Mist%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[Remix是一个solidity的开发环境，他本身包含了EVM以及一些预置的帐户信息，所以可以进行测试开发。如果我们要把自己的合约部署到本地搭建的以太坊私链上要怎么做呢？一种是通过节点控制台命令将Remix生成的ABI和bytecode部署到私链上，一种是使用Mist钱包工具进行合约的部署（调用RPC接口进行部署）。 ###Mist安装 下载安装包http://upyun-assets.ethfans.org/mist/0-9-3/Mist-linux64-0-9-3.zip 解压后进入linux-unpacked目录 启动命令./mist –rpc http://127.0.0.1:9541 –swarmurl=http://swarm-gateways.net，其中–rpc参数用来指定我们私链节点的rpc地址。Mist不仅可以进行合约部署，最主要的是他可以查看合约部署状态，比如在哪个区块上，gas消耗待待。]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Solidity开发环境（2）--Remix-IDE]]></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%882%EF%BC%89-Remix-IDE%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[使用Remix来开发Solidity合约十分的方便，而且环境搭建也十分方便，他是通过web页面过行开发的。 ###在线Remix直接访问地址http://remix.ethereum.org/#optimize=false就可以进行开发，不过这种在线的方式是无法保存源码到本地，可以直接推到githup上。 ###本地npm安装本地安装直接使用npm命令就行（当然有些其他环境要求，这个安装过程中依情况解决），npm install remix-ide -g，安装后直接用行remix-ide命令，然后通过浏览器访问http://127.0.0.1:8080就可以看到开发界面了。 ###本地源码安装上边的安装结果是我们只能通过8080端口启动web服务，如果要修改成别的端口的话，本人尝试了一些命令参数都没有成功设置。不过可以通过源码进行修改，这样的话就需要下载源码了。下载地址是https://github.com/ethereum/remix-ide/。下载后修改文件/bin/remix-ide中的端口8080为其他端口即可。 1234567891011121314151617181920#!/usr/bin/env nodevar httpServer = require(&apos;http-server&apos;)var remixd = require(&apos;remixd&apos;)var server = httpServer.createServer(&#123; root: __dirname + &apos;/../&apos;&#125;)var folder = process.argv.length &gt; 2 ? process.argv[2] : process.cwd()server.listen(8080, &apos;127.0.0.1&apos;, function () &#123;&#125;)var router = new remixd.Router(65520, remixd.services.sharedFolder, &#123; remixIdeUrl: &apos;http://localhost:8080&apos; &#125;, (webSocket) =&gt; &#123; remixd.services.sharedFolder.setWebSocket(webSocket) remixd.services.sharedFolder.setupNotifications(folder) remixd.services.sharedFolder.sharedFolder(folder, false) &#125;)router.start()console.log(&apos;\x1b[33m%s\x1b[0m&apos;, &apos;Starting Remix IDE at http://localhost:8080 and sharing &apos; + folder)]]></content>
+      <categories>
+        <category>solidity</category>
+      </categories>
+      <tags>
+        <tag>区块链</tag>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
-    <title><![CDATA[Solidity开发环境（1）--快速搭建以太坊私链]]></title>
+    <title></title>
     <url>%2F2019%2F07%2F22%2FSolidity%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%881%EF%BC%89-%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%A7%81%E9%93%BE%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[title: Solidity开发环境（1）–快速搭建以太坊私链date: 2019-07-22 21:59:37tags: - solidity - 区块链categories: solidity 对于以太坊私链环境的搭建网上文章比较多，有的也比较详细，可以多参考一下。这里主要说一下关键步骤，对于虚拟机安装（ubuntu）、golang安装、git安装这些操作这里就不进行说明了。 1、下载geth在gopath路径下，使用git命令clone源码https://github.com/ethereum/go-ethereum.git。 2、编译geth在编译前需要修改一下挖矿难度，这样节点在挖矿时会出块快一些，方便测试，不然会很慢的。进入go-ethereum中找到consensus.go文件，找到方法func CalcDifficulty(config *params.ChainConfig, time uint64, parent *types.Header) *big.Int，将这个方法的返回值修改为return big.NewInt(10);，这样挖矿难度就不会逐渐增加了。然后再在go-ethereum目录下执行make all命令进行编译。 3、创建部署路径上一步已经有了可执行文件，然后把go-ethereum/build/bin下的geth文件拷贝到单独的工作路径，比如建立一个~/work/geth-bin的文件夹，将geth拷贝至其下。 4、创建帐户创建帐户其实是可以在节点启动后，通过geth命令来创建，但是我们需要在节点启动的时候预置一些币到帐户中，就必须先有帐户。这样节点一启动帐户就钱了，可以直接进行交易测试了，不需要等待挖矿来获取币了。一出生嘴里就含着金钥匙的感觉还是很爽的。使用./geth –datadir node1/data account new命令来创建帐户，本人一般喜欢创建3个节点，所以执行三次，每次路径改变一下就可以，比如node2/data、node3/data，这样就生成了三个帐户文件。每次创建帐户的时候把帐户地址复制下来，后续使用，当然也可以去node1/data/keystore查看，比如UTC–2018-12-12T08-03-06.473554277Z–7882005b83ee97c00817d9eaaadc340a7763b2f0，这是一个帐户文件，最后的一串数字就是帐户地址。 5、生成genesis.json文件 在alloc标签下指定三个帐户地址，以及他们的余额，余额可以弄多些，花的时候可以放开了花。 difficulty不用修改了，因为已经通过源码修改过了，这里修改也没意义了。123456789101112131415161718192021222324252627&#123; &quot;config&quot;: &#123; &quot;chainId&quot;: 14, &quot;homesteadBlock&quot;: 0, &quot;eip155Block&quot;: 0, &quot;eip158Block&quot;: 0 &#125;, &quot;alloc&quot; : &#123; &quot;7882005b83ee97c00817d9eaaadc340a7763b2f0&quot;:&#123; &quot;balance&quot;: &quot;33333300000000000000000000000&quot; &#125;, &quot;1db644fbeb757f6e73b4b1917ced1c06f1b0cc97&quot;:&#123; &quot;balance&quot;: &quot;110000000000000000000000&quot; &#125;, &quot;414ca00f449873c510476cf3e85dd044f114a3b5&quot;:&#123; &quot;balance&quot;: &quot;90000000000000000&quot; &#125; &#125;, &quot;coinbase&quot; : &quot;0x0000000000000000000000000000000000000000&quot;, &quot;difficulty&quot; : &quot;0x00002&quot;, &quot;extraData&quot; : &quot;&quot;, &quot;gasLimit&quot; : &quot;0x2fefd8&quot;, &quot;nonce&quot; : &quot;0x0000000000000042&quot;, &quot;mixhash&quot; : &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;, &quot;parentHash&quot; : &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;, &quot;timestamp&quot; : &quot;0x00&quot;&#125; 6、初始化节点有了初始化配置文件，我们就可以初始化节点了，使用./geth –datadir node1/data init genesis.json命令来创建，和帐户对应，分别创建三次，即三个节点。 7、启动节点启动命令./geth –networkid 14 –nodiscover –datadir node1/data –port 4001 –rpc –rpcapi net,eth,web3,personal –rpcaddr 0.0.0.0 –rpcport 9541 console，每次启动都要修改一下datadir、port、rpcport的值，这些是不可重复的。 12./geth --networkid 14 --nodiscover --datadir node2/data --port 4002 --rpc --rpcapi net,eth,web3,personal --rpcaddr 0.0.0.0 --rpcport 9542 console./geth --networkid 14 --nodiscover --datadir node3/data --port 4003 --rpc --rpcapi net,eth,web3,personal --rpcaddr 0.0.0.0 --rpcport 9543 console 7、节点发现上边虽然启动了三个节点，可他们之前是互相独立的，没有建立连接，可以手动的将他们连接在一起。在node1节点启动后的console中执行admin.nodeInfo.enode命令，会看到当前节点的url，比如enode://aa5bd995bf3ccdd693c46d54fd09598f3d58c99a4ac091ae2c31f725796c6e7ddffd2672fea5e4ff2d5085967a4c071915d7448fbb1757cf8f7411af94b25ed8@127.0.0.1:4001，然后在node2的console中执行admin.addPeer(“enode://aa5bd995bf3ccdd693c46d54fd09598f3d58c99a4ac091ae2c31f725796c6e7ddffd2672fea5e4ff2d5085967a4c071915d7448fbb1757cf8f7411af94b25ed8@127.0.0.1:4001”)，这样node1和node2就建立了连接了，然后同样的可以把node1和node3，node2和node3建立连接。 8、测试以上操作就搭建好了自己的以太坊私链了，然后你可以进行各种命令的测试了，看看你的帐户余额地址是多少，发发交易等等]]></content>
   </entry>
   <entry>
     <title><![CDATA[GO-HPB源码解读--work.go]]></title>

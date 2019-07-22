@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="区块链,solidity,">
 
 
 
@@ -79,14 +79,18 @@
 
 
 
+<meta name="description" content="Remix是一个solidity的开发环境，他本身包含了EVM以及一些预置的帐户信息，所以可以进行测试开发。如果我们要把自己的合约部署到本地搭建的以太坊私链上要怎么做呢？一种是通过节点控制台命令将Remix生成的ABI和bytecode部署到私链上，一种是使用Mist钱包工具进行合约的部署（调用RPC接口进行部署）。">
+<meta name="keywords" content="区块链,solidity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Solidity开发环境（3）--Mist">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity开发环境（3）-Mist/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="Remix是一个solidity的开发环境，他本身包含了EVM以及一些预置的帐户信息，所以可以进行测试开发。如果我们要把自己的合约部署到本地搭建的以太坊私链上要怎么做呢？一种是通过节点控制台命令将Remix生成的ABI和bytecode部署到私链上，一种是使用Mist钱包工具进行合约的部署（调用RPC接口进行部署）。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T14:00:18.043Z">
+<meta property="og:updated_time" content="2019-07-22T14:14:56.877Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Solidity开发环境（3）--Mist">
+<meta name="twitter:description" content="Remix是一个solidity的开发环境，他本身包含了EVM以及一些预置的帐户信息，所以可以进行测试开发。如果我们要把自己的合约部署到本地搭建的以太坊私链上要怎么做呢？一种是通过节点控制台命令将Remix生成的ABI和bytecode部署到私链上，一种是使用Mist钱包工具进行合约的部署（调用RPC接口进行部署）。">
 
 
 
@@ -331,6 +335,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solidity/" itemprop="url" rel="index">
+                    <span itemprop="name">solidity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -358,7 +384,16 @@
       
 
       
-        
+        <p>Remix是一个solidity的开发环境，他本身包含了EVM以及一些预置的帐户信息，所以可以进行测试开发。如果我们要把自己的合约部署到本地搭建的以太坊私链上要怎么做呢？一种是通过节点控制台命令将Remix生成的ABI和bytecode部署到私链上，一种是使用Mist钱包工具进行合约的部署（调用RPC接口进行部署）。</p>
+<a id="more"></a>
+
+<p>###Mist安装</p>
+<ol>
+<li>下载安装包<a href="http://upyun-assets.ethfans.org/mist/0-9-3/Mist-linux64-0-9-3.zip" target="_blank" rel="noopener">http://upyun-assets.ethfans.org/mist/0-9-3/Mist-linux64-0-9-3.zip</a></li>
+<li>解压后进入linux-unpacked目录</li>
+<li>启动命令./mist –rpc <a href="http://127.0.0.1:9541" target="_blank" rel="noopener">http://127.0.0.1:9541</a> –swarmurl=<a href="http://swarm-gateways.net" target="_blank" rel="noopener">http://swarm-gateways.net</a><br>，其中<strong>–rpc参数用来指定我们私链节点的rpc地址</strong>。<br>Mist不仅可以进行合约部署，最主要的是他可以查看合约部署状态，比如在哪个区块上，gas消耗待待。</li>
+</ol>
+
       
     </div>
     
@@ -372,6 +407,14 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+            <a href="/tags/solidity/" rel="tag"># solidity</a>
+          
+        </div>
       
 
       
@@ -475,7 +518,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -486,7 +529,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

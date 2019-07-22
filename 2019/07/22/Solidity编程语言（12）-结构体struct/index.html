@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="区块链,solidity,">
 
 
 
@@ -79,14 +79,18 @@
 
 
 
+<meta name="description" content="使用结构体struct可以自定义数据类型，结构体内可以包含除自身以外的所有数据类型，如果包含自身则会形成递归。">
+<meta name="keywords" content="区块链,solidity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Solidity编程语言（12）--结构体struct">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity编程语言（12）-结构体struct/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="使用结构体struct可以自定义数据类型，结构体内可以包含除自身以外的所有数据类型，如果包含自身则会形成递归。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T14:04:59.428Z">
+<meta property="og:updated_time" content="2019-07-22T14:16:01.449Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Solidity编程语言（12）--结构体struct">
+<meta name="twitter:description" content="使用结构体struct可以自定义数据类型，结构体内可以包含除自身以外的所有数据类型，如果包含自身则会形成递归。">
 
 
 
@@ -331,6 +335,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solidity/" itemprop="url" rel="index">
+                    <span itemprop="name">solidity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -358,7 +384,30 @@
       
 
       
-        
+        <p>使用结构体struct可以自定义数据类型，结构体内可以包含除自身以外的所有数据类型，如果包含自身则会形成递归。</p>
+<a id="more"></a>
+
+<p>###定义与初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract  EgStruct &#123;</span><br><span class="line">    mapping (string =&gt; Book) bookList;</span><br><span class="line">    struct Book&#123;</span><br><span class="line">        string name;</span><br><span class="line">        uint pages;</span><br><span class="line">        string[] contents;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    struct Reader&#123;</span><br><span class="line">        mapping (string =&gt; Book) books;</span><br><span class="line">        string name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Reader r;</span><br><span class="line">    function init() public&#123;</span><br><span class="line">        string[] memory b1c = new string[](3);</span><br><span class="line">        b1c[0] = &quot;1.0.1&quot;;</span><br><span class="line">        b1c[1] = &quot;1.0.2&quot;;</span><br><span class="line">        b1c[2] = &quot;2.0.1&quot;;</span><br><span class="line">        Book memory b1 = Book(&quot;book1&quot;,10,b1c);</span><br><span class="line"></span><br><span class="line">        Book memory b2 = Book(&#123;</span><br><span class="line">            name:&quot;book2&quot;,</span><br><span class="line">            pages:20,</span><br><span class="line">            contents:b1c</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Reader memory r1 = Reader(&quot;jack&quot;);</span><br><span class="line"></span><br><span class="line">        Reader memory r2 = Reader(&#123;</span><br><span class="line">            name:&quot;rosh&quot;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        // Reader memory r2 = Reader(bookList,&quot;jack&quot;);</span><br><span class="line">        // Reader memory r3 = Reader(&#123;</span><br><span class="line">        //     books:bookList,</span><br><span class="line">        //     name:&quot;rosh&quot;</span><br><span class="line">        // &#125;);</span><br><span class="line"></span><br><span class="line">        r = r2;</span><br><span class="line">        r.books[&quot;book1&quot;] = b1;</span><br><span class="line">        //r2.bookList[&quot;book2&quot;] = b2;</span><br><span class="line"></span><br><span class="line">        //r2.books = bookList;</span><br><span class="line">        //r.books = bookList;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>结构体struct的初始化有两种方式，一种是Book(“book1”,10,b1c)，需要按结构体的非mapping定义顺序传入，一种种Book({name:”book2”,pages:20,contents:b1c })</p>
+</li>
+<li><p>当结构体中包含mapping成员时，初始化的时候不能对mapping成员进行传参赋值</p>
+</li>
+<li><p>结构体的mapping成员变量是不能直接去引用其他mapping的（storage），不管该结构体对象是storage还是memory</p>
+</li>
+<li><p>只有结构体对象是状态变量（storage）的，才能使用其mapping成员进行赋值操作<br>###可见性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract  EgStruct &#123;</span><br><span class="line">    struct Book&#123;</span><br><span class="line">        string name;</span><br><span class="line">        uint pages;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function read(Book memory b) internal&#123;&#125;</span><br><span class="line"></span><br><span class="line">    function callTmp(EgStructTmp tmp) public&#123;</span><br><span class="line">        Book memory b = Book(&quot;jingpinmei&quot;,10);</span><br><span class="line">        tmp.seal(b.name,b.pages);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract EgStructSub is EgStruct&#123;</span><br><span class="line">    function write(Book memory b) internal&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract EgStructOut &#123;</span><br><span class="line">    /*function seal(Book memory b) &#123;&#125;*/</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract EgStructTmp&#123;</span><br><span class="line">    struct Book&#123;</span><br><span class="line">        string name;</span><br><span class="line">        uint pages;</span><br><span class="line">    &#125;</span><br><span class="line">    function seal(string memory name, uint pages) public &#123;</span><br><span class="line">        Book memory b =  Book(name, pages);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Solidity中的结构只在当前合约或者子类合约中可用，外部是不可见的，而且使用结构体的函数需要修饰为internal。</p>
+</li>
+<li><p>非要这么做的话，则可以通过函数调用进行传递基本类型的数据，然后再次组装成同样的结构体<br>###数组参数<br>这里有碰到个问题就是在函数参数不能是不固定的复杂类型参数，下边代码中seal1就无法编译通过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract EgStructTmp&#123;</span><br><span class="line">    struct Book&#123;</span><br><span class="line">        string name;</span><br><span class="line">        uint pages;</span><br><span class="line">    &#125;</span><br><span class="line">    function seal1(string memory name, uint pages,string[] memory s) public &#123;</span><br><span class="line">        Book memory b =  Book(name, pages);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function seal2(string memory name, uint pages, string[] memory s) internal &#123;</span><br><span class="line">        Book memory b =  Book(name, pages);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+
       
     </div>
     
@@ -372,6 +421,14 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+            <a href="/tags/solidity/" rel="tag"># solidity</a>
+          
+        </div>
       
 
       
@@ -475,7 +532,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -486,7 +543,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -79,14 +79,17 @@
 
 
 
+<meta name="description" content="title: Solidity开发环境（1）–快速搭建以太坊私链date: 2019-07-22 21:59:37tags:    - solidity    - 区块链categories: solidity  对于以太坊私链环境的搭建网上文章比较多，有的也比较详细，可以多参考一下。这里主要说一下关键步骤，对于虚拟机安装（ubuntu）、golang安装、git安装这些操作这里就不进行说明了。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Solidity开发环境（1）--快速搭建以太坊私链">
+<meta property="og:title" content="Buff">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity开发环境（1）-快速搭建以太坊私链/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="title: Solidity开发环境（1）–快速搭建以太坊私链date: 2019-07-22 21:59:37tags:    - solidity    - 区块链categories: solidity  对于以太坊私链环境的搭建网上文章比较多，有的也比较详细，可以多参考一下。这里主要说一下关键步骤，对于虚拟机安装（ubuntu）、golang安装、git安装这些操作这里就不进行说明了。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T13:59:37.413Z">
+<meta property="og:updated_time" content="2019-07-22T14:16:23.753Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Solidity开发环境（1）--快速搭建以太坊私链">
+<meta name="twitter:title" content="Buff">
+<meta name="twitter:description" content="title: Solidity开发环境（1）–快速搭建以太坊私链date: 2019-07-22 21:59:37tags:    - solidity    - 区块链categories: solidity  对于以太坊私链环境的搭建网上文章比较多，有的也比较详细，可以多参考一下。这里主要说一下关键步骤，对于虚拟机安装（ubuntu）、golang安装、git安装这些操作这里就不进行说明了。">
 
 
 
@@ -122,7 +125,7 @@
 
 
 
-  <title>Solidity开发环境（1）--快速搭建以太坊私链 | Buff</title>
+  <title> | Buff</title>
   
 
 
@@ -308,7 +311,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Solidity开发环境（1）--快速搭建以太坊私链</h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -358,7 +361,29 @@
       
 
       
-        
+        <hr>
+<p>title: Solidity开发环境（1）–快速搭建以太坊私链<br>date: 2019-07-22 21:59:37<br>tags:<br>    - solidity<br>    - 区块链<br>categories: solidity</p>
+<hr>
+<p>对于以太坊私链环境的搭建网上文章比较多，有的也比较详细，可以多参考一下。这里主要说一下关键步骤，对于虚拟机安装（ubuntu）、golang安装、git安装这些操作这里就不进行说明了。</p>
+<a id="more"></a>
+
+<h3 id="1、下载geth"><a href="#1、下载geth" class="headerlink" title="1、下载geth"></a>1、下载geth</h3><p>在gopath路径下，使用git命令clone源码<a href="https://github.com/ethereum/go-ethereum.git。" target="_blank" rel="noopener">https://github.com/ethereum/go-ethereum.git。</a></p>
+<h3 id="2、编译geth"><a href="#2、编译geth" class="headerlink" title="2、编译geth"></a>2、编译geth</h3><p>在编译前需要修改一下挖矿难度，这样节点在挖矿时会出块快一些，方便测试，不然会很慢的。进入go-ethereum中找到consensus.go文件，找到方法func CalcDifficulty(config *params.ChainConfig, time uint64, parent *types.Header) *big.Int，将这个方法的返回值修改为return big.NewInt(10);，这样挖矿难度就不会逐渐增加了。然后再在go-ethereum目录下执行make all命令进行编译。</p>
+<h3 id="3、创建部署路径"><a href="#3、创建部署路径" class="headerlink" title="3、创建部署路径"></a>3、创建部署路径</h3><p>上一步已经有了可执行文件，然后把go-ethereum/build/bin下的geth文件拷贝到单独的工作路径，比如建立一个~/work/geth-bin的文件夹，将geth拷贝至其下。</p>
+<h3 id="4、创建帐户"><a href="#4、创建帐户" class="headerlink" title="4、创建帐户"></a>4、创建帐户</h3><p>创建帐户其实是可以在节点启动后，通过geth命令来创建，但是我们需要在节点启动的时候预置一些币到帐户中，就必须先有帐户。这样节点一启动帐户就钱了，可以直接进行交易测试了，不需要等待挖矿来获取币了。一出生嘴里就含着金钥匙的感觉还是很爽的。使用./geth –datadir node1/data account new命令来创建帐户，本人一般喜欢创建3个节点，所以执行三次，每次路径改变一下就可以，比如node2/data、node3/data，这样就生成了三个帐户文件。每次创建帐户的时候把帐户地址复制下来，后续使用，当然也可以去node1/data/keystore查看，比如UTC–2018-12-12T08-03-06.473554277Z–7882005b83ee97c00817d9eaaadc340a7763b2f0，这是一个帐户文件，最后的一串数字就是帐户地址。</p>
+<h3 id="5、生成genesis-json文件"><a href="#5、生成genesis-json文件" class="headerlink" title="5、生成genesis.json文件"></a>5、生成genesis.json文件</h3><ul>
+<li>在alloc标签下指定三个帐户地址，以及他们的余额，余额可以弄多些，花的时候可以放开了花。</li>
+<li>difficulty不用修改了，因为已经通过源码修改过了，这里修改也没意义了。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        &quot;config&quot;: &#123;</span><br><span class="line">                &quot;chainId&quot;: 14,</span><br><span class="line">                &quot;homesteadBlock&quot;: 0,</span><br><span class="line">                &quot;eip155Block&quot;: 0,</span><br><span class="line">                &quot;eip158Block&quot;: 0</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;alloc&quot; : &#123;</span><br><span class="line">                &quot;7882005b83ee97c00817d9eaaadc340a7763b2f0&quot;:&#123;</span><br><span class="line">                        &quot;balance&quot;: &quot;33333300000000000000000000000&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;1db644fbeb757f6e73b4b1917ced1c06f1b0cc97&quot;:&#123;</span><br><span class="line">                        &quot;balance&quot;: &quot;110000000000000000000000&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;414ca00f449873c510476cf3e85dd044f114a3b5&quot;:&#123;</span><br><span class="line">                        &quot;balance&quot;: &quot;90000000000000000&quot;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;coinbase&quot; : &quot;0x0000000000000000000000000000000000000000&quot;,</span><br><span class="line">        &quot;difficulty&quot; : &quot;0x00002&quot;,</span><br><span class="line">        &quot;extraData&quot; : &quot;&quot;,</span><br><span class="line">        &quot;gasLimit&quot; : &quot;0x2fefd8&quot;,</span><br><span class="line">        &quot;nonce&quot; : &quot;0x0000000000000042&quot;,</span><br><span class="line">        &quot;mixhash&quot; : &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,</span><br><span class="line">        &quot;parentHash&quot; : &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,</span><br><span class="line">        &quot;timestamp&quot; : &quot;0x00&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="6、初始化节点"><a href="#6、初始化节点" class="headerlink" title="6、初始化节点"></a>6、初始化节点</h3><p>有了初始化配置文件，我们就可以初始化节点了，使用./geth –datadir node1/data init genesis.json命令来创建，和帐户对应，分别创建三次，即三个节点。</p>
+<h3 id="7、启动节点"><a href="#7、启动节点" class="headerlink" title="7、启动节点"></a>7、启动节点</h3><p>启动命令./geth –networkid 14 –nodiscover –datadir node1/data –port 4001 –rpc –rpcapi net,eth,web3,personal –rpcaddr 0.0.0.0 –rpcport 9541 console，每次启动都要修改一下datadir、port、rpcport的值，这些是不可重复的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./geth --networkid 14 --nodiscover --datadir node2/data --port 4002 --rpc --rpcapi net,eth,web3,personal --rpcaddr 0.0.0.0 --rpcport 9542 console</span><br><span class="line">./geth --networkid 14 --nodiscover --datadir node3/data --port 4003 --rpc --rpcapi net,eth,web3,personal --rpcaddr 0.0.0.0 --rpcport 9543 console</span><br></pre></td></tr></table></figure>
+
+<h3 id="7、节点发现"><a href="#7、节点发现" class="headerlink" title="7、节点发现"></a>7、节点发现</h3><p>上边虽然启动了三个节点，可他们之前是互相独立的，没有建立连接，可以手动的将他们连接在一起。<br>在node1节点启动后的console中执行admin.nodeInfo.enode命令，会看到当前节点的url，比如enode://aa5bd995bf3ccdd693c46d54fd09598f3d58c99a4ac091ae2c31f725796c6e7ddffd2672fea5e4ff2d5085967a4c071915d7448fbb1757cf8f7411af94b25ed8@127.0.0.1:4001，然后在node2的console中执行admin.addPeer(“enode://aa5bd995bf3ccdd693c46d54fd09598f3d58c99a4ac091ae2c31f725796c6e7ddffd2672fea5e4ff2d5085967a4c071915d7448fbb1757cf8f7411af94b25ed8@127.0.0.1:4001”)，这样node1和node2就建立了连接了，然后同样的可以把node1和node3，node2和node3建立连接。</p>
+<h3 id="8、测试"><a href="#8、测试" class="headerlink" title="8、测试"></a>8、测试</h3><p>以上操作就搭建好了自己的以太坊私链了，然后你可以进行各种命令的测试了，看看你的帐户余额地址是多少，发发交易等等</p>
+
       
     </div>
     
@@ -446,8 +471,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -475,7 +509,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -486,7 +520,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -509,6 +543,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、下载geth"><span class="nav-number">1.</span> <span class="nav-text">1、下载geth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、编译geth"><span class="nav-number">2.</span> <span class="nav-text">2、编译geth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、创建部署路径"><span class="nav-number">3.</span> <span class="nav-text">3、创建部署路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、创建帐户"><span class="nav-number">4.</span> <span class="nav-text">4、创建帐户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、生成genesis-json文件"><span class="nav-number">5.</span> <span class="nav-text">5、生成genesis.json文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、初始化节点"><span class="nav-number">6.</span> <span class="nav-text">6、初始化节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、启动节点"><span class="nav-number">7.</span> <span class="nav-text">7、启动节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、节点发现"><span class="nav-number">8.</span> <span class="nav-text">7、节点发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、测试"><span class="nav-number">9.</span> <span class="nav-text">8、测试</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

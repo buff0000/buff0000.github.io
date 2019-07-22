@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="区块链,solidity,">
 
 
 
@@ -79,14 +79,18 @@
 
 
 
+<meta name="description" content="###mapping的使用特性mapping是用来保存键值对的，其书写方式与一般的编程语言有些不同，mapping(keyType =&amp;gt; valueType)。mapping只能使用在合约的状态变量中，或者在函数内进行storage的引用，如var storage mappVal的用于存储状态变量的引用的对象，不能使用非状态变量来初始化这个引用，也就是mapping最终会保存在区块链上的，不">
+<meta name="keywords" content="区块链,solidity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Solidity编程语言（9）--mapping">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity编程语言（9）-mapping/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="###mapping的使用特性mapping是用来保存键值对的，其书写方式与一般的编程语言有些不同，mapping(keyType =&amp;gt; valueType)。mapping只能使用在合约的状态变量中，或者在函数内进行storage的引用，如var storage mappVal的用于存储状态变量的引用的对象，不能使用非状态变量来初始化这个引用，也就是mapping最终会保存在区块链上的，不">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T14:04:03.445Z">
+<meta property="og:updated_time" content="2019-07-22T14:15:42.751Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Solidity编程语言（9）--mapping">
+<meta name="twitter:description" content="###mapping的使用特性mapping是用来保存键值对的，其书写方式与一般的编程语言有些不同，mapping(keyType =&amp;gt; valueType)。mapping只能使用在合约的状态变量中，或者在函数内进行storage的引用，如var storage mappVal的用于存储状态变量的引用的对象，不能使用非状态变量来初始化这个引用，也就是mapping最终会保存在区块链上的，不">
 
 
 
@@ -331,6 +335,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solidity/" itemprop="url" rel="index">
+                    <span itemprop="name">solidity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -358,7 +384,21 @@
       
 
       
-        
+        <p>###mapping的使用特性<br>mapping是用来保存键值对的，其书写方式与一般的编程语言有些不同，mapping(keyType =&gt; valueType)。mapping只能使用在合约的状态变量中，或者在函数内进行storage的引用，如var storage mappVal的用于存储状态变量的引用的对象，不能使用非状态变量来初始化这个引用，也就是mapping最终会保存在区块链上的，不可能是内存型变量。</p>
+<a id="more"></a>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract  EgMapping&#123;</span><br><span class="line">    mapping(uint =&gt; string) public kvs;</span><br><span class="line"></span><br><span class="line">    function put () public&#123;</span><br><span class="line">        kvs[1] = &quot;a&quot;;</span><br><span class="line">        kvs[2] = &quot;b&quot;;</span><br><span class="line">        mapping(uint =&gt; string) storage kvs1 = kvs;</span><br><span class="line">        string memory a = kvs[1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>mapping的key可以使用除了mapping类型以外的所有类型，value没有任何限制。</li>
+<li>mapping实际上并不存储key的值，而是把key转换成keccak256的哈希值进行存储，所以通过mapping是无法获取保存的key的。</li>
+<li>mapping只能用来定义状态变量，如果要在函数内部使用的话，则也需要将其声名为一个storage类型的引用，引用指向的是还是状态变量。<br>###CURD操作</li>
+<li>增加元素，比如kvs[1] = “a”。</li>
+<li>更新元素，和增加一样，只不过key已经存在了。</li>
+<li>查找元素，比如string memory a = kvs[1]。</li>
+<li>删除元素，使用关键delete，比如delete kvs[1]。注意delete操作修改的是状态变量，所以会有gas的消耗，一般不会轻易的delete元素的。<br>###遍历<br>上边已经知道mapping是不保存key的值的，所以无法进行mapping的直接遍历。但是如果把key保存下来不就可以进行遍历了吗。其具体实现可以看这个<a href="https://github.com/ethereum/dapp-bin/tree/master/library" target="_blank" rel="noopener">工具包</a>，是将key保存到一个不固定长度的数组中，所以你在插入元素的时候也需要使用这个工具包的插入方法。</li>
+</ol>
+
       
     </div>
     
@@ -372,6 +412,14 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+            <a href="/tags/solidity/" rel="tag"># solidity</a>
+          
+        </div>
       
 
       
@@ -475,7 +523,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -486,7 +534,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

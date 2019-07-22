@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="区块链,solidity,">
 
 
 
@@ -79,14 +79,18 @@
 
 
 
+<meta name="description" content="字符串的定义使用单引号或双引号都可以。这里主要说一下有关string的常见操作，在solidity中不是很方便。">
+<meta name="keywords" content="区块链,solidity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Solidity编程语言（6）--字符串">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity编程语言（6）-字符串/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="字符串的定义使用单引号或双引号都可以。这里主要说一下有关string的常见操作，在solidity中不是很方便。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T14:01:11.668Z">
+<meta property="og:updated_time" content="2019-07-22T14:15:17.370Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Solidity编程语言（6）--字符串">
+<meta name="twitter:description" content="字符串的定义使用单引号或双引号都可以。这里主要说一下有关string的常见操作，在solidity中不是很方便。">
 
 
 
@@ -331,6 +335,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solidity/" itemprop="url" rel="index">
+                    <span itemprop="name">solidity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -358,7 +384,21 @@
       
 
       
-        
+        <p>字符串的定义使用单引号或双引号都可以。这里主要说一下有关string的常见操作，在solidity中不是很方便。</p>
+<a id="more"></a>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line">//import &quot;github.com/Arachnid/solidity-stringutils/strings.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract EgString &#123;</span><br><span class="line">    string name = &apos;buff&apos;;</span><br><span class="line">    string addr = &quot;beijing&quot;;</span><br><span class="line"></span><br><span class="line">    function getAddrLength()public returns(uint)&#123;</span><br><span class="line">        return bytes(addr).length;//获取字符串</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    function  concatenateWithAbi ()public returns(string memory)&#123;</span><br><span class="line">        return string(abi.encodePacked(name, addr));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*function concatenateWithGit() public  returns(string memory)&#123;</span><br><span class="line">        return name.toSlice().concat(addr.toSlice());</span><br><span class="line">    &#125;*/</span><br><span class="line"></span><br><span class="line">    function compare1() public returns(bool)&#123;</span><br><span class="line">        return keccak256(bytes(name)) == keccak256(bytes(addr));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function compare2() public returns (bool)&#123;</span><br><span class="line">        for (uint i = 0; i &lt; bytes(name).length; i ++) &#123;</span><br><span class="line">            if(bytes(name)[i] != bytes(addr)[i]) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">/*        // parseInt(parseFloat*10^_b)</span><br><span class="line">    function parseInt(string memory _a, uint  _b) internal returns (uint) &#123;</span><br><span class="line">        bytes memory bresult = bytes(_a);</span><br><span class="line">        uint mint = 0;</span><br><span class="line">        bool decimals = false;</span><br><span class="line">        for (uint i=0; i&lt;bresult.length; i++)&#123;</span><br><span class="line">            if ((bresult[i] &gt;= 48)&amp;&amp;(bresult[i] &lt;= 57))&#123;</span><br><span class="line">                if (decimals)&#123;</span><br><span class="line">                   if (_b == 0) break;</span><br><span class="line">                    else _b--;</span><br><span class="line">                &#125;</span><br><span class="line">                mint *= 10;</span><br><span class="line">                mint += uint(bresult[i]) - 48;</span><br><span class="line">            &#125; else if (bresult[i] == 46) decimals = true;</span><br><span class="line">        &#125;</span><br><span class="line">        if (_b &gt; 0) mint *= 10**_b;</span><br><span class="line">        return mint;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function uint2str(uint i) internal returns (string memory) &#123;</span><br><span class="line">        if (i == 0) return &quot;0&quot;;</span><br><span class="line">        uint j = i;</span><br><span class="line">        uint len;</span><br><span class="line">        while (j != 0)&#123;</span><br><span class="line">            len++;</span><br><span class="line">            j /= 10;</span><br><span class="line">        &#125;</span><br><span class="line">        bytes memory bstr = new bytes(len);</span><br><span class="line">        uint k = len - 1;</span><br><span class="line">        while (i != 0)&#123;</span><br><span class="line">            bstr[k--] = byte(48 + i % 10);</span><br><span class="line">            i /= 10;</span><br><span class="line">        &#125;</span><br><span class="line">        return string(bstr);</span><br><span class="line">    &#125;*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>###长度<br>字符串长度的获取需要将string转换成bytes，然后使用bytes的length属性获取长度。</p>
+<p>###拼接</p>
+<ol>
+<li>字符串拼接，<a href="https://solidity.readthedocs.io/en/latest/frequently-asked-questions.html#can-i-concatenate-two-strings" target="_blank" rel="noopener">官网</a>上给出的方法是使用abi.encodePacked方法</li>
+<li>也可以自己写一个方法，思路就是把string转换成bytes，然后将bytes合并成一个大的bytes，最后再将结果bytes转换成string。其中bytes与string转换方法为bytes(string),string(bytes)，这里就不写代码了。</li>
+<li>网上有人使用<a href="https://github.com/Arachnid/solidity-stringutils/blob/master/src/strings.sol" target="_blank" rel="noopener">git</a>上的一个工具包，不过我自己编译一直通不过，后续再查下原因。浏览了下代码，可以学习下。<br>###比较<br>Solidity同样不支持字符串的比较，需要自己实现，这里提供两种方式（这里不包含其他的工具包方式），当然出于性能要求以及gas消耗情况，可以首先对字符串的长度进行比较，然后再比较内容。这个<a href="https://blog.csdn.net/xiaomei1xiake2/article/details/81868317" target="_blank" rel="noopener">文章</a>写的不错，而且有gas消耗测试统计。</li>
+<li>比较两字字符串的hash是否相等</li>
+<li>逐个比较每个字符<br>###int转换<br>Solidity同样不支持string与int的互相转换。这里可以直接查看工具类<a href="https://github.com/oraclize/ethereum-api/blob/master/oraclizeAPI_0.4.sol" target="_blank" rel="noopener">oraclize</a>。其转换思路就是把string首先转换成bytes类型，然后逐个遍历，进行数值累加。</li>
+</ol>
+
       
     </div>
     
@@ -372,6 +412,14 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+            <a href="/tags/solidity/" rel="tag"># solidity</a>
+          
+        </div>
       
 
       
@@ -475,7 +523,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -486,7 +534,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

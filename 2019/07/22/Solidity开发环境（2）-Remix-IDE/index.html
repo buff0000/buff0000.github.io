@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="区块链,solidity,">
 
 
 
@@ -79,14 +79,18 @@
 
 
 
+<meta name="description" content="使用Remix来开发Solidity合约十分的方便，而且环境搭建也十分方便，他是通过web页面过行开发的。">
+<meta name="keywords" content="区块链,solidity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Solidity开发环境（2）--Remix-IDE">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity开发环境（2）-Remix-IDE/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="使用Remix来开发Solidity合约十分的方便，而且环境搭建也十分方便，他是通过web页面过行开发的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T13:59:55.638Z">
+<meta property="og:updated_time" content="2019-07-22T14:14:49.735Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Solidity开发环境（2）--Remix-IDE">
+<meta name="twitter:description" content="使用Remix来开发Solidity合约十分的方便，而且环境搭建也十分方便，他是通过web页面过行开发的。">
 
 
 
@@ -331,6 +335,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solidity/" itemprop="url" rel="index">
+                    <span itemprop="name">solidity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -358,7 +384,15 @@
       
 
       
-        
+        <p>使用Remix来开发Solidity合约十分的方便，而且环境搭建也十分方便，他是通过web页面过行开发的。</p>
+<a id="more"></a>
+
+<p>###在线Remix<br>直接访问地址<a href="http://remix.ethereum.org/#optimize=false就可以进行开发，不过这种在线的方式是无法保存源码到本地，可以直接推到githup上。" target="_blank" rel="noopener">http://remix.ethereum.org/#optimize=false就可以进行开发，不过这种在线的方式是无法保存源码到本地，可以直接推到githup上。</a></p>
+<p>###本地npm安装<br>本地安装直接使用npm命令就行（当然有些其他环境要求，这个安装过程中依情况解决），<strong>npm install remix-ide -g</strong>，安装后直接用行<strong>remix-ide</strong>命令，然后通过浏览器访问<a href="http://127.0.0.1:8080就可以看到开发界面了。" target="_blank" rel="noopener">http://127.0.0.1:8080就可以看到开发界面了。</a></p>
+<p>###本地源码安装<br>上边的安装结果是我们只能通过8080端口启动web服务，如果要修改成别的端口的话，本人尝试了一些命令参数都没有成功设置。不过可以通过源码进行修改，这样的话就需要下载源码了。下载地址是<a href="https://github.com/ethereum/remix-ide/。下载后修改文件/bin/remix-ide中的端口8080为其他端口即可。" target="_blank" rel="noopener">https://github.com/ethereum/remix-ide/。下载后修改文件/bin/remix-ide中的端口8080为其他端口即可。</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env node</span><br><span class="line">var httpServer = require(&apos;http-server&apos;)</span><br><span class="line">var remixd = require(&apos;remixd&apos;)</span><br><span class="line"></span><br><span class="line">var server = httpServer.createServer(&#123;</span><br><span class="line">    root: __dirname + &apos;/../&apos;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">var folder = process.argv.length &gt; 2 ? process.argv[2] : process.cwd()</span><br><span class="line"></span><br><span class="line">server.listen(8080, &apos;127.0.0.1&apos;, function () &#123;&#125;)</span><br><span class="line">var router = new remixd.Router(65520, remixd.services.sharedFolder, &#123; remixIdeUrl: &apos;http://localhost:8080&apos; &#125;, (webSocket) =&gt; &#123;</span><br><span class="line">    remixd.services.sharedFolder.setWebSocket(webSocket)</span><br><span class="line">    remixd.services.sharedFolder.setupNotifications(folder)</span><br><span class="line">    remixd.services.sharedFolder.sharedFolder(folder, false)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">router.start()</span><br><span class="line"></span><br><span class="line">console.log(&apos;\x1b[33m%s\x1b[0m&apos;, &apos;Starting Remix IDE at http://localhost:8080 and sharing &apos; + folder)</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     
@@ -373,6 +407,14 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+            <a href="/tags/solidity/" rel="tag"># solidity</a>
+          
+        </div>
+      
 
       
       
@@ -382,8 +424,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/22/Solidity开发环境（1）-快速搭建以太坊私链/" rel="next" title="Solidity开发环境（1）--快速搭建以太坊私链">
-                <i class="fa fa-chevron-left"></i> Solidity开发环境（1）--快速搭建以太坊私链
+              <a href="/2019/07/22/Solidity开发环境（1）-快速搭建以太坊私链/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
               </a>
             
           </div>
@@ -475,7 +517,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -486,7 +528,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

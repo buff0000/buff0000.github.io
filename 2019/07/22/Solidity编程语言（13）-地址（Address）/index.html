@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="区块链,solidity,">
 
 
 
@@ -79,14 +79,18 @@
 
 
 
+<meta name="description" content="这里要说的地址并不是通常的编程语言中的内存地址，而是交易地址。我们知道区块链进行价值传递的时候必须是通过一个地址传递到另一个地址，无论交易或者合约都离不开地址。因此把地址作Address为Solidity语言的内嵌数据类型会十分方便开发的，更重要的一点就是在Solidity中，所有合约都继承地址Address类型。这不仅仅是单纯的为了在语法上的实现，而在实际情况是合约本身就离不开地址，包括合约的部">
+<meta name="keywords" content="区块链,solidity">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Solidity编程语言（13）--地址（Address）">
 <meta property="og:url" content="http://yoursite.com/2019/07/22/Solidity编程语言（13）-地址（Address）/index.html">
 <meta property="og:site_name" content="Buff">
+<meta property="og:description" content="这里要说的地址并不是通常的编程语言中的内存地址，而是交易地址。我们知道区块链进行价值传递的时候必须是通过一个地址传递到另一个地址，无论交易或者合约都离不开地址。因此把地址作Address为Solidity语言的内嵌数据类型会十分方便开发的，更重要的一点就是在Solidity中，所有合约都继承地址Address类型。这不仅仅是单纯的为了在语法上的实现，而在实际情况是合约本身就离不开地址，包括合约的部">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T14:05:16.945Z">
+<meta property="og:updated_time" content="2019-07-22T14:16:08.807Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Solidity编程语言（13）--地址（Address）">
+<meta name="twitter:description" content="这里要说的地址并不是通常的编程语言中的内存地址，而是交易地址。我们知道区块链进行价值传递的时候必须是通过一个地址传递到另一个地址，无论交易或者合约都离不开地址。因此把地址作Address为Solidity语言的内嵌数据类型会十分方便开发的，更重要的一点就是在Solidity中，所有合约都继承地址Address类型。这不仅仅是单纯的为了在语法上的实现，而在实际情况是合约本身就离不开地址，包括合约的部">
 
 
 
@@ -331,6 +335,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/solidity/" itemprop="url" rel="index">
+                    <span itemprop="name">solidity</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -358,7 +384,75 @@
       
 
       
-        
+        <p>这里要说的地址并不是通常的编程语言中的内存地址，而是交易地址。我们知道区块链进行价值传递的时候必须是通过一个地址传递到另一个地址，无论交易或者合约都离不开地址。因此把地址作Address为Solidity语言的内嵌数据类型会十分方便开发的，更重要的一点就是在Solidity中，所有合约都继承地址Address类型。这不仅仅是单纯的为了在语法上的实现，而在实际情况是合约本身就离不开地址，包括合约的部署和执行都需要地址的参与。<br>地址是两种类型，一种是address，一种是address payable。其中address payable相比address类型多了两个成员方法send和transfer，表示可以向address payable类型的变量进行转帐操作。</p>
+<a id="more"></a>
+
+<p>###地址类型格式要求<br>以太坊中的地址是20个字节，比如<strong>0x52908400098527886E0F7030069857D2E4169EE7</strong>，由于一个字节等于8位，所以地址也可以使用uint160来声明。地址通常可以进行比较运算。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract EgAddress&#123;</span><br><span class="line"></span><br><span class="line">   function testType() public &#123;</span><br><span class="line">        address _addr = 0x52908400098527886E0F7030069857D2E4169EE7;</span><br><span class="line">        uint160 _addi = 471360049350540642640628028220064440840608208820;</span><br><span class="line">        string memory h = hex&quot;52908400098527886E0F7030069857D2E4169EE7&quot;;</span><br><span class="line">        address addr = address(_addi);</span><br><span class="line">        //addr = address(h);</span><br><span class="line">        uint160 addi = uint160(_addr);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>注意的是hex类型是不能直接和address进行转换的</p>
+</li>
+<li><p>address虽然是十六进制串，address是有格式要求的，检验方法是可参考<a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md" target="_blank" rel="noopener">EIP55</a><br>###合约地址<br>我们知道每个合约都是径过一个帐户部署到区块连上的，同时这个合约也会生成一个地址，并可以向这个合约地址进行转帐操作。那么这个部署的帐户地址和合约地址是怎么得到呢。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract EgAddress&#123;</span><br><span class="line">   address public owner;</span><br><span class="line"></span><br><span class="line">    constructor() public &#123;</span><br><span class="line">       owner = msg.sender;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">  function getOwner() public returns(address)&#123;</span><br><span class="line">      return owner;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function getContractAddr() public view returns(address)&#123;</span><br><span class="line">    return address(this);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function getSenderAddr() public returns (address)&#123;</span><br><span class="line">      return msg.sender;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>msg.sender是内置方法，他返回当前方法的调用者地址，也就是说我通过A帐户调用合约方法getSenderAddr，则返回的是A的地址，通过B帐户调用合约方法getSenderAddr，则返回的是B的地址。（另外还有msg.value和msg.data都通过调用者传进来的数据）</p>
+</li>
+<li><p>构造函数constructor是在合约进行部署时执行，且只执行一次。</p>
+</li>
+<li><p>在获取合约的创建者则是通过“曲线”的方式获取，首先声明状态变量owner，接着在构造函数中将方法的调用者的地址赋值给owner，因为构造函数只有在合约创建时才会被调用，所以owner保存的就是合约创建者的地址，最后通过公有方法getOwner将状态变量的值返回出去。</p>
+</li>
+<li><p>在获取合约本身的地址是通过this来获取，旧的版本可能this本身就是address类型的，可以直接返回this，但本示例中的版本需要将this是EgAddress类型的，需要做个类型转换才能返回address类型。<br>###成员变量balance<br>每个地址都代表着一个价值的持有者，所以可以直接查看其余额，即通过balance属性<br>###成员方法<br>除了成员变量balance外，还有以下几个成员方法</p>
+<table>
+<thead>
+<tr>
+<th>成员方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;address&gt;.balance (uint256)</td>
+</tr>
+<tr>
+<td>&lt;address payable&gt;.transfer(uint256 amount)</td>
+</tr>
+<tr>
+<td>&lt;address payable&gt;.send(uint256 amount) returns (bool)</td>
+</tr>
+<tr>
+<td>&lt;address&gt;.call(bytes memory) returns (bool, bytes memory)</td>
+</tr>
+<tr>
+<td>&lt;address&gt;.delegatecall(bytes memory) returns (bool, bytes memory)</td>
+</tr>
+<tr>
+<td>&lt;address&gt;.staticcall(bytes memory) returns (bool, bytes memory)</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.4.0 &lt;0.6.0;</span><br><span class="line"></span><br><span class="line">contract EgAddress&#123;</span><br><span class="line"></span><br><span class="line">    function testSend()payable  public &#123;</span><br><span class="line">        address payable to = 0x52908400098527886E0F7030069857D2E4169EE7;</span><br><span class="line">        to.send(msg.value);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testTranser()payable  public &#123;</span><br><span class="line">        address payable to = 0x52908400098527886E0F7030069857D2E4169EE7;</span><br><span class="line">        to.transfer(msg.value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testStack1024(uint depth) payable public&#123;</span><br><span class="line">        address payable to = 0x52908400098527886E0F7030069857D2E4169EE7;</span><br><span class="line">        bool r = to.send(1 wei);</span><br><span class="line">        if (depth &gt;1 &amp;&amp; r)&#123;</span><br><span class="line">            testStack1024(depth -1);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*function testCSend() payable  public &#123;</span><br><span class="line">        address payable to = address(this);</span><br><span class="line">        this.send(msg.value);</span><br><span class="line">        address(this).send(msg.value);</span><br><span class="line">    &#125;*/</span><br><span class="line"></span><br><span class="line">    /*function testCTranser()payable  public &#123;</span><br><span class="line">        // address payable to = 0x52908400098527886E0F7030069857D2E4169EE7;</span><br><span class="line">        address(this).transfer(msg.value);</span><br><span class="line">    &#125;*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>send</li>
+</ol>
+<ul>
+<li>send方法相比较transfer方法来说更“底层”一些，如果send方法执行失败，并不会抛出异常，而是返回false。</li>
+<li>send调用栈深度不能超过1024，否则会执行失败。这个问题在testStack1024方法中进行了验证，不过传入的数字太大的话，会执行失败，即使没到1024，原因还没找到。。。。。</li>
+<li>send方法会返回bool类型的结果来表示执行结果</li>
+<li>如果gas不够会执行失败</li>
+<li>建议使用transfer方法，相对更安全些</li>
+</ul>
+<ol start="2">
+<li>transfer</li>
+</ol>
+<ul>
+<li>transfer和send使用方法上一样，也是用来进行转帐操作，如果当前帐户余额不足或者对方帐户拒绝转帐，则会执行失败。</li>
+<li>如果transfer的调用地址是一个合约地址，则合约的回调函数将被执行</li>
+</ul>
+<ol start="3">
+<li>关call及delegatecall、staticcall单独使用一篇幅来讲</li>
+</ol>
+
       
     </div>
     
@@ -372,6 +466,14 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+          
+            <a href="/tags/solidity/" rel="tag"># solidity</a>
+          
+        </div>
       
 
       
@@ -471,7 +573,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -482,7 +584,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
