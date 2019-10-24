@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MYSQL,数据库,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="记一次MYSQL存储过程调试过程">
+<meta name="keywords" content="MYSQL,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="存储过程调试过程">
+<meta property="og:url" content="http://yoursite.com/2019/10/23/存储过程调试过程/index.html">
+<meta property="og:site_name" content="Buff">
+<meta property="og:description" content="记一次MYSQL存储过程调试过程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-24T10:54:32.183Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="存储过程调试过程">
+<meta name="twitter:description" content="记一次MYSQL存储过程调试过程">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/23/存储过程调试过程/">
+
+
+
+
+
+  <title>存储过程调试过程 | Buff</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Buff</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">越努力越幸运</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/23/存储过程调试过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">存储过程调试过程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-23T13:39:30+08:00">
+                2019-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MYSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MYSQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>记一次MYSQL存储过程调试过程</p>
+<a id="more"></a>
+
+<p>···<br>以下存储过程在最近总是偶尔出现返回失败的情况，由于看不到异常信息，所以查找原因颇费周折。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER $$</span><br><span class="line"></span><br><span class="line">USE `IotProductDB`$$</span><br><span class="line"></span><br><span class="line">DROP PROCEDURE IF EXISTS `PROC_PRODUCT_PERSRESULT_CARD`$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER=`links`@`%` PROCEDURE `PROC_PRODUCT_PERSRESULT_CARD`(IN `IN_PERS_ICCID` VARCHAR(20),IN `IN_ICCID` VARCHAR(20),IN `IN_ASSET_ID` VARCHAR(20),</span><br><span class="line"> IN `IN_RSTCODE` VARCHAR(4), IN `IN_RSTINFO` VARCHAR(100), IN `IN_TASKNO` VARCHAR(20), IN `IN_PDN` VARCHAR(20),OUT `OUT_RESULT` VARCHAR(2))</span><br><span class="line">BEGIN</span><br><span class="line">        #定义变量</span><br><span class="line">        DECLARE V_MANUFACTURERCODE VARCHAR(10) DEFAULT NULL;</span><br><span class="line">    DECLARE V_MANUFACTURERNAME VARCHAR(50) DEFAULT NULL;</span><br><span class="line">    DECLARE V_PARTNERCODE VARCHAR(32) DEFAULT NULL;</span><br><span class="line">    DECLARE V_PARTNERNAME VARCHAR(30) DEFAULT NULL;</span><br><span class="line">    DECLARE V_ROAMSIM_CODE VARCHAR(50) DEFAULT NULL;</span><br><span class="line">    DECLARE V_ROAMSIM_VERSION VARCHAR(20) DEFAULT NULL;</span><br><span class="line">        DECLARE V_RODUCT_CODE VARCHAR(200) DEFAULT NULL;</span><br><span class="line">        DECLARE V_CARD_MATERIAL_CODE VARCHAR(25) DEFAULT NULL;</span><br><span class="line">        DECLARE V_PRODUCTTYPE VARCHAR(2) DEFAULT NULL;</span><br><span class="line">        DECLARE V_M2MCARD_SCLIENT_DATE VARCHAR(5) DEFAULT NULL;</span><br><span class="line">        DECLARE V_M2MCARD_STOP_DATE VARCHAR(5) DEFAULT NULL;</span><br><span class="line">        DECLARE V_OTA_FLAG VARCHAR(2) DEFAULT NULL;</span><br><span class="line">        DECLARE V_MORE_IMSI_FLAG VARCHAR(2) DEFAULT NULL;</span><br><span class="line">        DECLARE V_INUSE_INDUSTRY VARCHAR(50) DEFAULT NULL;</span><br><span class="line">        DECLARE V_OTA_PROTOCOL_VERSION VARCHAR(50) DEFAULT NULL;</span><br><span class="line">        DECLARE V_LIFECYCLE VARCHAR(2) DEFAULT NULL;</span><br><span class="line">    DECLARE V_ASSIGN_TIME VARCHAR(30) DEFAULT NULL;</span><br><span class="line">    DECLARE V_LIFECYCLE_STARTTIME VARCHAR(30) DEFAULT NULL;</span><br><span class="line">    DECLARE V_PRODUCT_TYPE VARCHAR(2) DEFAULT NULL;</span><br><span class="line">    DECLARE V_BIP_PARAM_NAME VARCHAR(50) DEFAULT NULL;</span><br><span class="line">        DECLARE V_DEVICE_STATUS VARCHAR(2) DEFAULT NULL;</span><br><span class="line">    DECLARE V_TWICE_TYPE VARCHAR(2) DEFAULT NULL;</span><br><span class="line">    DECLARE V_ASSET_SIGN VARCHAR(30) DEFAULT NULL;</span><br><span class="line">    DECLARE V_CVT INT(2);</span><br><span class="line"></span><br><span class="line">        # 定义游标遍历时，作为判断是否遍历完全部记录的标记</span><br><span class="line">    DECLARE num INT DEFAULT 0;</span><br><span class="line">    # 集合变量</span><br><span class="line">    DECLARE V_ICCID VARCHAR(20) DEFAULT NULL;</span><br><span class="line">    DECLARE V_IMSI VARCHAR(20) DEFAULT NULL;</span><br><span class="line">    DECLARE V_NUMBERTYPE VARCHAR(2) DEFAULT NULL;</span><br><span class="line">        DECLARE V_SUPPLIERCODE VARCHAR(12) DEFAULT NULL;</span><br><span class="line">    DECLARE V_SUPPLIERNAME VARCHAR(100) DEFAULT NULL;</span><br><span class="line">        DECLARE V_OPERATORCODE VARCHAR(4) DEFAULT NULL;</span><br><span class="line">    DECLARE V_OPERATORNAME VARCHAR(50) DEFAULT NULL;</span><br><span class="line">    DECLARE V_COVER_COUNTRY VARCHAR(2000) DEFAULT NULL;</span><br><span class="line">    # 定义游标，并将sql结果集赋值到游标中</span><br><span class="line">    DECLARE softsim_list CURSOR FOR SELECT `iccid`,`imsi`,`number_type`,`supplier_code`,`supplier_name`,`operator_code`,</span><br><span class="line">           `operator_name`,`cover_country` FROM `production_log_t` WHERE asset_sign=(</span><br><span class="line">            SELECT asset_sign FROM `production_log_t` WHERE pers_data_iccid=IN_PERS_ICCID AND task_no=IN_TASKNO</span><br><span class="line">                    AND (asset_id=IN_ASSET_ID OR dispersion_factor=IN_ASSET_ID) LIMIT 1);</span><br><span class="line">    # 声明当游标遍历完全部记录后将标志变量置成某个值</span><br><span class="line">    DECLARE CONTINUE HANDLER FOR NOT FOUND SET num=1;</span><br><span class="line">    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET OUT_RESULT=&apos;0&apos;;</span><br><span class="line">    SET OUT_RESULT = &apos;1&apos;;</span><br><span class="line">    START TRANSACTION;#事务;</span><br><span class="line">    SELECT `manufacturer_code`,`manufacturer_name`,`partner_code`,`partner_name`,`roamingsim_code`,`roamingsim_version`,`product_code`,</span><br><span class="line">    `card_material_code`,`product_type`,`m2mcard_slient_date`,`m2mcard_stop_date`,`ota_flag`,`more_imsi_flag`,`inuse_industry`,</span><br><span class="line">    `ota_protocol_version`,`product_type`,`twice_type` INTO V_MANUFACTURERCODE,V_MANUFACTURERNAME,V_PARTNERCODE,</span><br><span class="line">    V_PARTNERNAME,V_ROAMSIM_CODE,V_ROAMSIM_VERSION,V_RODUCT_CODE,V_CARD_MATERIAL_CODE,V_PRODUCTTYPE,V_M2MCARD_SCLIENT_DATE,V_M2MCARD_STOP_DATE,</span><br><span class="line">    V_OTA_FLAG,V_MORE_IMSI_FLAG,V_INUSE_INDUSTRY,V_OTA_PROTOCOL_VERSION,V_PRODUCT_TYPE,V_TWICE_TYPE</span><br><span class="line">    FROM `simcard_production_task_t` WHERE task_no=IN_TASKNO LIMIT 1;</span><br><span class="line"></span><br><span class="line">    IF &apos;0000&apos; = IN_RSTCODE THEN #生产成功</span><br><span class="line">        # 如果异常数据表中有该记录的数据则删除</span><br><span class="line">        DELETE FROM `simcard_product_abnormal_t`</span><br><span class="line">        WHERE task_no=IN_TASKNO AND eficcid=IN_PERS_ICCID AND pdn=IN_PDN;</span><br><span class="line"></span><br><span class="line">        SELECT asset_sign INTO V_ASSET_SIGN  FROM `production_log_t` WHERE pers_data_iccid=IN_PERS_ICCID AND task_no=IN_TASKNO</span><br><span class="line">                AND (asset_id=IN_ASSET_ID OR dispersion_factor=IN_ASSET_ID) LIMIT 1;</span><br><span class="line"></span><br><span class="line">        UPDATE production_log_t SET `status`=&apos;2&apos;, finish_time=NOW(), rst_code=IN_RSTCODE, rst_info=IN_RSTINFO</span><br><span class="line">        WHERE task_no=IN_TASKNO AND asset_sign=V_ASSET_SIGN;</span><br><span class="line"></span><br><span class="line">        # 打开游标</span><br><span class="line">        OPEN softsim_list;</span><br><span class="line">            # 将游标中的值赋值给变量，要注意sql结果列的顺序</span><br><span class="line">             FETCH softsim_list INTO V_ICCID,V_IMSI,V_NUMBERTYPE,V_SUPPLIERCODE,V_SUPPLIERNAME,V_OPERATORCODE,V_OPERATORNAME,V_COVER_COUNTRY;</span><br><span class="line">            # while循环</span><br><span class="line">            WHILE num &lt;&gt; 1 DO</span><br><span class="line">                IF &apos;2&apos;=V_NUMBERTYPE THEN</span><br><span class="line">                 UPDATE softsim_resource_info_t SET `status`=&apos;02&apos; WHERE iccid=V_ICCID;</span><br><span class="line">                 IF &apos;2&apos;=V_OTA_FLAG || &apos;1&apos;=V_TWICE_TYPE THEN</span><br><span class="line"></span><br><span class="line">                    INSERT INTO `asset_softsim_usage_t` (</span><br><span class="line">                      `asset_id`,`iccid`,`imsi`,`status`,`create_date`,`cover_mcc`,`operator_code`,`operator_name`,`supplier_code`,`supplier_name`,</span><br><span class="line">                      `multi_imsi_flag`,`soft_sim_type`</span><br><span class="line">                     )</span><br><span class="line">                     VALUES(</span><br><span class="line">                       IN_ASSET_ID,V_ICCID,V_IMSI,&apos;1&apos;,NOW(),V_COVER_COUNTRY,V_OPERATORCODE,V_OPERATORNAME,V_SUPPLIERCODE,V_SUPPLIERNAME,</span><br><span class="line">                       V_MORE_IMSI_FLAG,&apos;2&apos;</span><br><span class="line">                     );</span><br><span class="line">                 END IF;</span><br><span class="line">                    ELSE</span><br><span class="line">                            IF &apos;1&apos;=V_OTA_FLAG THEN</span><br><span class="line"></span><br><span class="line">                    INSERT INTO `asset_softsim_usage_t` (</span><br><span class="line">                      `asset_id`,`iccid`,`imsi`,`status`,`create_date`,`cover_mcc`,`operator_code`,`operator_name`,`supplier_code`,`supplier_name`,</span><br><span class="line">                      `multi_imsi_flag`,`soft_sim_type`</span><br><span class="line">                     )</span><br><span class="line">                     VALUES(</span><br><span class="line">                       IN_ASSET_ID,V_ICCID,V_IMSI,&apos;1&apos;,NOW(),V_COVER_COUNTRY,V_OPERATORCODE,V_OPERATORNAME,V_SUPPLIERCODE,V_SUPPLIERNAME,</span><br><span class="line">                       V_MORE_IMSI_FLAG,&apos;2&apos;</span><br><span class="line">                     );</span><br><span class="line">                    END IF;</span><br><span class="line">                    END IF;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">              FETCH softsim_list INTO V_ICCID,V_IMSI,V_NUMBERTYPE,V_SUPPLIERCODE,V_SUPPLIERNAME,V_OPERATORCODE,V_OPERATORNAME,V_COVER_COUNTRY;</span><br><span class="line"></span><br><span class="line">            END WHILE;</span><br><span class="line">            # 关闭游标</span><br><span class="line">           CLOSE softsim_list;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        IF V_PARTNERCODE=&apos;0&apos; THEN</span><br><span class="line">            SET V_LIFECYCLE=&apos;5&apos;;</span><br><span class="line">        ELSE</span><br><span class="line">            SET V_LIFECYCLE=&apos;0&apos;;</span><br><span class="line">            SET V_ASSIGN_TIME=NOW();</span><br><span class="line">        END IF;</span><br><span class="line"></span><br><span class="line">        SET V_LIFECYCLE_STARTTIME=DATE_FORMAT(NOW(),&apos;%Y%m%d&apos;);</span><br><span class="line"></span><br><span class="line">        IF &apos;4&apos;=V_PRODUCT_TYPE &amp;&amp; &apos;2&apos;=V_TWICE_TYPE THEN</span><br><span class="line"></span><br><span class="line">           SET V_DEVICE_STATUS=&apos;1&apos;;</span><br><span class="line">           UPDATE `asset_info_t` SET `roamingsim_code`=V_ROAMSIM_CODE,`version`=V_ROAMSIM_VERSION,lifecycle=V_LIFECYCLE,</span><br><span class="line">           lifecycle_start_time=V_LIFECYCLE_STARTTIME,task_no=IN_TASKNO,manufacturer_code=V_MANUFACTURERCODE,</span><br><span class="line">           manufacturer_name=V_MANUFACTURERNAME,in_time=NOW(),activate_flag=&apos;0&apos;,partner_name=V_PARTNERNAME,partner_code=V_PARTNERCODE,</span><br><span class="line">           data_encrypt_factor=IN_ASSET_ID,assign_time=V_ASSIGN_TIME,is_online=&apos;0&apos;,silent_cycle=V_M2MCARD_SCLIENT_DATE,</span><br><span class="line">           stop_service_period=V_M2MCARD_STOP_DATE,init_flag=&apos;0&apos;,ota_flag=V_OTA_FLAG,bip_flag=&apos;0&apos;,inuse_industry=V_INUSE_INDUSTRY,</span><br><span class="line">           more_imsi_flag=V_MORE_IMSI_FLAG,device_form=&apos;1&apos;,manu_type=V_PRODUCT_TYPE,ota_protocol_version=V_OTA_PROTOCOL_VERSION,</span><br><span class="line">           bip_param_name=V_BIP_PARAM_NAME,device_status=V_DEVICE_STATUS,card_material_code=V_CARD_MATERIAL_CODE</span><br><span class="line">           WHERE asset_id=IN_ASSET_ID;</span><br><span class="line"></span><br><span class="line">           UPDATE asset_lifecycle_t SET cyclelife=V_LIFECYCLE,cyclelife_start_time=V_LIFECYCLE_STARTTIME,STATUS=&apos;1&apos;,createtime=NOW()</span><br><span class="line">           WHERE asset_id=IN_ASSET_ID;</span><br><span class="line"></span><br><span class="line">        ELSE</span><br><span class="line"></span><br><span class="line">                 SET V_DEVICE_STATUS=&apos;3&apos;;</span><br><span class="line">                 UPDATE `asset_info_t` SET `roamingsim_code`=V_ROAMSIM_CODE,`version`=V_ROAMSIM_VERSION,lifecycle=V_LIFECYCLE,</span><br><span class="line">           lifecycle_start_time=V_LIFECYCLE_STARTTIME,task_no=IN_TASKNO,manufacturer_code=V_MANUFACTURERCODE,</span><br><span class="line">           manufacturer_name=V_MANUFACTURERNAME,in_time=NOW(),activate_flag=&apos;0&apos;,partner_name=V_PARTNERNAME,partner_code=V_PARTNERCODE,</span><br><span class="line">           data_encrypt_factor=IN_ASSET_ID,assign_time=V_ASSIGN_TIME,is_online=&apos;0&apos;,silent_cycle=V_M2MCARD_SCLIENT_DATE,</span><br><span class="line">           stop_service_period=V_M2MCARD_STOP_DATE,init_flag=&apos;0&apos;,ota_flag=V_OTA_FLAG,bip_flag=&apos;0&apos;,inuse_industry=V_INUSE_INDUSTRY,</span><br><span class="line">           more_imsi_flag=V_MORE_IMSI_FLAG,device_form=&apos;1&apos;,manu_type=V_PRODUCT_TYPE,ota_protocol_version=V_OTA_PROTOCOL_VERSION,</span><br><span class="line">           bip_param_name=V_BIP_PARAM_NAME,device_status=V_DEVICE_STATUS,card_material_code=V_CARD_MATERIAL_CODE</span><br><span class="line">           WHERE asset_id=IN_ASSET_ID;</span><br><span class="line"></span><br><span class="line">           UPDATE asset_lifecycle_t SET cyclelife=V_LIFECYCLE,cyclelife_start_time=V_LIFECYCLE_STARTTIME,STATUS=&apos;1&apos;,createtime=NOW()</span><br><span class="line">           WHERE asset_id=IN_ASSET_ID;</span><br><span class="line">        END IF;</span><br><span class="line"></span><br><span class="line">        # 修改任务成功数量</span><br><span class="line">        UPDATE simcard_production_task_t SET actual_quantity=actual_quantity+1 WHERE task_no=IN_TASKNO;</span><br><span class="line"></span><br><span class="line">    ELSE # 生产失败</span><br><span class="line"></span><br><span class="line">        SELECT COUNT(*) INTO V_CVT FROM simcard_product_abnormal_t</span><br><span class="line">        WHERE task_no=IN_TASKNO AND eficcid=IN_PERS_ICCID AND pdn=IN_PDN;</span><br><span class="line">        IF V_CVT=0 THEN #如果不存在则添加异常数据记录</span><br><span class="line">            INSERT INTO `simcard_product_abnormal_t` (`task_no`, `pdn`, `eficcid`, `abnormal_code`, `abnormal_desc`, `create_time`)</span><br><span class="line">            VALUES (IN_TASKNO, IN_PDN, IN_PERS_ICCID, IN_RSTCODE, IN_RSTINFO, NOW());</span><br><span class="line">        END IF;</span><br><span class="line"></span><br><span class="line">        #修改生产日志信息</span><br><span class="line">        UPDATE `production_log_t` SET `status`=&apos;3&apos; WHERE eficcid=IN_PERS_ICCID AND task_no=IN_TASKNO;</span><br><span class="line"></span><br><span class="line">    END IF;</span><br><span class="line"></span><br><span class="line">    SELECT COUNT(*) INTO V_CVT FROM production_log_t WHERE task_no=IN_TASKNO AND (`status`=&apos;0&apos; OR `status`=&apos;1&apos;) FOR UPDATE;</span><br><span class="line">    SELECT OUT_RESULT;</span><br><span class="line">    IF 0=V_CVT THEN # 全部生产完毕</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        SELECT COUNT(*) INTO V_CVT FROM simcard_production_task_t WHERE task_no=IN_TASKNO AND quantity=actual_quantity FOR UPDATE;</span><br><span class="line">        IF 0 &lt;&gt; V_CVT THEN # 已经全部成功</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            UPDATE simcard_production_task_t SET `status`=&apos;3&apos;, end_date=NOW()</span><br><span class="line">            WHERE task_no=IN_TASKNO;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            INSERT INTO hist_simcard_production_task_t SELECT * FROM simcard_production_task_t WHERE task_no=IN_TASKNO;</span><br><span class="line"></span><br><span class="line">            DELETE FROM simcard_production_task_t WHERE task_no=IN_TASKNO;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                        INSERT INTO `simcard_product_tracker_t`(`task_no`,`oper_type`,`oper_content`,`oper_name`,`oper_date`)</span><br><span class="line">                        VALUES (IN_TASKNO,&apos;4&apos;,&apos;系统结束生产任务&apos;,&apos;pms_gateway&apos;,SYSDATE());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            INSERT INTO `hist_production_log_t` SELECT * FROM `production_log_t` WHERE task_no=IN_TASKNO;</span><br><span class="line">            DELETE FROM production_log_t WHERE task_no=IN_TASKNO;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            UPDATE device_info_t SET `status`=&apos;1&apos;,task_type=&apos;&apos; WHERE manufacturer_name=V_MANUFACTURERNAME AND pdn = IN_PDN;</span><br><span class="line"></span><br><span class="line">        ELSE</span><br><span class="line">            UPDATE simcard_production_task_t SET end_date=NOW() WHERE task_no=IN_TASKNO;</span><br><span class="line">        END IF;</span><br><span class="line">    END IF;</span><br><span class="line"></span><br><span class="line">    IF &apos;0&apos;=OUT_RESULT THEN</span><br><span class="line">        ROLLBACK;#回滚</span><br><span class="line">    ELSE</span><br><span class="line">        COMMIT;#提交</span><br><span class="line">    END IF;</span><br><span class="line">    END$$</span><br><span class="line"></span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+
+<p>存储过程写的非常复杂，最主要的一点是发生异常时直接回滚，返回OUT_RESULT=0，无法得知异常信息，所以首要的是先给存储过程加上异常处理。下边是一段存储过程异常处理的方式，直接插入数据库表中，当然实际生产时，除了要插入异常信息，还要和相关的业务信息进行关联。其于以下的方式对存储过程进行改造，改造后的就不帖了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">DROP PROCEDURE IF EXISTS proc_exception;</span><br><span class="line">CREATE PROCEDURE proc_exception()</span><br><span class="line">BEGIN</span><br><span class="line">DECLARE v_commit INT DEFAULT 1; -- 定义事务用，1为正常，0为失败</span><br><span class="line">DECLARE mysql_error_code TEXT;-- 记录错误信息</span><br><span class="line">DECLARE mysql_error_msg TEXT;-- 记录错误信息</span><br><span class="line"> mysql_error_code = RETURNED_SQLSTATE, mysql_error_msg = MESSAGE_TEXT;</span><br><span class="line">-- 异常的时候msg捕获报错信息</span><br><span class="line">DECLARE CONTINUE HANDLER FOR SQLEXCEPTION</span><br><span class="line">BEGIN get diagnostics CONDITION 1  mysql_error_code = RETURNED_SQLSTATE, mysql_error_msg = MESSAGE_TEXT;  SET v_commit = 0; END ;</span><br><span class="line"></span><br><span class="line">START TRANSACTION;-- 设置事务</span><br><span class="line"></span><br><span class="line">-- 业务相关语法</span><br><span class="line">INSERT INTO ......;</span><br><span class="line"></span><br><span class="line">IF v_commit = 0 THEN</span><br><span class="line">ROLLBACK;</span><br><span class="line">INSERT INTO proc_error_log VALUES (mysql_error_code,mysql_error_msg);</span><br><span class="line">END IF ;</span><br><span class="line"></span><br><span class="line">END;</span><br></pre></td></tr></table></figure>
+
+<p>因为失败是偶尔出现的，后来手动执行没啥问题，初步怀疑是并发问题。然后使用JMETER进行压力测试，第一次使用，还真是挺好用的。当进行20个用户发并调用存储过程时，只有第一个成功，其他都失败了。。。。。。，好惨啊！<br>查看proc_error_log表中的记录数据，显示<br>|code|message|<br>|—|—|<br>|1|2|<br>|40001|Deadlock found when trying to get lock; try restarting transaction|<br>|40001|Deadlock found when trying to get lock; try restarting transaction|<br>|40001|Deadlock found when trying to get lock; try restarting transaction|<br>|40001|Deadlock found when trying to get lock; try restarting transaction|<br>|40001|Deadlock found when trying to get lock; try restarting transaction|<br>|…|…|</p>
+<p>好吧，死锁问题，使用命令 SHOW ENGINE INNODB STATUS 查看日志，查找死锁原因。（其他参考命令SHOW STATUS LIKE ‘innodb_row_lock%’;SHOW GLOBAL VARIABLES LIKE ‘innodb_lock_wait_timeout%’;）日志如下：</p>
+<p>第一次压测后获取的日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">------------------------</span><br><span class="line">LATEST DETECTED DEADLOCK</span><br><span class="line">------------------------</span><br><span class="line">2019-10-24 11:48:01 7f01e69cd700</span><br><span class="line">*** (1) TRANSACTION:</span><br><span class="line">TRANSACTION 60863969, ACTIVE 2 sec starting index read</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">LOCK WAIT 12 lock struct(s), heap size 2936, 7 row lock(s), undo log entries 3</span><br><span class="line">MySQL thread id 370111, OS thread handle 0x7f01e6253700, query id 10273081 123.58.107.133 iottest updating</span><br><span class="line">UPDATE asset_lifecycle_t SET cyclelife=V_LIFECYCLE,cyclelife_start_time=V_LIFECYCLE_STARTTIME,STATUS=&apos;1&apos;,createtime=NOW()</span><br><span class="line">           WHERE asset_id=IN_ASSET_ID</span><br><span class="line">*** (1) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 6455 page no 4 n bits 232 index `PRIMARY` of table `IotProductDB`.`asset_lifecycle_t` trx id 60863969 lock_mode X waiting</span><br><span class="line">Record lock, heap no 2 PHYSICAL RECORD: n_fields 10; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 8000000000000001; asc         ;;</span><br><span class="line"> 1: len 6; hex 000001d9b9bd; asc       ;;</span><br><span class="line"> 2: len 7; hex d4000013250110; asc     %  ;;</span><br><span class="line"> 3: len 15; hex 383630353939303033303139313731; asc 860599003019171;;</span><br><span class="line"> 4: len 1; hex 32; asc 2;;</span><br><span class="line"> 5: len 8; hex 3230313930313239; asc 20190129;;</span><br><span class="line"> 6: SQL NULL;</span><br><span class="line"> 7: len 19; hex 323031392d30312d32392032303a35353a3336; asc 2019-01-29 20:55:36;;</span><br><span class="line"> 8: len 1; hex 31; asc 1;;</span><br><span class="line"> 9: len 8; hex 3230313930323238; asc 20190228;;</span><br><span class="line"></span><br><span class="line">*** (2) TRANSACTION:</span><br><span class="line">TRANSACTION 60863913, ACTIVE 6 sec fetching rows</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">13203 lock struct(s), heap size 1291816, 1282571 row lock(s), undo log entries 5</span><br><span class="line">MySQL thread id 370090, OS thread handle 0x7f01e69cd700, query id 10273182 123.58.107.133 iottest Sending data</span><br><span class="line">SELECT COUNT(*) INTO V_CVT FROM production_log_t WHERE task_no=IN_TASKNO AND (`status`=&apos;0&apos; OR `status`=&apos;1&apos;) FOR UPDATE</span><br><span class="line">*** (2) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space id 6455 page no 4 n bits 232 index `PRIMARY` of table `IotProductDB`.`asset_lifecycle_t` trx id 60863913 lock_mode X</span><br><span class="line">Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 73757072656d756d; asc supremum;;</span><br><span class="line"></span><br><span class="line">Record lock, heap no 2 PHYSICAL RECORD: n_fields 10; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 8000000000000001; asc         ;;</span><br><span class="line"> 1: len 6; hex 000001d9b9bd; asc       ;;</span><br><span class="line"> 2: len 7; hex d4000013250110; asc     %  ;;</span><br><span class="line"> 3: len 15; hex 383630353939303033303139313731; asc 860599003019171;;</span><br><span class="line"> 4: len 1; hex 32; asc 2;;</span><br><span class="line"> 5: len 8; hex 3230313930313239; asc 20190129;;</span><br><span class="line"> 6: SQL NULL;</span><br><span class="line"> 7: len 19; hex 323031392d30312d32392032303a35353a3336; asc 2019-01-29 20:55:36;;</span><br><span class="line"> 8: len 1; hex 31; asc 1;;</span><br><span class="line"> 9: len 8; hex 3230313930323238; asc 20190228;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">*** (2) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 7448 page no 6241 n bits 88 index `PRIMARY` of table `IotProductDB`.`production_log_t` trx id 60863913 lock_mode X waiting</span><br><span class="line">Record lock, heap no 15 PHYSICAL RECORD: n_fields 29; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 800000000003db53; asc        S;;</span><br><span class="line"> 1: len 6; hex 000003a0b5e1; asc       ;;</span><br><span class="line"> 2: len 7; hex 640000c01821ed; asc d    ! ;;</span><br><span class="line"> 3: len 16; hex 53494d50323031393130323132353838; asc SIMP201910212588;;</span><br><span class="line"> 4: SQL NULL;</span><br><span class="line"> 5: len 20; hex 3839383630323230313930353238303136313931; asc 89860220190528016191;;</span><br><span class="line"> 6: len 25; hex 53494d50323031393130323132353838343338393031323237; asc SIMP201910212588438901227;;</span><br><span class="line"> 7: len 20; hex 3839383532303030333633313036303539393836; asc 89852000363106059986;;</span><br><span class="line"> 8: len 15; hex 343534303036333130363035393938; asc 454006310605998;;</span><br><span class="line"> 9: len 1; hex 30; asc 0;;</span><br><span class="line"> 10: len 1; hex 31; asc 1;;</span><br><span class="line"> 11: len 4; hex 31303032; asc 1002;;</span><br><span class="line"> 12: len 3; hex 4e5454; asc NTT;;</span><br><span class="line"> 13: len 4; hex 38303035; asc 8005;;</span><br><span class="line"> 14: len 7; hex e5928ce8aeb033; asc       3;;</span><br><span class="line"> 15: len 12; hex 363446303030363446303130; asc 64F00064F010;;</span><br><span class="line"> 16: len 30; hex 3230323b3230343b3230363b3230383b3231323b3231333b3231343b3231; asc 202;204;206;208;212;213;214;21; (total 499 bytes);</span><br><span class="line"> 17: len 20; hex 3839383630323230313930353238303136313931; asc 89860220190528016191;;</span><br><span class="line"> 18: len 30; hex 393836383230303239313530383231303136313930383439343530303336; asc 986820029150821016190849450036; (total 134 bytes);</span><br><span class="line"> 19: len 20; hex 3938363832303032393135303832313031363139; asc 98682002915082101619;;</span><br><span class="line"> 20: len 8; hex 3442314534304343; asc 4B1E40CC;;</span><br><span class="line"> 21: SQL NULL;</span><br><span class="line"> 22: len 1; hex 32; asc 2;;</span><br><span class="line"> 23: len 19; hex 323031392d31302d32312031363a33333a3137; asc 2019-10-21 16:33:17;;</span><br><span class="line"> 24: len 19; hex 323031392d31302d32312031393a30313a3033; asc 2019-10-21 19:01:03;;</span><br><span class="line"> 25: len 19; hex 323031392d31302d32342031313a34373a3539; asc 2019-10-24 11:47:59;;</span><br><span class="line"> 26: len 4; hex 30303030; asc 0000;;</span><br><span class="line"> 27: len 7; hex 73756363657373; asc success;;</span><br><span class="line"> 28: SQL NULL;</span><br><span class="line"></span><br><span class="line">*** WE ROLL BACK TRANSACTION (1)</span><br></pre></td></tr></table></figure>
+
+<p>第二次压测后获取的日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">LATEST DETECTED DEADLOCK</span><br><span class="line">------------------------</span><br><span class="line">2019-10-24 17:19:49 7f00f773b700</span><br><span class="line">*** (1) TRANSACTION:</span><br><span class="line">TRANSACTION 60872312, ACTIVE 5 sec starting index read</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">LOCK WAIT 6822 lock struct(s), heap size 718376, 1154441 row lock(s), undo log entries 4</span><br><span class="line">MySQL thread id 382928, OS thread handle 0x7f01e4c69700, query id 10489419 123.58.107.133 iottest updating</span><br><span class="line">UPDATE simcard_production_task_t SET actual_quantity=actual_quantity+1 WHERE task_no=IN_TASKNO</span><br><span class="line">*** (1) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 6713 page no 4 n bits 184 index `task_no` of table `IotProductDB`.`simcard_production_task_t` trx id 60872312 lock_mode X locks rec but not gap waiting</span><br><span class="line">Record lock, heap no 111 PHYSICAL RECORD: n_fields 2; compact format; info bits 0</span><br><span class="line"> 0: len 16; hex 53494d50323031393130323132353838; asc SIMP201910212588;;</span><br><span class="line"> 1: len 8; hex 8000000000000346; asc        F;;</span><br><span class="line"></span><br><span class="line">*** (2) TRANSACTION:</span><br><span class="line">TRANSACTION 60872310, ACTIVE 5 sec fetching rows</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">6355 lock struct(s), heap size 570920, 128099 row lock(s), undo log entries 1</span><br><span class="line">MySQL thread id 382968, OS thread handle 0x7f00f773b700, query id 10489628 123.58.107.133 iottest Sending data</span><br><span class="line">SELECT COUNT(*) INTO V_CVT FROM production_log_t WHERE task_no=IN_TASKNO AND (`status`=&apos;0&apos; OR `status`=&apos;1&apos;) FOR UPDATE</span><br><span class="line">*** (2) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space id 6713 page no 4 n bits 184 index `task_no` of table `IotProductDB`.`simcard_production_task_t` trx id 60872310 lock_mode X locks rec but not gap</span><br><span class="line">Record lock, heap no 111 PHYSICAL RECORD: n_fields 2; compact format; info bits 0</span><br><span class="line"> 0: len 16; hex 53494d50323031393130323132353838; asc SIMP201910212588;;</span><br><span class="line"> 1: len 8; hex 8000000000000346; asc        F;;</span><br><span class="line"></span><br><span class="line">*** (2) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 7448 page no 6253 n bits 80 index `PRIMARY` of table `IotProductDB`.`production_log_t` trx id 60872310 lock_mode X waiting</span><br><span class="line">Record lock, heap no 7 PHYSICAL RECORD: n_fields 29; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 800000000003db35; asc        5;;</span><br><span class="line"> 1: len 6; hex 000003a0d678; asc      x;;</span><br><span class="line"> 2: len 7; hex 3f000001770f1b; asc ?   w  ;;</span><br><span class="line"> 3: len 16; hex 53494d50323031393130323132353838; asc SIMP201910212588;;</span><br><span class="line"> 4: SQL NULL;</span><br><span class="line"> 5: len 20; hex 3839383630323230313930353238303135313938; asc 89860220190528015198;;</span><br><span class="line"> 6: len 25; hex 53494d50323031393130323132353838343338383938333632; asc SIMP201910212588438898362;;</span><br><span class="line"> 7: len 20; hex 3839383532303030333633313036303431323038; asc 89852000363106041208;;</span><br><span class="line"> 8: len 15; hex 343534303036333130363034313230; asc 454006310604120;;</span><br><span class="line"> 9: len 1; hex 30; asc 0;;</span><br><span class="line"> 10: len 1; hex 31; asc 1;;</span><br><span class="line"> 11: len 4; hex 31303032; asc 1002;;</span><br><span class="line"> 12: len 3; hex 4e5454; asc NTT;;</span><br><span class="line"> 13: len 4; hex 38303035; asc 8005;;</span><br><span class="line"> 14: len 7; hex e5928ce8aeb033; asc       3;;</span><br><span class="line"> 15: len 12; hex 363446303030363446303130; asc 64F00064F010;;</span><br><span class="line"> 16: len 30; hex 3230323b3230343b3230363b3230383b3231323b3231333b3231343b3231; asc 202;204;206;208;212;213;214;21; (total 499 bytes);</span><br><span class="line"> 17: len 20; hex 3839383630323230313930353238303135313938; asc 89860220190528015198;;</span><br><span class="line"> 18: len 30; hex 393836383230303239313530383231303135383930383439343530303336; asc 986820029150821015890849450036; (total 134 bytes);</span><br><span class="line"> 19: len 20; hex 3938363832303032393135303832313031353839; asc 98682002915082101589;;</span><br><span class="line"> 20: len 8; hex 4441424139303231; asc DABA9021;;</span><br><span class="line"> 21: SQL NULL;</span><br><span class="line"> 22: len 1; hex 32; asc 2;;</span><br><span class="line"> 23: len 19; hex 323031392d31302d32312031363a33333a3137; asc 2019-10-21 16:33:17;;</span><br><span class="line"> 24: len 19; hex 323031392d31302d32312031393a30303a3531; asc 2019-10-21 19:00:51;;</span><br><span class="line"> 25: len 19; hex 323031392d31302d32342031373a31393a3434; asc 2019-10-24 17:19:44;;</span><br><span class="line"> 26: len 4; hex 30303030; asc 0000;;</span><br><span class="line"> 27: len 7; hex 73756363657373; asc success;;</span><br><span class="line"> 28: SQL NULL;</span><br><span class="line"></span><br><span class="line">*** WE ROLL BACK TRANSACTION (2)</span><br></pre></td></tr></table></figure>
+
+<p>其可以确定是这条语句出现死锁，但是出现顺序暂时没分析明白，明天再更新。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(*) INTO V_CVT FROM production_log_t WHERE task_no=IN_TASKNO AND (`status`=&apos;0&apos; OR `status`=&apos;1&apos;) FOR UPDATE</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MYSQL/" rel="tag"># MYSQL</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/22/Solidity编程语言（13）-地址（Address）/" rel="next" title="Solidity编程语言（13）--地址（Address）">
+                <i class="fa fa-chevron-left"></i> Solidity编程语言（13）--地址（Address）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt>
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
