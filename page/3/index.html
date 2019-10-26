@@ -291,6 +291,334 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-交易入池（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/21/GO-HPB源码解读-交易入池（一）/" itemprop="url">GO-HPB源码解读--交易入池（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:40:56+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在本地启动节点后，通过控制台输入命令<code>hpb.sendTransaction({from:&quot;db3cf5c98af974d3cccdc8662f1ab3c27c6e47ee&quot;,to:&quot;742c8a59152a397ad09f7fb280c4fc378598a4ba&quot;,value:web3.toWei(10000,&quot;hpb&quot;)})</code>来完成转账交易。交易内容最初始会进入到SendTransaction。</p>
+<ol>
+<li>打印了一下传进来的参数args<br>{From:[219 60 245 201 138 249 116 211 204 205 200 102 47 26 179 194 124 110 71 238] To:[116 44 138 89 21 42 57 122 208 159 127 178 128 196 252 55 133 152 164 186] Gas:<nil> GasPrice:<nil> Value:0x21e19e0c9bab2400000 Data:0x Nonce:<nil>}</nil></nil></nil></li>
+<li>首先检查一下from地址是不是存在钱包中，如果不存在就返回错误</li>
+<li>锁定交易的nonce，因为nonce是唯一的，防止交易的重播攻击</li>
+<li>对交易需要的其他参数进行设置，Gas默认值为90000，GasPrice和Nonce经由计算获得，这个后续再分析</li>
+<li>创建一个交易对象，将以上参数进行赋值</li>
+<li>使用from的帐户钱包对交易进行签名，来证明这签交易确实是from发出的。<br>签名过程：<br>(1). 首先使用from的私钥对nonce、price、gaslimit、recipient、amount、payload进行secp256k1签名<br>(2). 然后签名结果分解成R、S、V，并赋给交易对象，注意这个时候交易对象中并没有from地址</li>
+<li>最后提交交易</li>
+</ol>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/07/21/GO-HPB源码解读-交易入池（一）/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-投票机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content>
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Buff">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/21/GO-HPB源码解读-投票机制/" itemprop="url">GO-HPB源码解读--投票机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:40:44+08:00">
+                2019-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
+                    <span itemprop="name">HPB源码解读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在挖矿流程的最近一节中，提到了voting.GetHpbNodeSnap的投票机制。投票的目的就是来计算出本节点是否能够签名区块，所以每次在组装区块的时候都会获取上一次的投票结果，如果出现异常或者投票周期到了，则重新计算投票结果。<br>投票结果是通过结构体进行保存的。<br>CandAddress 节点地址(当前的授权用户)<br>VoteNumbers 获得票数<br>VoteIndexs  获胜者的指标总和<br>VotePercent 占比</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Tally <span class="keyword">struct</span> &#123;</span><br><span class="line">	CandAddress common.Address <span class="string">`json:"candAddress"`</span> <span class="comment">// 通过投票的个数</span></span><br><span class="line">	VoteNumbers *big.Int       <span class="string">`json:"voteNumbers"`</span> <span class="comment">// 通过投票的个数</span></span><br><span class="line">	VoteIndexs  *big.Int       <span class="string">`json:"voteIndexs"`</span>  <span class="comment">// 通过投票的个数</span></span><br><span class="line">	VotePercent *big.Int       <span class="string">`json:"votePercent"`</span> <span class="comment">// 通过投票的个数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> HpbNodeSnap <span class="keyword">struct</span> &#123;</span><br><span class="line">	config   *config.PrometheusConfig</span><br><span class="line">	sigcache *lru.ARCCache</span><br><span class="line">	<span class="comment">//Number  uint64                      `json:"number"`  // 生成快照的时间点</span></span><br><span class="line">	CheckPointNum  <span class="keyword">uint64</span>                      <span class="string">`json:"checkPointNum"`</span>  <span class="comment">// 最近的检查点</span></span><br><span class="line">	CheckPointHash common.Hash                 <span class="string">`json:"checkPointHash"`</span> <span class="comment">// 生成快照的Block hash</span></span><br><span class="line">	Signers        <span class="keyword">map</span>[common.Address]<span class="keyword">struct</span>&#123;&#125; <span class="string">`json:"signers"`</span>        <span class="comment">// 当前的授权用户</span></span><br><span class="line">	Recents        <span class="keyword">map</span>[<span class="keyword">uint64</span>]common.Address   <span class="string">`json:"recents"`</span>        <span class="comment">// 最近签名者 spam</span></span><br><span class="line">	Tally          <span class="keyword">map</span>[common.Address]Tally    <span class="string">`json:"tally"`</span>          <span class="comment">// 目前的计票情况</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来看一下代码实现，其中HpbNodeCheckpointInterval==200</p>
+<ol>
+<li>如果number==0，就先生成一个初始快照并返回</li>
+<li>如果number&lt;200，就从缓存/数据库中取出初始快照，如果取出失败，则生成一个初始快照并返回</li>
+<li>其他情况就是number&gt;=200，如果number正好是200的整数倍数的话，则生成快照，否则从缓存/数据库中获取上一次的快照，如果获取失败则重新生成上一次的快照。举个栗子，number=666，则获取number=600的快照，如果number=800，则生成新的快照。很明显间隔相当于从0开始算的，并不是最近的200个块。但是。。。往下看number是怎么使用的<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetHpbNodeSnap</span><span class="params">(db hpbdb.Database, recents *lru.ARCCache, signatures *lru.ARCCache, config *config.PrometheusConfig, chain consensus.ChainReader, number <span class="keyword">uint64</span>, hash common.Hash, parents []*types.Header)</span> <span class="params">(*snapshots.HpbNodeSnap, error)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 首次要创建</span></span><br><span class="line">	<span class="keyword">if</span> number == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> snapg, err := GenGenesisSnap(db, recents, signatures, config, chain); err == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> snapg, err</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//前十轮不会进行投票，前10轮采用区块0时候的数据</span></span><br><span class="line">	<span class="comment">//先获取缓存，如果缓存中没有则获取数据库，为了提升速度</span></span><br><span class="line">	<span class="comment">//if(true)&#123;</span></span><br><span class="line">	<span class="keyword">if</span> number &lt; consensus.HpbNodeCheckpointInterval &#123;</span><br><span class="line">		genesis := chain.GetHeaderByNumber(<span class="number">0</span>)</span><br><span class="line">		hash := genesis.Hash()</span><br><span class="line">		<span class="comment">// 从缓存中获取</span></span><br><span class="line">		<span class="keyword">if</span> snapcd, err := GetDataFromCacheAndDb(db, recents, signatures, config, hash); err == <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Debug(<span class="string">"HPB_VOTING： Loaded voting Hpb Node Snap form cache and db"</span>, <span class="string">"number"</span>, number, <span class="string">"hash"</span>, hash)</span><br><span class="line">			<span class="keyword">return</span> snapcd, err</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> snapg, err := GenGenesisSnap(db, recents, signatures, config, chain); err == <span class="literal">nil</span> &#123;</span><br><span class="line">				log.Debug(<span class="string">"HPB_VOTING： Loaded voting Hpb Node Snap form genesis snap"</span>, <span class="string">"number"</span>, number, <span class="string">"hash"</span>, hash)</span><br><span class="line">				<span class="keyword">return</span> snapg, err</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始考虑10轮之后的情况，往前回溯3轮，以保证一致性。</span></span><br><span class="line">	<span class="comment">// 开始计算最后一次的确认区块</span></span><br><span class="line">	latestCheckPointNumber := <span class="keyword">uint64</span>(math.Floor(<span class="keyword">float64</span>(number/consensus.HpbNodeCheckpointInterval))) * consensus.HpbNodeCheckpointInterval</span><br><span class="line">	<span class="comment">//log.Error("Current latestCheckPointNumber in hpb voting:",strconv.FormatUint(latestCheckPointNumber, 10))</span></span><br><span class="line"></span><br><span class="line">	header := chain.GetHeaderByNumber(<span class="keyword">uint64</span>(latestCheckPointNumber))</span><br><span class="line">	latestCheckPointHash := header.Hash()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> number%consensus.HpbNodeCheckpointInterval != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> snapcd, err := GetDataFromCacheAndDb(db, recents, signatures, config, latestCheckPointHash); err == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">//log.Info("##########################HPB_VOTING： Loaded voting Hpb Node Snap form cache and db", "number", number, "latestCheckPointNumber", latestCheckPointNumber)</span></span><br><span class="line">			<span class="keyword">return</span> snapcd, err</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> snapa, err := snapshots.CalculateHpbSnap(<span class="keyword">uint64</span>(<span class="number">1</span>), signatures, config, number, latestCheckPointNumber, latestCheckPointHash, chain); err == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="comment">//log.Info("@@@@@@@@@@@@@@@@@@@@@@@@HPB_VOTING： CalculateHpbSnap", "number", number, "latestCheckPointNumber", latestCheckPointNumber)</span></span><br><span class="line">				<span class="keyword">if</span> err := StoreDataToCacheAndDb(recents, db, snapa, latestCheckPointHash); err != <span class="literal">nil</span> &#123;</span><br><span class="line">					<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">return</span> snapa, err</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> snapa, err := snapshots.CalculateHpbSnap(<span class="keyword">uint64</span>(<span class="number">1</span>), signatures, config, number, latestCheckPointNumber, latestCheckPointHash, chain); err == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">//log.Info("@@@@@@@@@@@@@@@@@@@@@@@@HPB_VOTING： CalculateHpbSnap", "number", number, "latestCheckPointNumber", latestCheckPointNumber)</span></span><br><span class="line">			<span class="comment">//新轮次计算完高性能节点立即更新节点类型</span></span><br><span class="line">			<span class="comment">//prometheus.SetNetNodeType(snapa)</span></span><br><span class="line">			<span class="keyword">if</span> err := StoreDataToCacheAndDb(recents, db, snapa, latestCheckPointHash); err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> snapa, err</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>具体生成快照的算法是在CalculateHpbSnap中实现的，也就是区块链核的共识算法。先看一下参数含意：<br>字段|类型|含义|备注<br>-|-|-|-<br>index  |   |投票轮次，CalculateHpbSnap调用时是第一次，所以传1 |<br>*lru  |   |最近的签名，使用ARC算法实现   |<br>config  |   |共识配置，Prometheus的属性   |<br>number  |   |区块序号   |<br>latestCheckPointNum  |最近应该生成快照对应的区块序号，也就是200的整数倍   |   |<br>latestCheckPointHash  |最近应该生成快照对应的区块哈希   |   |<br>chain  |区块链指针   |   |</p>
+<p>快照生成主要通过number参数选举出一定的区块生成节点，这块要主算法实现，为了方便理解，假设在生成区块时的number为210、650、1875，也就是调用GetHpbNodeSnap方法传入的number，表示为{210|650|1875}，最后计算得到latestCheckPointNum是{200|600|1800}，将这两个参数传入CalculateHpbSnap，注意此时index传入的是1</p>
+<ol>
+<li>选出一定范围内的区块头集合，区间界线为from到latestCheckPointNum-100，from计算方法是latestCheckPointNum - index*consensus.HpbNodeCheckpointInterval，所以可以得到的范围是{0-100|400-500|1600-1700}</li>
+<li>通过chain取出{0-100|400-500|1600-1700}范围内所有区块头，赋给headers变量，一共100个区块头（理想情况下）。如果在获取头的时候累计出了20次没取到，直接返回异常errors.New(“get hpb snap but missing header”)</li>
+<li>对区块头集合headers进行连续性检查，也就是所有区块头的number必须是连续的，否则返回异常</li>
+<li>初始化快照对象snap，并填装snap的Tally属性，注意snap的Tally是map[common.Address]Tally类型的，key是add，value是Tally，而value的类型Tally本身又是一个结构体。填装过程就是把header对应的所有address作为键put到map中，value是Tally结构体。<br> *Tally初始值是<pre><code>VoteNumbers: 1,
+        VoteIndexs:  header.VoteIndex,
+        VotePercent: header.VoteIndex,</code></pre> *如果key重复出现，则需要把VoteNumbers和VoteIndexs对应的新旧值进行累加，重新计算VotePercent=VoteIndexs/VoteNumbers并赋值<br>这样就得到了100一个header对应的address的Tally，当然结果可能会少于100个，因为有重复的。</li>
+<li>将map再复制到临时变量tallytemp中，分别按照CandAddress和百分比VotePercent从小到大进行排序，排序结果保存到变更finaltally中</li>
+<li>接下来通过当前高性能节点数量来解决是否需要再次进行获取一些headers来进行投票计算，也就是上边1-5步骤</li>
+<li>系统默认的高性能节点个数是consensus.HpbNodenumber=31个，如果finaltally长度大等于31，则把排序后的后边的31个节点地址添加到snap.Signers中，即授权用户，表示可以进行挖矿。</li>
+<li>如果finaltally小于31，而且已经进行了4次投票计算（1-5步骤），就把finaltally中所有的地址进行授权</li>
+<li>如果finaltally小于31，而且进行了不到4次投票计算，则往前回溯再取出一些区块头（地址）进行投票。但是往前回溯有个条件，就是前边有足够的区块头可以获取，如果前边的区块头不够充足了，则只能把当前finaltally的地址全部授权了。是否可以往前回溯的判断条件是index&lt;number/200，比如第一轮投票的时候number={210|650|1875}，投了{0-100|400-500|1600-1700}区间的节点地址，最终结果不够31个高性能节点，那么进行第二轮投票。2&lt;210/200为false，这种情况就不能往前回溯了；2&lt;650/200为true，则可以回溯，然后递归调用CalculateHpbSnap方法，这时传入的index=2，number和latestCheckPointNum分别向前移200个单位，即number={-|450|1675}，latestCheckPointNum={-|400|1600}，递归后可得范围为 {-|200-300|1400-1500}。可以发现每次中间隔100个单位。</li>
+<li>在进行了下一投票计算（递归调用）之后，得到新的节点地址集合，把其中已经存在于上一次finaltally中的地址删除掉，此时如果新的节点地址一个也没有，则结束投票，如果还有的话就对新的节点地址集合进行排序</li>
+<li>排序完了之后，如果新旧集合的长度和小等于31，就把新旧集合合并一下，否则的话把新集合的数据补充到旧集合中，直到旧集合够31个节点了。</li>
+<li>最后把zeroaddr地址删除掉。（不是很清楚，什么情况下会有存在zeroaddr地址）</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CalculateHpbSnap</span><span class="params">(index <span class="keyword">uint64</span>, signatures *lru.ARCCache, config *config.PrometheusConfig, number <span class="keyword">uint64</span>, latestCheckPointNum <span class="keyword">uint64</span>, latestCheckPointHash common.Hash, chain consensus.ChainReader)</span> <span class="params">(*HpbNodeSnap, error)</span></span> &#123;</span><br><span class="line">	<span class="comment">// Allow passing in no headers for cleaner code</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> headers []*types.Header</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 开始获取之前的所有header</span></span><br><span class="line">	<span class="keyword">var</span> from = latestCheckPointNum - index*consensus.HpbNodeCheckpointInterval</span><br><span class="line">	<span class="keyword">if</span> from == <span class="number">0</span> &#123;</span><br><span class="line">		from = from + <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> i := from; i &lt; latestCheckPointNum<span class="number">-100</span>; i++ &#123;</span><br><span class="line">		loopcount := <span class="number">0</span></span><br><span class="line">	GETCOUNT:</span><br><span class="line">		header := chain.GetHeaderByNumber(<span class="keyword">uint64</span>(i))</span><br><span class="line">		<span class="keyword">if</span> header != <span class="literal">nil</span> &#123;</span><br><span class="line">			headers = <span class="built_in">append</span>(headers, header)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> loopcount &gt; <span class="number">20</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"get hpb snap but missing header"</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			loopcount += <span class="number">1</span></span><br><span class="line">			<span class="keyword">goto</span> GETCOUNT</span><br><span class="line">			<span class="comment">//log.Error("get hpb snap but missing header", "number", i)</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 如果头部为空，直接返回</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(headers) == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"Calculate Hpb Snap headers is 0 "</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 检查所有的头部，检查连续性</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(headers)<span class="number">-1</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> headers[i+<span class="number">1</span>].Number.Uint64() != headers[i].Number.Uint64()+<span class="number">1</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, consensus.ErrInvalidVotingChain</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//signers := make([]common.Address, 0, consensus.HpbNodenumber)</span></span><br><span class="line">	snap := NewHistorysnap(config, signatures, number, latestCheckPointNum, latestCheckPointHash, <span class="literal">nil</span>)</span><br><span class="line">	snap.Tally = <span class="built_in">make</span>(<span class="keyword">map</span>[common.Address]Tally)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, header := <span class="keyword">range</span> headers &#123;</span><br><span class="line"></span><br><span class="line">		VoteNumberstemp := big.NewInt(<span class="number">0</span>)</span><br><span class="line">		VoteIndexstemp := big.NewInt(<span class="number">0</span>)</span><br><span class="line">		VotePercenttemp := big.NewInt(<span class="number">0</span>)</span><br><span class="line">		<span class="comment">//票的数量与性能之间的关系，获取票的数量表示在线时间长度，所以应该选择在线时间长性能又好的节点。</span></span><br><span class="line">		<span class="keyword">if</span> old, ok := snap.Tally[header.CandAddress]; ok &#123;</span><br><span class="line">			VoteNumberstemp.Add(old.VoteNumbers, big.NewInt(<span class="number">1</span>))</span><br><span class="line">			VoteIndexstemp.Add(old.VoteIndexs, header.VoteIndex)</span><br><span class="line">			VotePercenttemp.Div(VoteIndexstemp, VoteNumberstemp)</span><br><span class="line">			snap.Tally[header.CandAddress] = Tally&#123;</span><br><span class="line">				VoteNumbers: VoteNumberstemp,</span><br><span class="line">				VoteIndexs:  VoteIndexstemp,</span><br><span class="line">				VotePercent: VotePercenttemp,</span><br><span class="line">				CandAddress: header.CandAddress,</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			snap.Tally[header.CandAddress] = Tally&#123;</span><br><span class="line">				VoteNumbers: big.NewInt(<span class="number">1</span>),</span><br><span class="line">				VoteIndexs:  header.VoteIndex,</span><br><span class="line">				VotePercent: header.VoteIndex,</span><br><span class="line">				CandAddress: header.CandAddress,</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> tallytemp []Tally</span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> snap.Tally &#123;</span><br><span class="line">		tallytemp = <span class="built_in">append</span>(tallytemp, v)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(snap.Tally); i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="built_in">len</span>(snap.Tally)-i<span class="number">-1</span>; j++ &#123;</span><br><span class="line">			<span class="keyword">if</span> bytes.Compare(tallytemp[j].CandAddress[:], tallytemp[j+<span class="number">1</span>].CandAddress[:]) &gt; <span class="number">0</span> &#123;</span><br><span class="line">				tallytemp[j], tallytemp[j+<span class="number">1</span>] = tallytemp[j+<span class="number">1</span>], tallytemp[j]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(snap.Tally); i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="built_in">len</span>(snap.Tally)-i<span class="number">-1</span>; j++ &#123;</span><br><span class="line">			<span class="keyword">if</span> tallytemp[j].VotePercent.Cmp(tallytemp[j+<span class="number">1</span>].VotePercent) &gt; <span class="number">0</span> &#123;</span><br><span class="line">				tallytemp[j], tallytemp[j+<span class="number">1</span>] = tallytemp[j+<span class="number">1</span>], tallytemp[j]</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (tallytemp[j].VotePercent.Cmp(tallytemp[j+<span class="number">1</span>].VotePercent) == <span class="number">0</span>) &amp;&amp; (bytes.Compare(tallytemp[j].CandAddress[:], tallytemp[j+<span class="number">1</span>].CandAddress[:]) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">				tallytemp[j], tallytemp[j+<span class="number">1</span>] = tallytemp[j+<span class="number">1</span>], tallytemp[j]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	finaltally := <span class="built_in">make</span>([]common.Address, <span class="number">0</span>, <span class="built_in">len</span>(tallytemp))</span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> tallytemp &#123;</span><br><span class="line">		finaltally = <span class="built_in">append</span>(finaltally, v.CandAddress)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> hpnodeNO <span class="keyword">int</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(finaltally) &gt;= consensus.HpbNodenumber &#123;</span><br><span class="line">		hpnodeNO = consensus.HpbNodenumber</span><br><span class="line">		<span class="keyword">goto</span> END</span><br><span class="line"></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> index == consensus.Hpcalclookbackround+<span class="number">1</span> &#123; <span class="comment">//look back round is consensus.Hpcalclookbackround</span></span><br><span class="line">			hpnodeNO = <span class="built_in">len</span>(finaltally)</span><br><span class="line">			<span class="keyword">goto</span> END</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		index = index + <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> index &lt; <span class="keyword">uint64</span>(math.Floor(<span class="keyword">float64</span>(number/consensus.HpbNodeCheckpointInterval))) &#123; <span class="comment">// 往前回溯</span></span><br><span class="line">			<span class="comment">//log.Error("-------- go back for last snap------------", "index", index)</span></span><br><span class="line">			header := chain.GetHeaderByNumber(<span class="keyword">uint64</span>(latestCheckPointNum - consensus.HpbNodeCheckpointInterval))</span><br><span class="line">			latestCheckPointHash := header.Hash()</span><br><span class="line">			snaptemp, err := CalculateHpbSnap(index, signatures, config, number-consensus.HpbNodeCheckpointInterval, latestCheckPointNum-consensus.HpbNodeCheckpointInterval, latestCheckPointHash, chain)</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				log.Debug(<span class="string">"recursive call CalculateHpbSnap fail"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">				hpnodeNO = <span class="built_in">len</span>(finaltally)</span><br><span class="line">				<span class="keyword">goto</span> END</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//get last snap hp nodes, set in map</span></span><br><span class="line">			hpsmaptemp := <span class="built_in">make</span>(<span class="keyword">map</span>[common.Address]<span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line">			lastsnap := snaptemp.GetHpbNodes()</span><br><span class="line">			<span class="keyword">for</span> _, v := <span class="keyword">range</span> lastsnap &#123;</span><br><span class="line">				hpsmaptemp[v] = <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//delete tallytemp.CandAddress in the map</span></span><br><span class="line">			<span class="keyword">for</span> _, v := <span class="keyword">range</span> finaltally &#123;</span><br><span class="line">				<span class="keyword">if</span> _, ok := hpsmaptemp[v]; ok &#123;</span><br><span class="line">					<span class="built_in">delete</span>(hpsmaptemp, v)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> <span class="number">0</span> == <span class="built_in">len</span>(hpsmaptemp) &#123;</span><br><span class="line">				hpnodeNO = <span class="built_in">len</span>(finaltally)</span><br><span class="line">				<span class="keyword">goto</span> END</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//order the hpsmaptemp by put it into []common.address</span></span><br><span class="line">			delhpsmap := <span class="built_in">make</span>([]common.Address, <span class="built_in">len</span>(hpsmaptemp))</span><br><span class="line">			<span class="keyword">for</span> key, _ := <span class="keyword">range</span> hpsmaptemp &#123;</span><br><span class="line">				delhpsmap = <span class="built_in">append</span>(delhpsmap, key)</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//sort by addr</span></span><br><span class="line">			<span class="keyword">if</span> <span class="number">1</span> &lt; <span class="built_in">len</span>(delhpsmap) &#123;</span><br><span class="line">				<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(delhpsmap); i++ &#123;</span><br><span class="line">					<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="built_in">len</span>(delhpsmap)-i<span class="number">-1</span>; j++ &#123;</span><br><span class="line">						<span class="keyword">if</span> bytes.Compare(delhpsmap[j][:], delhpsmap[j+<span class="number">1</span>][:]) &gt; <span class="number">0</span> &#123;</span><br><span class="line">							delhpsmap[j], delhpsmap[j+<span class="number">1</span>] = delhpsmap[j+<span class="number">1</span>], delhpsmap[j]</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//calc how many last snap hps needing to add the latest snap</span></span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">len</span>(finaltally)+<span class="built_in">len</span>(delhpsmap) &gt; consensus.HpbNodenumber &#123;</span><br><span class="line">				<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; consensus.HpbNodenumber-<span class="built_in">len</span>(finaltally); i++ &#123;</span><br><span class="line">					finaltally = <span class="built_in">append</span>(finaltally, delhpsmap[i])</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(delhpsmap); i++ &#123;</span><br><span class="line">					finaltally = <span class="built_in">append</span>(finaltally, delhpsmap[i])</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		hpnodeNO = <span class="built_in">len</span>(finaltally)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">END:</span><br><span class="line">	<span class="keyword">for</span> i := <span class="built_in">len</span>(finaltally) - <span class="number">1</span>; i &gt; <span class="built_in">len</span>(finaltally)-hpnodeNO<span class="number">-1</span>; i-- &#123;</span><br><span class="line">		snap.Signers[finaltally[i]] = <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	zeroaddr := common.HexToAddress(<span class="string">"0x0000000000000000000000000000000000000000"</span>)</span><br><span class="line">	<span class="keyword">if</span> _, ok := snap.Signers[zeroaddr]; ok &#123;</span><br><span class="line">		<span class="built_in">delete</span>(snap.Signers, zeroaddr)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> snap, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="在确定节点地址区间的逻辑比较简单-就是从前往后，隔100-标记100个为可取的-然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。"><a href="#在确定节点地址区间的逻辑比较简单-就是从前往后，隔100-标记100个为可取的-然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。" class="headerlink" title="在确定节点地址区间的逻辑比较简单,就是从前往后，隔100,标记100个为可取的,然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。"></a>在确定节点地址区间的逻辑比较简单,就是从前往后，隔100,标记100个为可取的,然后从后往前取倒数第一个100，去重后够31个就可以了，不够了再取倒数第2个100。代码算法写的复杂了，还用了递归。。。。。</h2><h2 id="VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。"><a href="#VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。" class="headerlink" title="VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。"></a>VoteIndexs这个是从区块头中取出来的，没找到最初是在哪儿set进去的。</h2><p>真累人………</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（四）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2016,283 +2344,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-创建帐号/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content>
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Buff">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/21/GO-HPB源码解读-创建帐号/" itemprop="url">GO-HPB源码解读--创建帐号</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:31:05+08:00">
-                2019-07-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
-                    <span itemprop="name">HPB源码解读</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>HPB在创建帐号时使用的命令是  <code>./ghpb --datadir node/data account init</code><br>通过代码看下创建流程</p>
-<p>go-hpb源码命令架构使用的是urfave/cli，不知道是不是这样读这个名称：<strong>you are 废物</strong>，这里有个不错的<a href="https://ruby.ctolib.com/urfavecli.html" target="_blank" rel="noopener">帖子</a>介绍，可以学习下。主要对命令进行了封装，我们主要关心命令所对应的业务实现逻辑即可，使用起来非常方便。阅读也从这个地方开始。</p>
-<p>account命令定义在accountcmd.go文件中，通过源码可以看到account命令有list、new、update、import四个子命令。每一个命令都有flags参数。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/07/21/GO-HPB源码解读-创建帐号/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content>
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Buff">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/20/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T15:57:49+08:00">
-                2019-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>摘要显示</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/07/20/hello-world/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2340,7 +2396,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2351,7 +2407,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2362,7 +2418,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
