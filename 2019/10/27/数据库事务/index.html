@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="HPB,区块链,">
+  <meta name="keywords" content="事务,MYSQL,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="在挖矿流程（三）的最后，看到在go self.mine(work, self.quitCurrentOp)中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程 1234567891011121314151617181920// Work is the workers current environment and holds// a">
-<meta name="keywords" content="HPB,区块链">
+<meta name="description" content="数据库事务数据库事务(Database Transaction) ,具有原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）  原子性：原子性是指事务是一个不可分割的工作单位，事务中的操作要么全部成功，要么全部失败 一致性：事务必须使数据库从一个一致性状态变换到另外一个一致性状态 隔离性：并发执行的事务不会相互影响,其对数据库">
+<meta name="keywords" content="事务,MYSQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GO-HPB源码解读--挖矿流程（三）">
-<meta property="og:url" content="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（三）/index.html">
+<meta property="og:title" content="数据库事务">
+<meta property="og:url" content="http://yoursite.com/2019/10/27/数据库事务/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="在挖矿流程（三）的最后，看到在go self.mine(work, self.quitCurrentOp)中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程 1234567891011121314151617181920// Work is the workers current environment and holds// a">
+<meta property="og:description" content="数据库事务数据库事务(Database Transaction) ,具有原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）  原子性：原子性是指事务是一个不可分割的工作单位，事务中的操作要么全部成功，要么全部失败 一致性：事务必须使数据库从一个一致性状态变换到另外一个一致性状态 隔离性：并发执行的事务不会相互影响,其对数据库">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-21T06:18:30.072Z">
+<meta property="og:updated_time" content="2019-10-31T11:16:07.349Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GO-HPB源码解读--挖矿流程（三）">
-<meta name="twitter:description" content="在挖矿流程（三）的最后，看到在go self.mine(work, self.quitCurrentOp)中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程 1234567891011121314151617181920// Work is the workers current environment and holds// a">
+<meta name="twitter:title" content="数据库事务">
+<meta name="twitter:description" content="数据库事务数据库事务(Database Transaction) ,具有原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）  原子性：原子性是指事务是一个不可分割的工作单位，事务中的操作要么全部成功，要么全部失败 一致性：事务必须使数据库从一个一致性状态变换到另外一个一致性状态 隔离性：并发执行的事务不会相互影响,其对数据库">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（三）/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/27/数据库事务/">
 
 
 
 
 
-  <title>GO-HPB源码解读--挖矿流程（三） | Buff</title>
+  <title>数据库事务 | Buff</title>
   
 
 
@@ -295,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/21/GO-HPB源码解读-挖矿流程（三）/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/27/数据库事务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -312,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">GO-HPB源码解读--挖矿流程（三）</h1>
+          <h1 class="post-title" itemprop="name headline">数据库事务</h1>
         
 
         <div class="post-meta">
@@ -324,8 +324,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-21T13:40:16+08:00">
-                2019-07-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-27T23:03:44+08:00">
+                2019-10-27
               </time>
             
 
@@ -347,8 +347,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/HPB源码解读/" itemprop="url" rel="index">
-                    <span itemprop="name">HPB源码解读</span>
+                  <a href="/categories/MYSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MYSQL</span>
                   </a>
                 </span>
 
@@ -384,106 +384,303 @@
       
 
       
-        <p>在挖矿流程（三）的最后，看到在<code>go self.mine(work, self.quitCurrentOp)</code>中要传递一个work对象进去。因为挖矿流程需要使用到大量的work数据，所以单独分析一下work的数据结构和初始化流程</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Work is the workers current environment and holds</span></span><br><span class="line"><span class="comment">// all of the current state information</span></span><br><span class="line"><span class="keyword">type</span> Work <span class="keyword">struct</span> &#123;</span><br><span class="line">	config *config.ChainConfig</span><br><span class="line">	signer types.Signer</span><br><span class="line"></span><br><span class="line">	state     *state.StateDB <span class="comment">// apply state changes here</span></span><br><span class="line">	ancestors *set.Set       <span class="comment">// ancestor set (used for checking uncle parent validity)</span></span><br><span class="line">	family    *set.Set       <span class="comment">// family set (used for checking uncle invalidity)</span></span><br><span class="line">	uncles    *set.Set       <span class="comment">// uncle set</span></span><br><span class="line">	tcount    <span class="keyword">int</span>            <span class="comment">// tx count in cycle</span></span><br><span class="line"></span><br><span class="line">	Block *types.Block <span class="comment">// the new block</span></span><br><span class="line"></span><br><span class="line">	header   *types.Header</span><br><span class="line">	txs      []*types.Transaction</span><br><span class="line">	receipts []*types.Receipt</span><br><span class="line"></span><br><span class="line">	createdAt time.Time</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+        <h2 id="数据库事务"><a href="#数据库事务" class="headerlink" title="数据库事务"></a>数据库事务</h2><p>数据库事务(Database Transaction) ,具有原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、持久性（Durability）</p>
+<ul>
+<li>原子性：原子性是指事务是一个不可分割的工作单位，事务中的操作要么全部成功，要么全部失败</li>
+<li>一致性：事务必须使数据库从一个一致性状态变换到另外一个一致性状态</li>
+<li>隔离性：并发执行的事务不会相互影响,其对数据库的影响和它们串行执行时一样</li>
+<li>持久性：持久性是指一个事务一旦被提交，它对数据库中数据的改变就是永久性的</li>
+</ul>
 <a id="more"></a>
 
+<p>持久性(Durability):事务一旦提交,其对数据库的更新就是持久的。任何事务或系统故障都不会导致数据丢失。</p>
+<p>在事务的ACID特性中,C即一致性是事务的根本追求,而对数据一致性的破坏主要来自两个方面</p>
+<p>1.事务的并发执行<br>2.事务故障或系统故障<br>数据库系统是通过并发控制技术和日志恢复技术来避免这种情况发生的。<br><a href="../images/transaction.png">ACID</a><br>并发控制技术保证了事务的隔离性,使数据库的一致性状态不会因为并发执行的操作被破坏。<br>日志恢复技术保证了事务的原子性,使一致性状态不会因事务或系统故障被破坏。同时使已提交的对数据库的修改不会因系统崩溃而丢失,保证了事务的持久性。</p>
+<p>理想状态下，事务的隔离性保存了数据库向串行一样的执行，但是在一定程度的并发情况下，严重影响数据库的性能，所以将隔离性化分为不同的等级，在不同的要求或场景下使用不同的等级。就好比安检，在国庆期间安检等级是最高的，必须一个人一个人的接受检查，然后再通过安全通道。平时的话保安看人比较多就管的不那么严格了，有人可能着急就和别人一并过去了。所以在不同的场景下进行不同的隔离要求。<br>MYSQL数据库设置了四种隔离级别，从低到高分别是<strong>读未提交(READ UNCOMMITTED)、读已提交(READ COMMITTED)、可重复读(REPEATABLE READ)、串行化(SERIALIZABLE)</strong>。其中串行化是最高级别的，保证事务能够串行执行，真正可以实现数据库隔离性要求的。那么其他三种低级别的隔离必然会导致一些问题存在。下面依次看下这些问题。</p>
+<ul>
+<li><strong>脏写</strong></li>
+</ul>
+<p>一个事务回滚导致别的事务提交的数据也被回滚了</p>
 <table>
 <thead>
 <tr>
-<th>字段</th>
-<th>类型</th>
-<th>含义</th>
-<th>备注</th>
+<th>TX-A</th>
+<th>TX-B</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>config</td>
-<td>*config.ChainConfig</td>
-<td>chain的配置参数</td>
+<td>————–</td>
+<td>————-</td>
+</tr>
+<tr>
+<td>read X＝100</td>
 <td></td>
 </tr>
 <tr>
-<td>signer</td>
-<td>types.Signer</td>
-<td>签名</td>
+<td></td>
+<td>read X＝100</td>
+</tr>
+<tr>
+<td></td>
+<td>write X=X+200</td>
+</tr>
+<tr>
+<td></td>
+<td>commit X=300</td>
+</tr>
+<tr>
+<td>write X=X+200</td>
 <td></td>
 </tr>
 <tr>
-<td>state</td>
-<td>*state.StateDB</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>ancestors</td>
-<td>*set.Set</td>
-<td>祖先哈希集合，也就是最近的7个区块的哈希，</td>
-<td></td>
-</tr>
-<tr>
-<td>family</td>
-<td>*set.Set</td>
-<td>家族哈希集合，也就是最近的7个区块的哈希以及每个区块的叔区块集合的哈希</td>
-<td></td>
-</tr>
-<tr>
-<td>uncles</td>
-<td>*set.Set</td>
-<td>叔块集合</td>
-<td></td>
-</tr>
-<tr>
-<td>tcount</td>
-<td>int</td>
-<td>交易周期内的交易数量</td>
-<td></td>
-</tr>
-<tr>
-<td>Block</td>
-<td>*types.Block</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>header</td>
-<td>*types.Header</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>txs</td>
-<td>[]*types.Transaction</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>receipts</td>
-<td>[]*types.Receipt</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>createdAt</td>
-<td>time.Time</td>
-<td></td>
+<td>roolback X=100</td>
 <td></td>
 </tr>
 </tbody></table>
-<p>startNewMinerRound()方法主要是创建了一个work并push到workch通道中，大至流程是：</p>
+<ul>
+<li><strong>丢失更新</strong></li>
+</ul>
+<p>如果两个事务都更新同一个字段时：</p>
+<table>
+<thead>
+<tr>
+<th>TX-A</th>
+<th>TX-B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>read X＝100</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>read X＝100</td>
+</tr>
+<tr>
+<td>write X=X+200</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>write X=X+300</td>
+</tr>
+<tr>
+<td>commit X=300</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>commit X=400</td>
+</tr>
+<tr>
+<td>TX-A将X加200，应该是300，然后TX-B将X加300，应该是600，结果最后X是400，相当于把TX-A加的200给丢了</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>脏读</strong></li>
+</ul>
+<p>一个事务读取到了另一个事务未提交的数据：</p>
+<table>
+<thead>
+<tr>
+<th>TX-A</th>
+<th>TX-B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>———–</td>
+<td>————-</td>
+</tr>
+<tr>
+<td>read X＝100</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>read X＝100</td>
+</tr>
+<tr>
+<td></td>
+<td>write X=X+300</td>
+</tr>
+<tr>
+<td>read X=400</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>在事务TX-A中读取了TX-B还没有提交的数据，如果TX-B回滚，则TX-A计算就出错了</p>
+<ul>
+<li><strong>不可重复读</strong><br>一个事务读取到了另一个事务已提交的数据：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>TX-A</th>
+<th>TX-B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>———–</td>
+<td>————-</td>
+</tr>
+<tr>
+<td>read X＝100</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>read X＝100</td>
+</tr>
+<tr>
+<td></td>
+<td>write X=X+300</td>
+</tr>
+<tr>
+<td></td>
+<td>commit X=400</td>
+</tr>
+<tr>
+<td>read X=400</td>
+<td></td>
+</tr>
+<tr>
+<td>在事务TX-A中读取了TX-B已提交的数据，这样会导致TX-A在一个事务内每次读取的数据不一样，其结果依赖于别人并行提交的数据。与脏读的区别就是读取的数据是另一个事务提交前的还是提交后的数据。</td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>幻读</strong><br>一个事务读取到了另一个事务插入的数据：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>TX-A</th>
+<th>TX-B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>read count(*) = 5</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>write insert 1</td>
+</tr>
+<tr>
+<td></td>
+<td>commit X=400</td>
+</tr>
+<tr>
+<td>read count(*) = 6</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>虚读(幻读)是指在一个事务内读取到了别的事务插入的数据，导致前后读取的数据数量不同。</p>
+<p>不同的事务隔离级别可能会出现不同的等级错误<br>|隔离级别|脏写|脏读|不可重复读|幻读|丢失更新|<br>| ————————– | — | —- | —- | —- | —- |<br>| 读未提交(READ UNCOMMITTED) |     | 可能 | 可能 | 可能 | 可能 |<br>| 读已提交(READ COMMITTED)   |     |      | 可能 | 可能 | 可能 |<br>| 可重复读(REPEATABLE READ)  |     |      |      | 可能 |      |<br>| 串行化(SERIALIZABLE)       |     |      |      |      |      |</p>
+<h1 id="隔离实现"><a href="#隔离实现" class="headerlink" title="隔离实现"></a>隔离实现</h1><p>并发控制主要是通过锁的机制实现，从“心里预期”来说可以分为两种，分别是乐观锁、悲观锁。这里说的锁是一个抽象概念，是一种实现机制，并不一定是有锁这个类或者API等实体的东西。</p>
+<ul>
+<li>乐观锁：在并发执行时，假定不会发生资源竞争，允许执行，只有在真正发生冲突时才会解决冲突，比如事务回滚，再次尝试等。</li>
+<li>悲观锁：在并发执行时，已经认为会发生资源竞争，所以只能按照串行执行，一刀切，爱谁谁。</li>
+</ul>
+<h2 id="基于封锁的并发控制"><a href="#基于封锁的并发控制" class="headerlink" title="基于封锁的并发控制"></a>基于封锁的并发控制</h2><p><strong>核心思想:对于并发可能冲突的操作,比如读-写,写-读,写-写,通过锁使它们互斥执行</strong></p>
+<p>锁通常分为共享锁和排他锁两种类型</p>
 <ol>
-<li>确定区块的时间戳，因为上一区块可能来自节点同步，所以时间可能存在差异，这里确保了两个点，一是新块的时间一定要比上一区块的时间大，至少1；二是新块的时间和自己系统时间差不要超过1，也就是说计算出来的新块时间戳比当前时间加1s还大，那就只能等一会儿再执行了。比如当前时间是1，新区时间戳是8，那么就需要等7s了。</li>
-<li>组织新块的header</li>
-<li>初始化当前work对象</li>
-<li>把appending的交易打包进来</li>
-<li>使用共识引擎组装成一个完整的区块</li>
-<li>提交挖矿任务work<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(self *worker)</span> <span class="title">startNewMinerRound</span><span class="params">()</span></span> &#123;</span><br><span class="line">	self.mu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> self.mu.Unlock()</span><br><span class="line">	self.uncleMu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> self.uncleMu.Unlock()</span><br><span class="line">	self.currentMu.Lock()</span><br><span class="line">	<span class="keyword">defer</span> self.currentMu.Unlock()</span><br><span class="line"></span><br><span class="line">	tstart := time.Now()</span><br><span class="line">	parent := self.chain.CurrentBlock()</span><br><span class="line"></span><br><span class="line">	tstamp := tstart.Unix()</span><br><span class="line">	<span class="keyword">if</span> parent.Time().Cmp(<span class="built_in">new</span>(big.Int).SetInt64(tstamp)) &gt;= <span class="number">0</span> &#123;</span><br><span class="line">		tstamp = parent.Time().Int64() + <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// this will ensure we're not going off too far in the future</span></span><br><span class="line">	<span class="keyword">if</span> now := time.Now().Unix(); tstamp &gt; now+<span class="number">1</span> &#123;</span><br><span class="line">		wait := time.Duration(tstamp-now) * time.Second</span><br><span class="line">		log.Info(<span class="string">"Mining too far in the future"</span>, <span class="string">"wait"</span>, common.PrettyDuration(wait))</span><br><span class="line">		time.Sleep(wait)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	num := parent.Number()</span><br><span class="line">	header := &amp;types.Header&#123;</span><br><span class="line">		ParentHash: parent.Hash(),</span><br><span class="line">		Number:     num.Add(num, common.Big1),</span><br><span class="line">		GasLimit:   bc.CalcGasLimit(parent),</span><br><span class="line">		GasUsed:    <span class="built_in">new</span>(big.Int),</span><br><span class="line">		Extra:      self.extra,</span><br><span class="line">		Time:       big.NewInt(tstamp),</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Only set the coinbase if we are mining (avoid spurious block rewards)</span></span><br><span class="line">	<span class="keyword">if</span> atomic.LoadInt32(&amp;self.mining) == <span class="number">1</span> &#123;</span><br><span class="line">		header.Coinbase = self.coinbase</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pstate, _ := self.chain.StateAt(parent.Root())</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err := self.engine.PrepareBlockHeader(self.chain, header,pstate); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to prepare header for mining"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	err := self.makeCurrent(parent, header)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to create mining context"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Create the current work task and check any fork transitions needed</span></span><br><span class="line">	work := self.current</span><br><span class="line">	<span class="comment">//if self.config.DAOForkSupport &amp;&amp; self.config.DAOForkBlock != nil &amp;&amp; self.config.DAOForkBlock.Cmp(header.Number) == 0 &#123;</span></span><br><span class="line">	<span class="comment">//	misc.ApplyDAOHardFork(work.state)</span></span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	pending, err := txpool.GetTxPool().Pending()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to fetch pending transactions"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//log.Error("----read tx from pending is ", "number is", len(pending))</span></span><br><span class="line">	txs := types.NewTransactionsByPriceAndNonce(self.current.signer, pending)</span><br><span class="line">	work.commitTransactions(self.mux, txs, self.coinbase)</span><br><span class="line">	<span class="comment">// compute uncles for the new block.</span></span><br><span class="line">	<span class="keyword">var</span> (</span><br><span class="line">		uncles    []*types.Header</span><br><span class="line">		badUncles []common.Hash</span><br><span class="line">	)</span><br><span class="line">	<span class="keyword">for</span> hash, uncle := <span class="keyword">range</span> self.possibleUncles &#123;</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(uncles) == <span class="number">2</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> err := self.commitUncle(work, uncle.Header()); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Trace(<span class="string">"Bad uncle found and will be removed"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">			log.Trace(fmt.Sprint(uncle))</span><br><span class="line"></span><br><span class="line">			badUncles = <span class="built_in">append</span>(badUncles, hash)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			log.Debug(<span class="string">"Committing new uncle to block"</span>, <span class="string">"hash"</span>, hash)</span><br><span class="line">			uncles = <span class="built_in">append</span>(uncles, uncle.Header())</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> _, hash := <span class="keyword">range</span> badUncles &#123;</span><br><span class="line">		<span class="built_in">delete</span>(self.possibleUncles, hash)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Create the new block to seal with the consensus engine</span></span><br><span class="line">	<span class="keyword">if</span> work.Block, err = self.engine.Finalize(self.chain, header, work.state, work.txs, uncles, work.receipts); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Error(<span class="string">"Failed to finalize block for sealing"</span>, <span class="string">"err"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// We only care about logging if we're actually mining.</span></span><br><span class="line">	<span class="keyword">if</span> atomic.LoadInt32(&amp;self.mining) == <span class="number">1</span> &#123;</span><br><span class="line">		log.Info(<span class="string">"Commit new mining work"</span>, <span class="string">"number"</span>, work.Block.Number(), <span class="string">"txs"</span>, work.tcount, <span class="string">"uncles"</span>, <span class="built_in">len</span>(uncles), <span class="string">"elapsed"</span>, common.PrettyDuration(time.Since(tstart)))</span><br><span class="line">		self.unconfirmed.Shift(work.Block.NumberU64() - <span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	self.push(work)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<li><p>共享锁(S):事务T对数据A加共享锁,其他事务只能对A加共享锁但不能加排他锁。</p>
+</li>
+<li><p>排他锁(X):事务T对数据A加排他锁,其他事务对A既不能加共享锁也不能加排他锁<br>基于锁的并发控制流程:</p>
+</li>
+<li><p>事务根据自己对数据项进行的操作类型申请相应的锁(读申请共享锁,写申请排他锁)</p>
+</li>
+<li><p>申请锁的请求被发送给锁管理器。锁管理器根据当前数据项是否已经有锁以及申请的和持有的锁是否冲突决定是否为该请求授予锁。</p>
+</li>
+<li><p>若锁被授予,则申请锁的事务可以继续执行;若被拒绝,则申请锁的事务将进行等待,直到锁被其他事务释放。</p>
 </li>
 </ol>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">makeCurrent(...)方法即初始化了一个work对象，之后会设置work的tcount、uncles等其他属性</span><br><span class="line"><span class="comment">// makeCurrent creates a new environment for the current cycle.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(self *worker)</span> <span class="title">makeCurrent</span><span class="params">(parent *types.Block, header *types.Header)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	state, err := self.chain.StateAt(parent.Root())</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	work := &amp;Work&#123;</span><br><span class="line">		config:    self.config,</span><br><span class="line">		signer:    types.NewBoeSigner(self.config.ChainId),</span><br><span class="line">		state:     state,</span><br><span class="line">		ancestors: set.New(),</span><br><span class="line">		family:    set.New(),</span><br><span class="line">		uncles:    set.New(),</span><br><span class="line">		header:    header,</span><br><span class="line">		createdAt: time.Now(),</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// when 08 is processed ancestors contain 07 (quick block)</span></span><br><span class="line">	<span class="keyword">for</span> _, ancestor := <span class="keyword">range</span> self.chain.GetBlocksFromHash(parent.Hash(), <span class="number">7</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> _, uncle := <span class="keyword">range</span> ancestor.Uncles() &#123;</span><br><span class="line">			work.family.Add(uncle.Hash())</span><br><span class="line">		&#125;</span><br><span class="line">		work.family.Add(ancestor.Hash())</span><br><span class="line">		work.ancestors.Add(ancestor.Hash())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Keep track of transactions which return errors so they can be removed</span></span><br><span class="line">	work.tcount = <span class="number">0</span></span><br><span class="line">	self.current = work</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<p>可能出现的问题:</p>
+<ol>
+<li><p>死锁:多个事务持有锁并互相循环等待其他事务的锁导致所有事务都无法继续执行。</p>
+</li>
+<li><p>饥饿:数据项A一直被加共享锁,导致事务一直无法获取A的排他锁。</p>
+</li>
+</ol>
+<p>对于可能发生冲突的并发操作,锁使它们由并行变为串行执行,是一种悲观的并发控制。</p>
+<h2 id="基于时间戳的并发控制"><a href="#基于时间戳的并发控制" class="headerlink" title="基于时间戳的并发控制"></a>基于时间戳的并发控制</h2><p><strong>核心思想:对于并发可能冲突的操作,基于时间戳排序规则选定某事务继续执行,其他事务回滚</strong></p>
+<p>系统会在每个事务开始时赋予其一个时间戳,这个时间戳可以是系统时钟也可以是一个不断累加的计数器值,当事务回滚时会为其赋予一个新的时间戳,先开始的事务时间戳小于后开始事务的时间戳。</p>
+<p>每一个数据项Q有两个时间戳相关的字段:<br>W-timestamp(Q):成功执行write(Q)的所有事务的最大时间戳<br>R-timestamp(Q):成功执行read(Q)的所有事务的最大时间戳</p>
+<p>时间戳排序规则如下:</p>
+<p>假设事务T发出read(Q),T的时间戳为TS</p>
+<ol>
+<li>若TS(T)&lt;W-timestamp(Q),则T需要读入的Q已被覆盖。此read操作将被拒绝,T回滚。</li>
+<li>若TS(T)&gt;=W-timestamp(Q),则执行read操作,同时把R-timestamp(Q)设置为TS(T)与R-timestamp(Q)中的最大值</li>
+</ol>
+<p>假设事务T发出write(Q)</p>
+<ol>
+<li>若TS(T)&lt;R-timestamp(Q),write操作被拒绝,T回滚。</li>
+<li>若TS(T)&lt;W-timestamp(Q),则write操作被拒绝,T回滚。</li>
+<li>其他情况:系统执行write操作,将W-timestamp(Q)设置为TS(T)。</li>
+</ol>
+<p>基于时间戳排序和基于锁实现的本质一样:对于可能冲突的并发操作,以串行的方式取代并发执行,因而它也是一种悲观并发控制。它们的区别主要有两点:</p>
+<p>基于锁是让冲突的事务进行等待,而基于时间戳排序是让冲突的事务回滚。<br>基于锁冲突事务的执行次序是根据它们申请锁的顺序,先申请的先执行;而基于时间戳排序是根据特定的时间戳排序规则。</p>
+<h2 id="基于有效性检查的并发控制"><a href="#基于有效性检查的并发控制" class="headerlink" title="基于有效性检查的并发控制"></a>基于有效性检查的并发控制</h2><p><strong>核心思想:事务对数据的更新首先在自己的工作空间进行,等到要写回数据库时才进行有效性检查,对不符合要求的事务进行回滚</strong></p>
+<p>基于有效性检查的事务执行过程会被分为三个阶段:</p>
+<ol>
+<li>读阶段:数据项被读入并保存在事务的局部变量中。所有write操作都是对局部变量进行,并不对数据库进行真正的更新。</li>
+<li>有效性检查阶段:对事务进行有效性检查,判断是否可以执行write操作而不违反可串行性。如果失败,则回滚该事务。</li>
+<li>写阶段:事务已通过有效性检查,则将临时变量中的结果更新到数据库中。</li>
+</ol>
+<p>有效性检查通常也是通过对事务的时间戳进行比较完成的,不过和基于时间戳排序的规则不一样。</p>
+<p>该方法允许可能冲突的操作并发执行,因为每个事务操作的都是自己工作空间的局部变量,直到有效性检查阶段发现了冲突才回滚。因而这是一种乐观的并发策略。</p>
+<h2 id="基于快照隔离的并发控制"><a href="#基于快照隔离的并发控制" class="headerlink" title="基于快照隔离的并发控制"></a>基于快照隔离的并发控制</h2><p><strong>其核心思想是:数据库为每个数据项维护多个版本(快照),每个事务只对属于自己的私有快照进行更新,在事务真正提交前进行有效性检查,使得事务正常提交更新或者失败回滚。快照隔离是多版本并发控制(mvcc)的一种实现方式</strong></p>
+<p>由于快照隔离导致事务看不到其他事务对数据项的更新,为了避免出现丢失更新问题,可以采用以下两种方案避免：</p>
+<ol>
+<li><p>先提交者获胜:对于执行该检查的事务T,判断是否有其他事务已经将更新写入数据库,是则T回滚否则T正常提交。</p>
+</li>
+<li><p>先更新者获胜:通过锁机制保证第一个获得锁的事务提交其更新,之后试图更新的事务中止。</p>
+</li>
+</ol>
+<p>事务间可能冲突的操作通过数据项的不同版本的快照相互隔离,到真正要写入数据库时才进行冲突检测。因而这也是一种乐观并发控制。</p>
+<h1 id="MYSQL-InnoDB锁"><a href="#MYSQL-InnoDB锁" class="headerlink" title="MYSQL- InnoDB锁"></a>MYSQL- InnoDB锁</h1><p>InnoDB引擎使用了七种类型的锁，他们分别是：</p>
+<ul>
+<li>共享排他锁（Shared and Exclusive Locks）</li>
+<li>意向锁（Intention Locks）</li>
+<li>记录锁（Record Locks）</li>
+<li>间隙锁（Gap Locks）</li>
+<li>Next-Key Locks</li>
+<li>插入意图锁（Insert Intention Locks）</li>
+<li>自增锁（AUTO-INC Locks）</li>
+</ul>
+<h2 id="共享排他锁（Shared-and-Exclusive-Locks）"><a href="#共享排他锁（Shared-and-Exclusive-Locks）" class="headerlink" title="共享排他锁（Shared and Exclusive Locks）"></a>共享排他锁（Shared and Exclusive Locks）</h2><ul>
+<li>如果一个事务对某一行数据加了S锁，另一个事务还可以对相应的行加S锁，但是不能对相应的行加X锁。</li>
+<li>如果一个事务对某一行数据加了X锁，另一个事务既不能对相应的行加S锁也不能加X锁。</li>
+</ul>
+<h2 id="意向锁（Intention-Locks）"><a href="#意向锁（Intention-Locks）" class="headerlink" title="意向锁（Intention Locks）"></a>意向锁（Intention Locks）</h2><p>如果事务A申请了行锁(写锁)，事务B申请了表锁（写锁），那么这两个事务就会发冲突。为了解决这类问题引入了意向锁。</p>
+<ul>
+<li>意向锁分为意向读锁(IS)和意向写锁(IX)</li>
+<li>意向锁是“表锁”，他并不会锁定表，只是显示某人正在锁定行，或者要锁定表中的行。当事务B申请表写锁时，发现该表已经有意向写锁，则会被阻塞。</li>
+</ul>
+<p>这样也就解决了上边的问题了，意向锁是由InnoDB自行实现的，用户无法操作</p>
+<h2 id="Record-Locks、Gap-Locks、Next-Key-Locks"><a href="#Record-Locks、Gap-Locks、Next-Key-Locks" class="headerlink" title="Record Locks、Gap Locks、Next-Key Locks"></a>Record Locks、Gap Locks、Next-Key Locks</h2><blockquote>
+<ol>
+<li>记录锁（Record Locks）:记录锁锁定索引中一条记录。</li>
+<li>间隙锁（Gap Locks）:间隙锁要么锁住索引记录中间的值，要么锁住第一个索引记录前面的值或者最后一个索引记录后面的值。</li>
+<li>Next-Key Locks:Next-Key锁是索引记录上的记录锁和在索引记录之前的间隙锁的组合。</li>
+</ol>
+</blockquote>
+<p>三种类型锁的锁定范围不同，且逐渐扩大。我们来举一个例子来简要说明各种锁的锁定范围，假设表t中索引列有3、5、8、9四个数字值，根据官方文档的确定三种锁的锁定范围如下：</p>
+<ul>
+<li>记录锁的锁定范围是单独的索引记录，就是3、5、8、9这四行数据。</li>
+<li>间隙锁的锁定为行中间隙，用集合表示为(-∞,3)、(3,5)、(5,8)、(8,9)、(9,+∞)。</li>
+<li>Next-Key锁是有索引记录锁加上索引记录锁之前的间隙锁组合而成，用集合的方式表示为(-∞,3]、(3,5]、(5,8]、(8,9]、(9,+∞)。</li>
+</ul>
+<p>最后补充几点：</p>
+<ul>
+<li>间隙锁阻止其他事务对间隙数据的并发插入，这样可有有效的解决幻读问题(Phantom Problem)。正因为如此，并不是所有事务隔离级别都使用间隙锁，MySQL InnoDB引擎只有在Repeatable Read（默认）隔离级别才使用间隙锁。</li>
+<li>间隙锁的作用只是用来阻止其他事务在间隙中插入数据，他不会阻止其他事务拥有同样的的间隙锁。这就意味着，除了insert语句，允许其他SQL语句可以对同样的行加间隙锁而不会被阻塞。</li>
+<li>对于唯一索引的加锁行为，间隙锁就会失效，此时只有记录锁起作用。</li>
+<li>行锁实现依赖于索引，一旦某个加锁操作没有使用到索引，那么该锁就会退化为表锁。</li>
+<li>记录锁存在于包括主键索引在内的唯一索引中，锁定单条索引记录。</li>
+</ul>
 
       
     </div>
@@ -501,9 +698,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/HPB/" rel="tag"># HPB</a>
+            <a href="/tags/事务/" rel="tag"># 事务</a>
           
-            <a href="/tags/区块链/" rel="tag"># 区块链</a>
+            <a href="/tags/MYSQL/" rel="tag"># MYSQL</a>
           
         </div>
       
@@ -516,8 +713,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/21/GO-HPB源码解读-挖矿流程（二）/" rel="next" title="GO-HPB源码解读--挖矿流程（二）">
-                <i class="fa fa-chevron-left"></i> GO-HPB源码解读--挖矿流程（二）
+              <a href="/2019/10/26/闭包/" rel="next" title="闭包原理">
+                <i class="fa fa-chevron-left"></i> 闭包原理
               </a>
             
           </div>
@@ -525,10 +722,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/21/GO-HPB源码解读-挖矿流程（四）/" rel="prev" title="GO-HPB源码解读--挖矿流程（四）">
-                GO-HPB源码解读--挖矿流程（四） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -580,8 +773,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -643,6 +845,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库事务"><span class="nav-number">1.</span> <span class="nav-text">数据库事务</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#隔离实现"><span class="nav-number"></span> <span class="nav-text">隔离实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于封锁的并发控制"><span class="nav-number">1.</span> <span class="nav-text">基于封锁的并发控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于时间戳的并发控制"><span class="nav-number">2.</span> <span class="nav-text">基于时间戳的并发控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于有效性检查的并发控制"><span class="nav-number">3.</span> <span class="nav-text">基于有效性检查的并发控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于快照隔离的并发控制"><span class="nav-number">4.</span> <span class="nav-text">基于快照隔离的并发控制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MYSQL-InnoDB锁"><span class="nav-number"></span> <span class="nav-text">MYSQL- InnoDB锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#共享排他锁（Shared-and-Exclusive-Locks）"><span class="nav-number">1.</span> <span class="nav-text">共享排他锁（Shared and Exclusive Locks）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#意向锁（Intention-Locks）"><span class="nav-number">2.</span> <span class="nav-text">意向锁（Intention Locks）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Record-Locks、Gap-Locks、Next-Key-Locks"><span class="nav-number">3.</span> <span class="nav-text">Record Locks、Gap Locks、Next-Key Locks</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
