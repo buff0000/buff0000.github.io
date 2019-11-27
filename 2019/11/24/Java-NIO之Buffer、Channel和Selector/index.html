@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="NIO,">
 
 
 
@@ -79,17 +79,22 @@
 
 
 
-<meta name="description" content="Buffer与Cache Buffer   将数据写入到内存里，这个数据的内存空间在Linux系统里一般被称为缓冲区（buffer），例如：写入到内存buffer缓冲区，即写缓冲。  为了提高写操作性能，数据在写入最终介质或下一层级介质前会合并放在缓冲区中。这样会增加数据持久写的延时，因为第一次写入缓冲区后，在向下写入数据之前，还要等后续写入，以便凑够数据或者定时写入到永久存储介质中。    Ca">
+<meta name="description" content="Buffer概念上，缓冲区是包在一个对象内的基本数据元素数组。Buffer 类相比一个简单数组的优点是它将关于数据的数据内容和信息包含在一个单一的对象中 具体内容请看以下图片，图片原文件地址为Java-NIO Buffer.drawio">
+<meta name="keywords" content="NIO">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Smart Cakes">
-<meta property="og:url" content="http://yoursite.com/2019/11/23/Smart-Cakes/index.html">
+<meta property="og:title" content="Java-NIO之Buffer、Channel和Selector">
+<meta property="og:url" content="http://yoursite.com/2019/11/24/Java-NIO之Buffer、Channel和Selector/index.html">
 <meta property="og:site_name" content="Buff">
-<meta property="og:description" content="Buffer与Cache Buffer   将数据写入到内存里，这个数据的内存空间在Linux系统里一般被称为缓冲区（buffer），例如：写入到内存buffer缓冲区，即写缓冲。  为了提高写操作性能，数据在写入最终介质或下一层级介质前会合并放在缓冲区中。这样会增加数据持久写的延时，因为第一次写入缓冲区后，在向下写入数据之前，还要等后续写入，以便凑够数据或者定时写入到永久存储介质中。    Ca">
+<meta property="og:description" content="Buffer概念上，缓冲区是包在一个对象内的基本数据元素数组。Buffer 类相比一个简单数组的优点是它将关于数据的数据内容和信息包含在一个单一的对象中 具体内容请看以下图片，图片原文件地址为Java-NIO Buffer.drawio">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-23T13:21:58.017Z">
+<meta property="og:image" content="http://yoursite.com/2019/11/24/images/javanio/Java-NIO-Buffer.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/24/images/javanio/Channel.png">
+<meta property="og:image" content="http://yoursite.com/2019/11/24/images/javanio/Java-NIO-Channel.png">
+<meta property="og:updated_time" content="2019-11-27T17:14:52.343Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Smart Cakes">
-<meta name="twitter:description" content="Buffer与Cache Buffer   将数据写入到内存里，这个数据的内存空间在Linux系统里一般被称为缓冲区（buffer），例如：写入到内存buffer缓冲区，即写缓冲。  为了提高写操作性能，数据在写入最终介质或下一层级介质前会合并放在缓冲区中。这样会增加数据持久写的延时，因为第一次写入缓冲区后，在向下写入数据之前，还要等后续写入，以便凑够数据或者定时写入到永久存储介质中。    Ca">
+<meta name="twitter:title" content="Java-NIO之Buffer、Channel和Selector">
+<meta name="twitter:description" content="Buffer概念上，缓冲区是包在一个对象内的基本数据元素数组。Buffer 类相比一个简单数组的优点是它将关于数据的数据内容和信息包含在一个单一的对象中 具体内容请看以下图片，图片原文件地址为Java-NIO Buffer.drawio">
+<meta name="twitter:image" content="http://yoursite.com/2019/11/24/images/javanio/Java-NIO-Buffer.png">
 
 
 
@@ -119,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/11/23/Smart-Cakes/">
+  <link rel="canonical" href="http://yoursite.com/2019/11/24/Java-NIO之Buffer、Channel和Selector/">
 
 
 
 
 
-  <title>Smart Cakes | Buff</title>
+  <title>Java-NIO之Buffer、Channel和Selector | Buff</title>
   
 
 
@@ -294,7 +299,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/23/Smart-Cakes/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/Java-NIO之Buffer、Channel和Selector/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content>
@@ -311,7 +316,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Smart Cakes</h1>
+          <h1 class="post-title" itemprop="name headline">Java-NIO之Buffer、Channel和Selector</h1>
         
 
         <div class="post-meta">
@@ -323,8 +328,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-23T21:10:32+08:00">
-                2019-11-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-24T15:50:57+08:00">
+                2019-11-24
               </time>
             
 
@@ -333,6 +338,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java-NIO/" itemprop="url" rel="index">
+                    <span itemprop="name">Java NIO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -361,24 +388,61 @@
       
 
       
-        <h2 id="Buffer与Cache"><a href="#Buffer与Cache" class="headerlink" title="Buffer与Cache"></a>Buffer与Cache</h2><ol>
-<li>Buffer</li>
+        <h1 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h1><p>概念上，缓冲区是包在一个对象内的基本数据元素数组。Buffer 类相比一个简单数组的优点<br>是它将关于数据的数据内容和信息包含在一个单一的对象中</p>
+<p>具体内容请看以下图片，图片原文件地址为<a href="https://github.com/buff0000/draw.io/blob/master/Java-NIO%20Buffer.drawio" target="_blank" rel="noopener">Java-NIO Buffer.drawio</a></p>
+<p><img src="../images/javanio/Java-NIO-Buffer.png" alt></p>
+<a id="more"></a>
+
+
+<h1 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h1><p>Channel用于在字节缓冲区和位于通道另一侧的实体（通常是一个文件或套接字）之间有效地传输数据。多数情况下，通道与操作系统的文件描述符（File Descriptor）和文件句柄（File Handle）有着一对一的关系。</p>
+<p><img src="../images/javanio/Channel.png" alt="类图"></p>
+<p>Channel涉及知识比较零碎，参见下图</p>
+<p><img src="../images/javanio/Java-NIO-Channel.png" alt="类图"></p>
+<p><a href="https://github.com/buff0000/CodeDiary/tree/master/CD-Java-NIO/" target="_blank" rel="noopener">测试代码请参考Github</a></p>
+<h1 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h1><p>以下是本书对于传通阻塞IO不能实现非阻塞原因的描述</p>
+<blockquote>
+<p>选择器提供了询问通道是否已经准备好执行每个I/0操作的能力。例如，我们需要了解一个SocketChannel对象是否还有更多的字节需要读取，或者我们需要知道ServerSocketChannel是否有需要准备接受的连接。<br><br>在与SelectableChannel联合使用时，选择器提供了这种服务，但这里面有更多的事情需要去了解。就绪选择的真正价值在于潜在的大量的通道可以同时进行就绪状态的检查。调用者可以轻松地决定多个通道中的哪一个准备好要运行。有两种方式可以选择：被激发的线程可以处于休眠状态，直到一个或者多个注册到选择器的通道就绪，或者它也可以周期性地轮询选择器，看看从上次检查之后，是否有通道处于就绪状态。如果您考虑一下需要管理大量并发的连接的网络服务器(web server)的实现，就可以很容易地想到如何善加利用这些能力。<br><br>乍一看，好像只要非阻塞模式就可以模拟就绪检查功能，但实际上还不够。非阻塞模式同时还会执行您请求的任务，或指出它无法执行这项任务。这与检查它是否能够执行某种类型的操作是不同的。举个例子，如果您试图执行非阻塞操作，并且也执行成功了，您将不仅仅发现read( )是可以执行的，同时您也已经读入了一些数据。就下来您就需要处理这些数据了。<br><br>效率上的要求使得您不能将检查就绪的代码和处理数据的代码分离开来，至少这么做会很复杂。<br><br>即使简单地询问每个通道是否已经就绪的方法是可行的，在您的代码或一个类库的包里的某些代码需要遍历每一个候选的通道并按顺序进行检查的时候，仍然是有问题的。这会使得在检查每个通道是否就绪时都至少进行一次系统调用，这种代价是十分昂贵的，但是主要的问题是，这种检查不是原子性的。列表中的一个通道都有可能在它被检查之后就绪，但直到下一次轮询为止，您并不会觉察到这种情况。最糟糕的是，您除了不断地遍历列表之外将别无选择。您无法在某个您感兴趣的通道就绪时得到通知。<br><br>这就是为什么传统的监控多个socket的Java解决方案是为每个socket创建一个线程并使得线程可以在read( )调用中阻塞，直到数据可用。这事实上将每个被阻塞的线程当作了socket监控器，并将Java虚拟机的线程调度当作了通知机制。这两者本来都不是为了这种目的而设计的。程序员和Java虚拟机都为管理所有这些线程的复杂性和性能损耗付出了代价，这在线程数量的增长失控时表现得更为突出。<br><br>真正的就绪选择必须由操作系统来做。操作系统的一项最重要的功能就是处理I/O请求并通知各个线程它们的数据已经准备好了。选择器类提供了这种抽象，使得Java代码能够以可移植的方式，请求底层的操作系统提供就绪选择服务。</p>
+</blockquote>
+<h2 id="创建选择器–Selector"><a href="#创建选择器–Selector" class="headerlink" title="创建选择器–Selector"></a>创建选择器–Selector</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">elector selector = Selector.open( );</span><br><span class="line">channel1.register (selector, SelectionKey.OP_READ);</span><br><span class="line">channel2.register (selector, SelectionKey.OP_WRITE);channel3.register (selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);</span><br><span class="line"><span class="comment">// Wait up to 10 seconds for a channel to become ready</span></span><br><span class="line">readyCount = selector.select (<span class="number">10000</span>);</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>将这三个(已经存在的)socket通道注册到选择器上，而且感兴趣的操作各不相同。</li>
+<li>select( )方法在将线程置于睡眠状态，直到这些刚兴趣的事情中的操作中的一个发生或者10秒钟的时间过去。</li>
+<li>任何一个通道和选择器的注册关系都被封装在一个SelectionKey对象中。keyFor( )方法将返回与该通道和指定的选择器相关的键。</li>
+</ol>
+<h2 id="使用选择键–SelectionKey"><a href="#使用选择键–SelectionKey" class="headerlink" title="使用选择键–SelectionKey"></a>使用选择键–SelectionKey</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.nio.channels;<span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SelectionKey</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_READ</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_WRITEpublic</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_CONNECTpublic</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OP_ACCEPTpublic</span><br><span class="line">   <span class="function"><span class="keyword">abstract</span> SelectableChannel <span class="title">channel</span><span class="params">( )</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Selector <span class="title">selector</span><span class="params">( )</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">( )</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">( )</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">interestOps</span><span class="params">( )</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">interestOps</span> <span class="params">(<span class="keyword">int</span> ops)</span></span>;<span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">readyOps</span><span class="params">( )</span></span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isReadable</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isWritable</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isConnectable</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isAcceptable</span><span class="params">( )</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">attach</span> <span class="params">(Object ob)</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">attachment</span><span class="params">( )</span></span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>channel( )方法返回与该键相关的SelectableChannel对象，而selector( )则返回相关的Selector对象。</li>
+<li>一个SelectionKey对象包含两个以整数形式进行编码的比特掩码：一个用于指示那些通道/选择器组合体所关心的操作(instrest集合)，另一个表示通道准备好要执行的操作（ready集合）。ready集合由操作系统进行维护，JavaNIO不提供相关的修改操作。选择器维护着注册过的通道的集合，并且这些注册关系中的任意一个都是封装在SelectionKey对象中的。每一个Selector对象维护三个键的集合：</li>
 </ol>
 <ul>
-<li><p>将数据写入到内存里，这个数据的内存空间在Linux系统里一般被称为缓冲区（buffer），例如：写入到内存buffer缓冲区，即写缓冲。</p>
-</li>
-<li><p>为了提高写操作性能，数据在写入最终介质或下一层级介质前会合并放在缓冲区中。这样会增加数据持久写的延时，因为第一次写入缓冲区后，在向下写入数据之前，还要等后续写入，以便凑够数据或者定时写入到永久存储介质中。</p>
-</li>
+<li>已注册的键的集合(Registered key set)与选择器关联的已经注册的键的集合。</li>
+<li>已选择的键的集合(Selected key set)已注册的键的集合的子集。这个集合的每个成员都是相关的通道被选择器（在前一个选择操作中）判断为已经准备好的，并且包含于键的interest集合中的操作。这个集合通过selectedKeys( )方法返回（并有可能是空的）。不要将已选择的键的集合与ready集合弄混了。这是一个键的集合，每个键都关联一个已经准备好至少一种操作的通道。每个键都有一个内嵌的ready集合，指示了所关联的通道已经准备好的操作。</li>
+<li>已取消的键的集合(Cancelled key set)已注册的键的集合的子集，这个集合包含了cancel( )方法被调用过的键（这个键已经被无效化），但它们还没有被注销。这个集合是选择器对象的私有成员，因而无法直接访问。</li>
 </ul>
-<ol start="2">
-<li>Cache</li>
+<ol start="3">
+<li>if (key.isWritable( ))<br>等价于：<br>if ((key.readyOps( ) &amp; SelectionKey.OP_WRITE) != 0)</li>
+<li>SelectionKey key = channel.register (selector, SelectionKey.OP_READ, myObject);<br>等价于<br>SelectionKey key = channel.register (selector, SelectionKey.OP_READ);key.attach (myObject);</li>
+<li>SelectionKey对象是线程安全的，但知道修改interest集合的操作是通过Selector对象进行同步的是很重要的。</li>
 </ol>
-<ul>
-<li><p>从内存里读取数据，这个存数据的内存空间在Linux系统里一般称为缓存区（cache），例如：从内存cache读取，即读缓存。</p>
-</li>
-<li><p>操作系统用缓存提高（cache）文件系统的读性能和内存分配性能，应用程序使用缓存也是为了提升访问效率。将经常访问的操作结果保存在缓存中可备随时使用，而非总是 执行读磁盘取数据等开销较高的操作。</p>
-</li>
-</ul>
+<h2 id="使用选择器"><a href="#使用选择器" class="headerlink" title="使用选择器"></a>使用选择器</h2><p>在选择器调用select()方法后，将执行以下的流程：</p>
+<ol>
+<li>已取消的键的集合将会被检查。如果它是非空的，每个已取消的键的集合中的键将从另外两个集合中移除，并且相关的通道将被注销。这个步骤结束后，已取消的键的集合将是空的。</li>
+<li>已注册的键的集合中的键的interest集合将被检查。在这个步骤中的检查执行过后，对interest集合的改动不会影响剩余的检查过程。</li>
+</ol>
+<p>一旦就绪条件被定下来，底层操作系统将会进行查询，以确定每个通道所关心的操作的真实就绪状态。依赖于特定的select( )方法调用，如果没有通道已经准备好，线程可能会在这时阻塞，通常会有一个超时值。</p>
+<p>直到系统调用完成为止，这个过程可能会使得调用线程睡眠一段时间，然后当前每个通道的就绪状态将确定下来。对于那些还没准备好的通道将不会执行任何的操作。对于那些操作系统指示至少已经准备好interest集合中的一种操作的通道，将执行以下两种操作中的一种：</p>
+<p>a.如果通道的键还没有处于已选择的键的集合中，那么键的ready集合将被清空，然后表示操作系统发现的当前通道已经准备好的操作的比特掩码将被设置。</p>
+<p>b.否则，也就是键在已选择的键的集合中。键的ready集合将被表示操作系统发现的当前已经准备好的操作的比特掩码更新。所有之前的已经不再是就绪状态的操作不会被清除。事实上，所有的比特位都不会被清理。由操作系统决定的ready集合是与之前的ready集合按位分离的，一旦键被放置于选择器的已选择的键的集合中，它的ready集合将是累积的。比特位只会被设置，不会被清理。</p>
+<ol start="3">
+<li>步骤2可能会花费很长时间，特别是所激发的线程处于休眠状态时。与该选择器相关的键可能会同时被取消。当步骤2结束时，步骤1将重新执行，以完成任意一个在选择进行的过程中，键已经被取消的通道的注销。</li>
+<li>select操作返回的值是ready集合在步骤2中被修改的键的数量，而不是已选择的键的集合中的通道的总数。返回值不是已准备好的通道的总数，而是从上一个select( )调用之后进入就绪状态的通道的数量。之前的调用中就绪的，并且在本次调用中仍然就绪的通道不会被计入，而那些在前一次调用中已经就绪但已经不再处于就绪状态的通道也不会被计入。这些通道可能仍然在已选择的键的集合中，但不会被计入返回值中。返回值可能是0。</li>
+</ol>
+<p>使用内部的已取消的键的集合来延迟注销，是一种防止线程在取消键时阻塞，并防止与正在进行的选择操作冲突的优化。注销通道是一个潜在的代价很高的操作，这可能需要重新分配资源（请记住，键是与通道相关的，并且可能与它们相关的通道对象之间有复杂的交互）。清理已取消的键，并在选择操作之前和之后立即注销通道，可以消除它们可能正好在选择的过程中执行的潜在棘手问题。这是另一个兼顾健壮性的折中方案。</p>
+<h2 id="停止选择过程"><a href="#停止选择过程" class="headerlink" title="停止选择过程"></a>停止选择过程</h2><p>由于select()方法是阻塞方法，所以我们可以使用wakeup()方法，将阻塞状态的线程唤醒。</p>
+<h2 id="并发问题"><a href="#并发问题" class="headerlink" title="并发问题"></a>并发问题</h2><p>选择器对象是线程安全的，但它们包含的键集合不是。通过keys( )和selectKeys( )返回的键的集合是Selector对象内部的私有的Set对象集合的直接引用。这些集合可能在任意时间被改变。</p>
+<p><a href="https://github.com/buff0000/CodeDiary/tree/master/CD-Java-NIO/src/main/java/com/buff/nio/multithread" target="_blank" rel="noopener">参考测试代码</a></p>
 
       
     </div>
@@ -394,6 +458,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/NIO/" rel="tag"># NIO</a>
+          
+        </div>
+      
 
       
       
@@ -403,8 +473,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/20/Java-NIO之初始/" rel="next" title="Java NIO之初始">
-                <i class="fa fa-chevron-left"></i> Java NIO之初始
+              <a href="/2019/11/23/Smart-Cakes/" rel="next" title="Smart Cakes">
+                <i class="fa fa-chevron-left"></i> Smart Cakes
               </a>
             
           </div>
@@ -412,10 +482,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/24/Java-NIO之Buffer、Channel和Selector/" rel="prev" title="Java-NIO之Buffer、Channel和Selector">
-                Java-NIO之Buffer、Channel和Selector <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -549,7 +615,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer与Cache"><span class="nav-number">1.</span> <span class="nav-text">Buffer与Cache</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Buffer"><span class="nav-number">1.</span> <span class="nav-text">Buffer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Channel"><span class="nav-number">2.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Selector"><span class="nav-number">3.</span> <span class="nav-text">Selector</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建选择器–Selector"><span class="nav-number">3.1.</span> <span class="nav-text">创建选择器–Selector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用选择键–SelectionKey"><span class="nav-number">3.2.</span> <span class="nav-text">使用选择键–SelectionKey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用选择器"><span class="nav-number">3.3.</span> <span class="nav-text">使用选择器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止选择过程"><span class="nav-number">3.4.</span> <span class="nav-text">停止选择过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发问题"><span class="nav-number">3.5.</span> <span class="nav-text">并发问题</span></a></li></ol></li></ol></div>
             
 
           </div>
